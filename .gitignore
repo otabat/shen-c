@@ -1,0 +1,6 @@
+/bin/
+/obj/
+/tmp/
+.#*
+.DS_Store
+*.swp
