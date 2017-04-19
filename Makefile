@@ -12,14 +12,14 @@ all: ${TARGET}
 
 ${TARGET}: ${SRC_OBJS}
 #	cc -g -O0 -std=c99 -fsanitize=address -lgc -o $@ $^
-#	cc -g -O0 -std=c99 -Weverything -Wno-padded -Wno-reserved-id-macro -Wno-used-but-marked-unused -fsanitize=address -lgc -o $@ $^
-#	cc -O2 -std=c99 -fno-optimize-sibling-calls -lgc -o $@ $^
-	cc -O3 -std=c99 -fno-optimize-sibling-calls -lgc -o $@ $^
-#	gcc-6 -O2 -std=c99 -fno-optimize-sibling-calls -Wall -L /usr/local/lib -lgc -o $@ $^
+#	cc -g -O0 -std=c99 -lgc -o $@ $^
+#	cc -O2 -std=c99 -lgc -o $@ $^
+	cc -O3 -std=c99 -lgc -o $@ $^
+#	gcc-6 -O2 -std=c99 -L /usr/local/lib -lgc -o $@ $^
 
 ${OBJ_ROOT}/%.o: $(SRC_ROOT)/%.c
-#	cc -g -O0 -std=c99 -fsanitize=address -fno-omit-frame-pointer -lasan -c -o $@ $<
 #	cc -g -O0 -std=c99 -Weverything -Wno-padded -Wno-reserved-id-macro -Wno-used-but-marked-unused -fsanitize=address -fno-omit-frame-pointer -c -o $@ $<
+#	cc -g -O0 -std=c99 -c -o $@ $<
 #	cc -O2 -std=c99 -fno-optimize-sibling-calls -c -o $@ $<
 	cc -O3 -std=c99 -fno-optimize-sibling-calls -c -o $@ $<
 #	gcc-6 -O2 -std=c99 -fno-optimize-sibling-calls -Wall -I /usr/local/include/gc -c -o $@ $<
