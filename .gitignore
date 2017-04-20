@@ -1,6 +1,7 @@
 /bin/
 /obj/
 /tmp/
+/prof/
 .#*
 .DS_Store
 *.swp
