@@ -1,34 +1,10 @@
 #include "stack.h"
 
-KLObject* get_stack_top (Stack* stack)
-{
-  return stack->top;
-}
-
-void set_stack_top (Stack* stack, KLObject* top_object)
-{
-  stack->top = top_object;
-}
-
-size_t get_stack_size (Stack* stack)
-{
-  return stack->size;
-}
-
-void set_stack_size (Stack* stack, size_t size)
-{
-  stack->size = size;
-}
-
-Stack* create_stack (void)
-{
-  Stack* stack = malloc(sizeof(Stack));
-
-  set_stack_top(stack, get_empty_kl_list());
-  set_stack_size(stack, 0);
-
-  return stack;
-}
+extern KLObject* get_stack_top (Stack* stack);
+extern void set_stack_top (Stack* stack, KLObject* top_object);
+extern size_t get_stack_size (Stack* stack);
+extern void set_stack_size (Stack* stack, size_t size);
+extern Stack* create_stack (void);
 
 void push_stack (Stack* stack, KLObject* object)
 {

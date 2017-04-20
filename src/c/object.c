@@ -3,6 +3,8 @@
 static size_t kl_list_to_string_allocation_size = 10;
 static size_t vector_to_string_allocation_size = 10;
 
+extern Vector* kl_list_to_vector (KLObject* list_object);
+
 static inline size_t get_kl_list_to_string_allocation_size ()
 {
   return kl_list_to_string_allocation_size;
@@ -109,25 +111,6 @@ char* vector_to_string (Vector* vector)
 char* kl_vector_to_string (KLObject* vector_object)
 {
   return vector_to_string (get_vector(vector_object));
-}
-
-Vector* kl_list_to_vector (KLObject* list_object)
-{
-  if (!is_kl_list(list_object))
-    throw_kl_exception("Not a list object");
-  else if (is_empty_kl_list(list_object))
-    throw_kl_exception("Should not be an empty list object");
-
-  size_t size = get_kl_list_size(list_object);
-  Vector* vector = create_vector(size);
-  KLObject* object = list_object;
-
-  for (size_t i = 0; i < size; ++i) {
-    vector->objects[i] = get_head_kl_list(object);
-    object = get_tail_kl_list(object);
-  }
-
-  return vector;
 }
 
 char* kl_function_to_string (KLObject* function_object)

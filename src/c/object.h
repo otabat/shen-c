@@ -19,7 +19,6 @@
 char* kl_list_to_string (KLObject* list_object);
 char* vector_to_string (Vector* vector);
 char* kl_vector_to_string (KLObject* object);
-Vector* kl_list_to_vector (KLObject* list_object);
 char* kl_function_to_string (KLObject* function_object);
 char* kl_object_to_string (KLObject* object);
 void print_kl_object (KLObject* object);
@@ -28,5 +27,19 @@ void printlnln_kl_object (KLObject* object);
 bool is_kl_list_equal (KLObject* left_object, KLObject* right_object);
 bool is_kl_vector_equal (KLObject* left_object, KLObject* right_object);
 bool is_kl_object_equal (KLObject* left_object, KLObject* right_object);
+
+inline Vector* kl_list_to_vector (KLObject* list_object)
+{
+  size_t size = get_kl_list_size(list_object);
+  Vector* vector = create_vector(size);
+  KLObject* object = list_object;
+
+  for (size_t i = 0; i < size; ++i) {
+    vector->objects[i] = get_head_kl_list(object);
+    object = get_tail_kl_list(object);
+  }
+
+  return vector;
+}
 
 #endif

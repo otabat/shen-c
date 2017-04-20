@@ -1,28 +1,14 @@
 #include "string.h"
 
-char* get_string (KLObject* string_object)
-{
-  return string_object->value.string;
-}
-
-void set_string (KLObject* string_object, char* string)
-{
-  string_object->value.string = string;
-}
-
-KLObject* create_kl_string (char *string)
-{
-  KLObject* string_object = create_kl_object(KL_TYPE_STRING);
-
-  set_string(string_object, string);
-
-  return string_object;
-}
-
-bool is_kl_string (KLObject* object)
-{
-  return get_kl_object_type(object) == KL_TYPE_STRING;
-}
+extern char* get_string (KLObject* string_object);
+extern void set_string (KLObject* string_object, char* string);
+extern KLObject* create_kl_string (char *string);
+extern bool is_kl_string (KLObject* object);
+extern bool is_string_equal (char* left_string, char* right_string);
+extern bool is_kl_string_equal (KLObject* left_object, KLObject* right_object);
+extern char* get_position_string (char* string, long index);
+extern KLObject* get_position_kl_string (KLObject* string_object,
+                                         KLObject* number_object);
 
 char* string_to_double_quoted_string (char* string)
 {
@@ -44,28 +30,6 @@ char* string_to_double_quoted_string (char* string)
 char* get_double_quoted_string (KLObject* string_object)
 {
   return string_to_double_quoted_string(get_string(string_object));
-}
-
-char* get_position_string (char* string, long index)
-{
-  if (index >= (long)strlen(string) || index < 0)
-    throw_kl_exception("Invalid index");
-
-  char *position_string = malloc(2);
-  
-  position_string[0] = string[index];
-  position_string[1] = '\0';
-
-  return position_string;
-}
-
-KLObject* get_position_kl_string (KLObject* string_object,
-                                  KLObject* number_object)
-{
-  char* string = get_position_string(get_string(string_object),
-                                     get_kl_number_number_l(number_object));
-
-  return create_kl_string(string);
 }
 
 char* get_tail_string (char* string)
@@ -145,17 +109,6 @@ KLObject* kl_string_to_kl_number_code_point (KLObject* string_object)
   long code_point = string_to_code_point(get_string(string_object));
 
   return create_kl_number_l(code_point);
-}
-
-bool is_string_equal (char* left_string, char* right_string)
-{
-  return (strcmp(left_string, right_string) == 0);
-}
-
-bool is_kl_string_equal (KLObject* left_object, KLObject* right_object)
-{
-  return (is_kl_string(left_object) && is_kl_string(right_object) &&
-          is_string_equal(get_string(left_object), get_string(right_object)));
 }
 
 char* append_string (char* string_destination,

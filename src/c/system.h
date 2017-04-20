@@ -8,11 +8,13 @@
 #include "number.h"
 #include "symbol.h"
 
-void initialize_start_clock (void);
-long get_unix_time (void);
-KLObject* get_kl_number_unix_time (void);
-double get_run_time (void);
-KLObject* get_kl_number_run_time (void);
+extern clock_t start_clock;
+
+inline void initialize_start_clock (void)
+{
+  start_clock = clock();
+}
+
 KLObject* get_kl_number_time (KLObject* symbol_object);
 
 #endif

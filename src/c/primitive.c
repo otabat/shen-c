@@ -1,6 +1,6 @@
 #include "primitive.h"
 
-static KLObject** get_kl_function_arguments_with_count_check
+static inline KLObject** get_kl_function_arguments_with_count_check
 (KLObject* function_object, Vector* arguments)
 {
   PrimitiveFunction* primitive_function =
@@ -14,8 +14,8 @@ static KLObject** get_kl_function_arguments_with_count_check
   return (is_null(arguments))? NULL : get_vector_objects(arguments);
 }
 
-static KLObject* primitive_function_intern (KLObject* function_object,
-                                            Vector* arguments)
+static inline KLObject* primitive_function_intern (KLObject* function_object,
+                                                   Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -23,7 +23,7 @@ static KLObject* primitive_function_intern (KLObject* function_object,
   return kl_string_to_kl_symbol_or_kl_boolean(objects[0]);
 }
 
-static KLObject* create_primitive_kl_function_intern ()
+static inline KLObject* create_primitive_kl_function_intern ()
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_intern);
@@ -31,8 +31,8 @@ static KLObject* create_primitive_kl_function_intern ()
   return function_object;
 }
 
-static KLObject* primitive_function_pos (KLObject* function_object,
-                                         Vector* arguments)
+static inline KLObject* primitive_function_pos (KLObject* function_object,
+                                                Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -40,7 +40,7 @@ static KLObject* primitive_function_pos (KLObject* function_object,
   return get_position_kl_string(objects[0], objects[1]);
 }
 
-static KLObject* create_primitive_kl_function_pos ()
+static inline KLObject* create_primitive_kl_function_pos ()
 {
   KLObject* function_object =
     create_primitive_kl_function(2, &primitive_function_pos);
@@ -48,8 +48,8 @@ static KLObject* create_primitive_kl_function_pos ()
   return function_object;
 }
 
-static KLObject* primitive_function_tlstr (KLObject* function_object,
-                                           Vector* arguments)
+static inline KLObject* primitive_function_tlstr (KLObject* function_object,
+                                                  Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -57,7 +57,7 @@ static KLObject* primitive_function_tlstr (KLObject* function_object,
   return get_tail_kl_string(objects[0]);
 }
 
-static KLObject* create_primitive_kl_function_tlstr ()
+static inline KLObject* create_primitive_kl_function_tlstr ()
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_tlstr);
@@ -65,8 +65,8 @@ static KLObject* create_primitive_kl_function_tlstr ()
   return function_object;
 }
 
-static KLObject* primitive_function_cn (KLObject* function_object,
-                                        Vector* arguments)
+static inline KLObject* primitive_function_cn (KLObject* function_object,
+                                               Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -74,7 +74,7 @@ static KLObject* primitive_function_cn (KLObject* function_object,
   return concatenate_kl_string(objects[0], objects[1]);
 }
 
-static KLObject* create_primitive_kl_function_cn ()
+static inline KLObject* create_primitive_kl_function_cn ()
 {
   KLObject* function_object =
     create_primitive_kl_function(2, &primitive_function_cn);
@@ -82,8 +82,8 @@ static KLObject* create_primitive_kl_function_cn ()
   return function_object;
 }
 
-static KLObject* primitive_function_str (KLObject* function_object,
-                                         Vector* arguments)
+static inline KLObject* primitive_function_str (KLObject* function_object,
+                                                Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -107,7 +107,7 @@ static KLObject* primitive_function_str (KLObject* function_object,
   return create_kl_string(string);
 }
 
-static KLObject* create_primitive_kl_function_str ()
+static inline KLObject* create_primitive_kl_function_str ()
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_str);
@@ -115,8 +115,8 @@ static KLObject* create_primitive_kl_function_str ()
   return function_object;
 }
 
-static KLObject* primitive_function_is_string (KLObject* function_object,
-                                               Vector* arguments)
+static inline KLObject* primitive_function_is_string (KLObject* function_object,
+                                                      Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -124,7 +124,7 @@ static KLObject* primitive_function_is_string (KLObject* function_object,
   return create_kl_boolean(is_kl_string(objects[0]));
 }
 
-static KLObject* create_primitive_kl_function_is_string ()
+static inline KLObject* create_primitive_kl_function_is_string ()
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_is_string);
@@ -132,8 +132,8 @@ static KLObject* create_primitive_kl_function_is_string ()
   return function_object;
 }
 
-static KLObject* primitive_function_n_to_string (KLObject* function_object,
-                                                 Vector* arguments)
+static inline KLObject* primitive_function_n_to_string (KLObject* function_object,
+                                                        Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -141,7 +141,7 @@ static KLObject* primitive_function_n_to_string (KLObject* function_object,
   return kl_number_code_point_to_kl_string(objects[0]);
 }
 
-static KLObject* create_primitive_kl_function_n_to_string ()
+static inline KLObject* create_primitive_kl_function_n_to_string ()
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_n_to_string);
@@ -149,8 +149,8 @@ static KLObject* create_primitive_kl_function_n_to_string ()
   return function_object;
 }
 
-static KLObject* primitive_function_string_to_n (KLObject* function_object,
-                                                 Vector* arguments)
+static inline KLObject* primitive_function_string_to_n (KLObject* function_object,
+                                                        Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -158,7 +158,7 @@ static KLObject* primitive_function_string_to_n (KLObject* function_object,
   return kl_string_to_kl_number_code_point(objects[0]);
 }
 
-static KLObject* create_primitive_kl_function_string_to_n ()
+static inline KLObject* create_primitive_kl_function_string_to_n ()
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_string_to_n);
@@ -166,8 +166,8 @@ static KLObject* create_primitive_kl_function_string_to_n ()
   return function_object;
 }
 
-static KLObject* primitive_function_set (KLObject* function_object,
-                                         Vector* arguments)
+static inline KLObject* primitive_function_set (KLObject* function_object,
+                                                Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -176,7 +176,7 @@ static KLObject* primitive_function_set (KLObject* function_object,
                             get_global_variable_environment());
 }
 
-static KLObject* create_primitive_kl_function_set ()
+static inline KLObject* create_primitive_kl_function_set ()
 {
   KLObject* function_object =
     create_primitive_kl_function(2, &primitive_function_set);
@@ -184,8 +184,8 @@ static KLObject* create_primitive_kl_function_set ()
   return function_object;
 }
 
-static KLObject* primitive_function_value (KLObject* function_object,
-                                           Vector* arguments)
+static inline KLObject* primitive_function_value (KLObject* function_object,
+                                                  Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -193,7 +193,7 @@ static KLObject* primitive_function_value (KLObject* function_object,
   return get_variable_value(objects[0], get_global_variable_environment());
 }
 
-static KLObject* create_primitive_kl_function_value ()
+static inline KLObject* create_primitive_kl_function_value ()
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_value);
@@ -201,8 +201,8 @@ static KLObject* create_primitive_kl_function_value ()
   return function_object;
 }
 
-static KLObject* primitive_function_simple_error (KLObject* function_object,
-                                                  Vector* arguments)
+static inline KLObject* primitive_function_simple_error (KLObject* function_object,
+                                                         Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -216,7 +216,7 @@ static KLObject* primitive_function_simple_error (KLObject* function_object,
   return NULL;
 }
 
-static KLObject* create_primitive_kl_function_simple_error ()
+static inline KLObject* create_primitive_kl_function_simple_error ()
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_simple_error);
@@ -224,8 +224,8 @@ static KLObject* create_primitive_kl_function_simple_error ()
   return function_object;
 }
 
-static KLObject* primitive_function_error_to_string (KLObject* function_object,
-                                                     Vector* arguments)
+static inline KLObject* primitive_function_error_to_string
+(KLObject* function_object, Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -236,7 +236,7 @@ static KLObject* primitive_function_error_to_string (KLObject* function_object,
   return create_kl_string(get_exception_error_message(get_exception(objects[0])));
 }
 
-static KLObject* create_primitive_kl_function_error_to_string ()
+static inline KLObject* create_primitive_kl_function_error_to_string ()
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_error_to_string);
@@ -244,8 +244,8 @@ static KLObject* create_primitive_kl_function_error_to_string ()
   return function_object;
 }
 
-static KLObject* primitive_function_cons (KLObject* function_object,
-                                          Vector* arguments)
+static inline KLObject* primitive_function_cons (KLObject* function_object,
+                                                 Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -253,7 +253,7 @@ static KLObject* primitive_function_cons (KLObject* function_object,
   return create_kl_list(objects[0], objects[1]);
 }
 
-static KLObject* create_primitive_kl_function_cons ()
+static inline KLObject* create_primitive_kl_function_cons ()
 {
   KLObject* function_object =
     create_primitive_kl_function(2, &primitive_function_cons);
@@ -261,8 +261,8 @@ static KLObject* create_primitive_kl_function_cons ()
   return function_object;
 }
 
-static KLObject* primitive_function_hd (KLObject* function_object,
-                                        Vector* arguments)
+static inline KLObject* primitive_function_hd (KLObject* function_object,
+                                               Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -270,7 +270,7 @@ static KLObject* primitive_function_hd (KLObject* function_object,
   return get_head_kl_list(objects[0]);
 }
 
-static KLObject* create_primitive_kl_function_hd ()
+static inline KLObject* create_primitive_kl_function_hd ()
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_hd);
@@ -278,8 +278,8 @@ static KLObject* create_primitive_kl_function_hd ()
   return function_object;
 }
 
-static KLObject* primitive_function_tl (KLObject* function_object,
-                                        Vector* arguments)
+static inline KLObject* primitive_function_tl (KLObject* function_object,
+                                               Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -287,7 +287,7 @@ static KLObject* primitive_function_tl (KLObject* function_object,
   return get_tail_kl_list(objects[0]);
 }
 
-static KLObject* create_primitive_kl_function_tl ()
+static inline KLObject* create_primitive_kl_function_tl ()
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_tl);
@@ -295,8 +295,8 @@ static KLObject* create_primitive_kl_function_tl ()
   return function_object;
 }
 
-static KLObject* primitive_function_is_cons (KLObject* function_object,
-                                             Vector* arguments)
+static inline KLObject* primitive_function_is_cons (KLObject* function_object,
+                                                    Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -304,7 +304,7 @@ static KLObject* primitive_function_is_cons (KLObject* function_object,
   return create_kl_boolean(is_non_empty_kl_list(objects[0]));
 }
 
-static KLObject* create_primitive_kl_function_is_cons ()
+static inline KLObject* create_primitive_kl_function_is_cons ()
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_is_cons);
@@ -312,8 +312,8 @@ static KLObject* create_primitive_kl_function_is_cons ()
   return function_object;
 }
 
-static KLObject* primitive_function_is_equal (KLObject* function_object,
-                                              Vector* arguments)
+static inline KLObject* primitive_function_is_equal (KLObject* function_object,
+                                                     Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -321,7 +321,7 @@ static KLObject* primitive_function_is_equal (KLObject* function_object,
   return create_kl_boolean(is_kl_object_equal(objects[0], objects[1]));
 }
 
-static KLObject* create_primitive_kl_function_is_equal ()
+static inline KLObject* create_primitive_kl_function_is_equal ()
 {
   KLObject* function_object =
     create_primitive_kl_function(2, &primitive_function_is_equal);
@@ -329,8 +329,8 @@ static KLObject* create_primitive_kl_function_is_equal ()
   return function_object;
 }
 
-static KLObject* primitive_function_type (KLObject* function_object,
-                                          Vector* arguments)
+static inline KLObject* primitive_function_type (KLObject* function_object,
+                                                 Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -338,7 +338,7 @@ static KLObject* primitive_function_type (KLObject* function_object,
   return objects[0];
 }
 
-static KLObject* create_primitive_kl_function_type ()
+static inline KLObject* create_primitive_kl_function_type ()
 {
   KLObject* function_object =
     create_primitive_kl_function(2, &primitive_function_type);
@@ -346,8 +346,8 @@ static KLObject* create_primitive_kl_function_type ()
   return function_object;
 }
 
-static KLObject* primitive_function_absvector (KLObject* function_object,
-                                               Vector* arguments)
+static inline KLObject* primitive_function_absvector (KLObject* function_object,
+                                                      Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -355,7 +355,7 @@ static KLObject* primitive_function_absvector (KLObject* function_object,
   return create_kl_vector((size_t)get_kl_number_number_l(objects[0]));
 }
 
-static KLObject* create_primitive_kl_function_absvector ()
+static inline KLObject* create_primitive_kl_function_absvector ()
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_absvector);
@@ -363,7 +363,7 @@ static KLObject* create_primitive_kl_function_absvector ()
   return function_object;
 }
 
-static KLObject* primitive_function_set_absvector_element
+static inline KLObject* primitive_function_set_absvector_element
 (KLObject* function_object, Vector* arguments)
 {
   KLObject** objects =
@@ -372,7 +372,7 @@ static KLObject* primitive_function_set_absvector_element
   return set_kl_vector_element(objects[0], objects[1], objects[2]);
 }
 
-static KLObject* create_primitive_kl_function_set_absvector_element ()
+static inline KLObject* create_primitive_kl_function_set_absvector_element ()
 {
   KLObject* function_object =
     create_primitive_kl_function(3, &primitive_function_set_absvector_element);
@@ -380,7 +380,7 @@ static KLObject* create_primitive_kl_function_set_absvector_element ()
   return function_object;
 }
 
-static KLObject* primitive_function_get_absvector_element
+static inline KLObject* primitive_function_get_absvector_element
 (KLObject* function_object, Vector* arguments)
 {
   KLObject** objects =
@@ -389,7 +389,7 @@ static KLObject* primitive_function_get_absvector_element
   return get_kl_vector_element(objects[0], objects[1]);
 }
 
-static KLObject* create_primitive_kl_function_get_absvector_element ()
+static inline KLObject* create_primitive_kl_function_get_absvector_element ()
 {
   KLObject* function_object =
     create_primitive_kl_function(2, &primitive_function_get_absvector_element);
@@ -397,8 +397,8 @@ static KLObject* create_primitive_kl_function_get_absvector_element ()
   return function_object;
 }
 
-static KLObject* primitive_function_is_absvector (KLObject* function_object,
-                                                  Vector* arguments)
+static inline KLObject* primitive_function_is_absvector (KLObject* function_object,
+                                                         Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -406,7 +406,7 @@ static KLObject* primitive_function_is_absvector (KLObject* function_object,
   return create_kl_boolean(is_kl_vector(objects[0]));
 }
 
-static KLObject* create_primitive_kl_function_is_absvector ()
+static inline KLObject* create_primitive_kl_function_is_absvector ()
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_is_absvector);
@@ -414,8 +414,8 @@ static KLObject* create_primitive_kl_function_is_absvector ()
   return function_object;
 }
 
-static KLObject* primitive_function_write_byte (KLObject* function_object,
-                                                Vector* arguments)
+static inline KLObject* primitive_function_write_byte (KLObject* function_object,
+                                                       Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -423,7 +423,7 @@ static KLObject* primitive_function_write_byte (KLObject* function_object,
   return write_kl_stream_byte(objects[1], objects[0]);
 }
 
-static KLObject* create_primitive_kl_function_write_byte ()
+static inline KLObject* create_primitive_kl_function_write_byte ()
 {
   KLObject* function_object =
     create_primitive_kl_function(2, &primitive_function_write_byte);
@@ -431,8 +431,8 @@ static KLObject* create_primitive_kl_function_write_byte ()
   return function_object;
 }
 
-static KLObject* primitive_function_read_byte (KLObject* function_object,
-                                               Vector* arguments)
+static inline KLObject* primitive_function_read_byte (KLObject* function_object,
+                                                      Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -440,7 +440,7 @@ static KLObject* primitive_function_read_byte (KLObject* function_object,
   return read_kl_stream_byte(objects[0]);
 }
 
-static KLObject* create_primitive_kl_function_read_byte ()
+static inline KLObject* create_primitive_kl_function_read_byte ()
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_read_byte);
@@ -448,8 +448,8 @@ static KLObject* create_primitive_kl_function_read_byte ()
   return function_object;
 }
 
-static KLObject* primitive_function_open (KLObject* function_object,
-                                          Vector* arguments)
+static inline KLObject* primitive_function_open (KLObject* function_object,
+                                                 Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -474,7 +474,7 @@ static KLObject* primitive_function_open (KLObject* function_object,
   return create_kl_stream(file_path, get_symbol(objects[1]));
 }
 
-static KLObject* create_primitive_kl_function_open ()
+static inline KLObject* create_primitive_kl_function_open ()
 {
   KLObject* function_object =
     create_primitive_kl_function(2, &primitive_function_open);
@@ -482,8 +482,8 @@ static KLObject* create_primitive_kl_function_open ()
   return function_object;
 }
 
-static KLObject* primitive_function_close (KLObject* function_object,
-                                           Vector* arguments)
+static inline KLObject* primitive_function_close (KLObject* function_object,
+                                                  Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -491,7 +491,7 @@ static KLObject* primitive_function_close (KLObject* function_object,
   return close_kl_stream(objects[0]);
 }
 
-static KLObject* create_primitive_kl_function_close ()
+static inline KLObject* create_primitive_kl_function_close ()
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_close);
@@ -499,8 +499,8 @@ static KLObject* create_primitive_kl_function_close ()
   return function_object;
 }
 
-static KLObject* primitive_function_get_time (KLObject* function_object,
-                                              Vector* arguments)
+static inline KLObject* primitive_function_get_time (KLObject* function_object,
+                                                     Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -508,7 +508,7 @@ static KLObject* primitive_function_get_time (KLObject* function_object,
   return get_kl_number_time(objects[0]);
 }
 
-static KLObject* create_primitive_kl_function_get_time ()
+static inline KLObject* create_primitive_kl_function_get_time ()
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_get_time);
@@ -516,8 +516,8 @@ static KLObject* create_primitive_kl_function_get_time ()
   return function_object;
 }
 
-static KLObject* primitive_function_add (KLObject* function_object,
-                                         Vector* arguments)
+static inline KLObject* primitive_function_add (KLObject* function_object,
+                                                Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -525,7 +525,7 @@ static KLObject* primitive_function_add (KLObject* function_object,
   return add_kl_number(objects[0], objects[1]);
 }
 
-static KLObject* create_primitive_kl_function_add ()
+static inline KLObject* create_primitive_kl_function_add ()
 {
   KLObject* function_object =
     create_primitive_kl_function(2, &primitive_function_add);
@@ -533,8 +533,8 @@ static KLObject* create_primitive_kl_function_add ()
   return function_object;
 }
 
-static KLObject* primitive_function_subtract (KLObject* function_object,
-                                              Vector* arguments)
+static inline KLObject* primitive_function_subtract (KLObject* function_object,
+                                                     Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -542,7 +542,7 @@ static KLObject* primitive_function_subtract (KLObject* function_object,
   return subtract_kl_number(objects[0], objects[1]);
 }
 
-static KLObject* create_primitive_kl_function_subtract ()
+static inline KLObject* create_primitive_kl_function_subtract ()
 {
   KLObject* function_object =
     create_primitive_kl_function(2, &primitive_function_subtract);
@@ -550,8 +550,8 @@ static KLObject* create_primitive_kl_function_subtract ()
   return function_object;
 }
 
-static KLObject* primitive_function_multiply (KLObject* function_object,
-                                              Vector* arguments)
+static inline KLObject* primitive_function_multiply (KLObject* function_object,
+                                                     Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -559,7 +559,7 @@ static KLObject* primitive_function_multiply (KLObject* function_object,
   return multiply_kl_number(objects[0], objects[1]);
 }
 
-static KLObject* create_primitive_kl_function_multiply ()
+static inline KLObject* create_primitive_kl_function_multiply ()
 {
   KLObject* function_object =
     create_primitive_kl_function(2, &primitive_function_multiply);
@@ -567,8 +567,8 @@ static KLObject* create_primitive_kl_function_multiply ()
   return function_object;
 }
 
-static KLObject* primitive_function_divide (KLObject* function_object,
-                                            Vector* arguments)
+static inline KLObject* primitive_function_divide (KLObject* function_object,
+                                                   Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -576,7 +576,7 @@ static KLObject* primitive_function_divide (KLObject* function_object,
   return divide_kl_number(objects[0], objects[1]);
 }
 
-static KLObject* create_primitive_kl_function_divide ()
+static inline KLObject* create_primitive_kl_function_divide ()
 {
   KLObject* function_object =
     create_primitive_kl_function(2, &primitive_function_divide);
@@ -584,8 +584,8 @@ static KLObject* create_primitive_kl_function_divide ()
   return function_object;
 }
 
-static KLObject* primitive_function_is_greater (KLObject* function_object,
-                                                Vector* arguments)
+static inline KLObject* primitive_function_is_greater (KLObject* function_object,
+                                                       Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -593,7 +593,7 @@ static KLObject* primitive_function_is_greater (KLObject* function_object,
   return create_kl_boolean(is_kl_number_greater(objects[0], objects[1]));
 }
 
-static KLObject* create_primitive_kl_function_is_greater ()
+static inline KLObject* create_primitive_kl_function_is_greater ()
 {
   KLObject* function_object =
     create_primitive_kl_function(2, &primitive_function_is_greater);
@@ -601,8 +601,8 @@ static KLObject* create_primitive_kl_function_is_greater ()
   return function_object;
 }
 
-static KLObject* primitive_function_is_less (KLObject* function_object,
-                                             Vector* arguments)
+static inline KLObject* primitive_function_is_less (KLObject* function_object,
+                                                    Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -610,7 +610,7 @@ static KLObject* primitive_function_is_less (KLObject* function_object,
   return create_kl_boolean(is_kl_number_less(objects[0], objects[1]));
 }
 
-static KLObject* create_primitive_kl_function_is_less ()
+static inline KLObject* create_primitive_kl_function_is_less ()
 {
   KLObject* function_object =
     create_primitive_kl_function(2, &primitive_function_is_less);
@@ -618,8 +618,8 @@ static KLObject* create_primitive_kl_function_is_less ()
   return function_object;
 }
 
-static KLObject* primitive_function_is_greater_or_equal (KLObject* function_object,
-                                                         Vector* arguments)
+static inline KLObject* primitive_function_is_greater_or_equal
+(KLObject* function_object, Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -627,7 +627,7 @@ static KLObject* primitive_function_is_greater_or_equal (KLObject* function_obje
   return create_kl_boolean(is_kl_number_greater_or_equal(objects[0], objects[1]));
 }
 
-static KLObject* create_primitive_kl_function_is_greater_or_equal ()
+static inline KLObject* create_primitive_kl_function_is_greater_or_equal ()
 {
   KLObject* function_object =
     create_primitive_kl_function(2, &primitive_function_is_greater_or_equal);
@@ -635,8 +635,8 @@ static KLObject* create_primitive_kl_function_is_greater_or_equal ()
   return function_object;
 }
 
-static KLObject* primitive_function_is_less_or_equal (KLObject* function_object,
-                                                      Vector* arguments)
+static inline KLObject* primitive_function_is_less_or_equal
+(KLObject* function_object, Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -644,7 +644,7 @@ static KLObject* primitive_function_is_less_or_equal (KLObject* function_object,
   return create_kl_boolean(is_kl_number_less_or_equal(objects[0], objects[1]));
 }
 
-static KLObject* create_primitive_kl_function_is_less_or_equal ()
+static inline KLObject* create_primitive_kl_function_is_less_or_equal ()
 {
   KLObject* function_object =
     create_primitive_kl_function(2, &primitive_function_is_less_or_equal);
@@ -652,8 +652,8 @@ static KLObject* create_primitive_kl_function_is_less_or_equal ()
   return function_object;
 }
 
-static KLObject* primitive_function_is_number (KLObject* function_object,
-                                               Vector* arguments)
+static inline KLObject* primitive_function_is_number (KLObject* function_object,
+                                                      Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -661,7 +661,7 @@ static KLObject* primitive_function_is_number (KLObject* function_object,
   return create_kl_boolean(is_kl_number(objects[0]));
 }
 
-static KLObject* create_primitive_kl_function_is_number ()
+static inline KLObject* create_primitive_kl_function_is_number ()
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_is_number);
@@ -669,8 +669,8 @@ static KLObject* create_primitive_kl_function_is_number ()
   return function_object;
 }
 
-static KLObject* primitive_function_println (KLObject* function_object,
-                                             Vector* arguments)
+static inline KLObject* primitive_function_println (KLObject* function_object,
+                                                    Vector* arguments)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -680,7 +680,7 @@ static KLObject* primitive_function_println (KLObject* function_object,
   return objects[0];
 }
 
-static KLObject* create_primitive_kl_function_println ()
+static inline KLObject* create_primitive_kl_function_println ()
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_println);
@@ -688,8 +688,8 @@ static KLObject* create_primitive_kl_function_println ()
   return function_object;
 }
 
-static KLObject* primitive_function_quit (KLObject* function_object,
-                                          Vector* arguments)
+static inline KLObject* primitive_function_quit (KLObject* function_object,
+                                                 Vector* arguments)
 {
   get_kl_function_arguments_with_count_check(function_object, arguments);
   exit(EXIT_SUCCESS);
@@ -697,7 +697,7 @@ static KLObject* primitive_function_quit (KLObject* function_object,
   return NULL;
 }
 
-static KLObject* create_primitive_kl_function_quit ()
+static inline KLObject* create_primitive_kl_function_quit ()
 {
   KLObject* function_object =
     create_primitive_kl_function(0, &primitive_function_quit);
@@ -705,8 +705,8 @@ static KLObject* create_primitive_kl_function_quit ()
   return function_object;
 }
 
-static KLObject* primitive_function_exit (KLObject* function_object,
-                                          Vector* arguments)
+static inline KLObject* primitive_function_exit (KLObject* function_object,
+                                                 Vector* arguments)
 {
   get_kl_function_arguments_with_count_check(function_object, arguments);
   exit(EXIT_SUCCESS);
@@ -714,7 +714,7 @@ static KLObject* primitive_function_exit (KLObject* function_object,
   return NULL;
 }
 
-static KLObject* create_primitive_kl_function_exit ()
+static inline KLObject* create_primitive_kl_function_exit ()
 {
   KLObject* function_object =
     create_primitive_kl_function(0, &primitive_function_exit);
@@ -722,7 +722,7 @@ static KLObject* create_primitive_kl_function_exit ()
   return function_object;
 }
 
-static void register_primitive_kl_function
+static inline void register_primitive_kl_function
 (char* symbol, KLObject* (*create_primitive_kl_function) ())
 {
   KLObject* symbol_object = create_kl_symbol(symbol);

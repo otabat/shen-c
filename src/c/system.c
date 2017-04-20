@@ -1,30 +1,32 @@
 #include "system.h"
 
-static clock_t start_clock;
+clock_t start_clock;
 
-void initialize_start_clock (void)
+extern void initialize_start_clock (void);
+
+static inline clock_t get_start_clock (void)
 {
-  start_clock = clock();
+  return start_clock;
 }
 
-long get_unix_time (void)
+static inline long get_unix_time (void)
 {
   return (long)time(NULL);
 }
 
-KLObject* get_kl_number_unix_time (void)
+static inline KLObject* get_kl_number_unix_time (void)
 {
   KLObject* number_object = create_kl_number_l(get_unix_time());
 
   return number_object;
 }
 
-double get_run_time (void)
+static inline double get_run_time (void)
 {
-  return (double)(clock() - start_clock) / CLOCKS_PER_SEC;
+  return (double)(clock() - get_start_clock()) / CLOCKS_PER_SEC;
 }
 
-KLObject* get_kl_number_run_time (void)
+static inline KLObject* get_kl_number_run_time (void)
 {
   KLObject* number_object = create_kl_number_d(get_run_time());
 
