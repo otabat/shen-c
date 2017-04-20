@@ -1,4 +1,5 @@
 #include "environment.h"
+#include "extension.h"
 #include "kl.h"
 #include "loop.h"
 #include "number.h"
@@ -46,6 +47,7 @@ static inline void initialize (void)
   initialize_trapped_kl_exception_stack();
   initialize_loop_frame_stack();
   register_primitive_kl_functions();
+  register_extension_primitive_kl_functions();
   initialize_read_buffer();
   initialize_std_stream_objects();
   initialize_global_variables();
