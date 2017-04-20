@@ -24,8 +24,8 @@ void set_vector_size (Vector* vector, size_t size)
 
 Vector* create_vector (size_t size)
 {
-  Vector* vector = malloc(sizeof(Vector*));
-  KLObject** objects = malloc(sizeof(KLObject*) * size);
+  Vector* vector = malloc(sizeof(Vector));
+  KLObject** objects = malloc(sizeof(KLObject) * size);
 
   for (size_t i = 0; i < size; ++i) {
     objects[i] = create_kl_number_l(0);
@@ -44,7 +44,7 @@ Vector* get_empty_vector (void)
 
 void initialize_empty_vector (void)
 {
-  Vector* vector = malloc(sizeof(Vector*));
+  Vector* vector = malloc(sizeof(Vector));
 
   set_vector_objects(vector, NULL);
   set_vector_size(vector, 0);
