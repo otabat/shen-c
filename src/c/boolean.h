@@ -21,7 +21,7 @@ inline KLObject* create_kl_boolean (bool boolean)
 
   set_boolean(boolean_object, boolean);
 
-  return object;
+  return boolean_object;
 }
 
 inline bool is_kl_boolean (KLObject* object)
