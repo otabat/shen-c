@@ -17,9 +17,9 @@ inline void set_boolean (KLObject* boolean_object, bool boolean)
 
 inline KLObject* create_kl_boolean (bool boolean)
 {
-  KLObject* object = create_kl_object(KL_TYPE_BOOLEAN);
+  KLObject* boolean_object = create_kl_object(KL_TYPE_BOOLEAN);
 
-  set_boolean(object, boolean);
+  set_boolean(boolean_object, boolean);
 
   return object;
 }
