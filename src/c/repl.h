@@ -8,6 +8,7 @@
 #include "kl.h"
 #include "list.h"
 #include "object.h"
+#include "overwrite.h"
 #include "reader.h"
 #include "stream.h"
 

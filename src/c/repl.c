@@ -22,11 +22,19 @@ void load_shen_kl_files (void)
 {
   load_kl_file("src/kl/toplevel.kl");
   load_kl_file("src/kl/core.kl");
+
   load_kl_file("src/kl/sys.kl");
+  register_overwrite_sys_primitive_kl_functions();
+
   load_kl_file("src/kl/sequent.kl");
   load_kl_file("src/kl/yacc.kl");
+
   load_kl_file("src/kl/reader.kl");
+  register_overwrite_reader_primitive_kl_functions();
+
   load_kl_file("src/kl/prolog.kl");
+  register_overwrite_prolog_primitive_kl_functions();
+
   load_kl_file("src/kl/track.kl");
   load_kl_file("src/kl/load.kl");
   load_kl_file("src/kl/writer.kl");
