@@ -42,7 +42,7 @@ static KLObject* eval_and_expression (KLObject* list_object,
     throw_kl_exception("Arguments should be boolean values");
 
   if (!get_boolean(evaluated_test_object))
-    return create_kl_boolean(false);
+    return get_false_boolean_object();
 
   KLObject* else_object = get_head_kl_list(get_tail_kl_list(cdr_object));
   KLObject* evaluated_else_object =

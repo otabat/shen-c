@@ -23,7 +23,10 @@ static inline KLObject* primitive_function_is_symbol (KLObject* function_object,
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
-  return create_kl_boolean(is_kl_symbol(objects[0]));
+  if (is_kl_symbol(objects[0]))
+    return get_true_boolean_object();
+
+  return get_false_boolean_object();
 }
 
 static inline KLObject* create_primitive_kl_function_is_symbol (void)
@@ -40,7 +43,10 @@ static inline KLObject* primitive_function_is_boolean (KLObject* function_object
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
-  return create_kl_boolean(is_kl_boolean(objects[0]));
+  if (is_kl_boolean(objects[0]))
+    return get_true_boolean_object();
+
+  return get_false_boolean_object();
 }
 
 static inline KLObject* create_primitive_kl_function_is_boolean (void)
@@ -57,7 +63,10 @@ static inline KLObject* primitive_function_is_integer (KLObject* function_object
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
-  return create_kl_boolean(is_kl_number_l(objects[0]));
+  if (is_kl_number_l(objects[0]))
+    return get_true_boolean_object();
+
+  return get_false_boolean_object();
 }
 
 static inline KLObject* create_primitive_kl_function_is_integer (void)
@@ -76,12 +85,14 @@ static inline KLObject* primitive_function_is_variable (KLObject* function_objec
 
   if (is_kl_symbol(objects[0])) {
     char* symbol = get_symbol(objects[0]);
-    bool is_variable = (is_uppercase_alphabet_character(symbol[0])) ? true : false;
 
-    return create_kl_boolean(is_variable);
+    if (is_uppercase_alphabet_character(symbol[0]))
+      return get_true_boolean_object();
+
+    return get_false_boolean_object();
   }
 
-  return create_kl_boolean(false);
+  return get_false_boolean_object();
 }
 
 static inline KLObject* create_primitive_kl_function_is_variable (void)
@@ -98,9 +109,10 @@ static inline KLObject* primitive_function_not (KLObject* function_object,
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
-  bool boolean = (get_boolean(objects[0])) ? false : true;
+  if (get_boolean(objects[0]))
+    return get_false_boolean_object();
 
-  return create_kl_boolean(boolean);
+  return get_true_boolean_object();
 }
 
 static inline KLObject* create_primitive_kl_function_not (void)
@@ -116,10 +128,12 @@ static inline KLObject* primitive_function_is_numbyte (KLObject* function_object
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
-
   long x = get_kl_number_number_l(objects[0]);
 
-  return create_kl_boolean((x >= 48 && x <= 57) ? true : false);
+  if ((x >= 48 && x <= 57))
+    return get_true_boolean_object();
+
+  return get_false_boolean_object();
 }
 
 static inline KLObject* create_primitive_kl_function_is_numbyte (void)
@@ -174,12 +188,12 @@ static inline KLObject* primitive_function_is_pvar (KLObject* function_object,
     KLObject* object = get_vector_element(vector, 0);
 
     if (is_kl_symbol(object) && strcmp(get_symbol(object), "shen.pvar") == 0)
-      return create_kl_boolean(true);
+      return get_true_boolean_object();
 
-    return create_kl_boolean(false);
+    return get_false_boolean_object();
   }
 
-  return create_kl_boolean(false);
+  return get_false_boolean_object();
 }
 
 static inline KLObject* create_primitive_kl_function_is_pvar (void)

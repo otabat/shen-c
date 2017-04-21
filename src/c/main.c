@@ -1,3 +1,4 @@
+#include "boolean.h"
 #include "environment.h"
 #include "extension.h"
 #include "kl.h"
@@ -38,6 +39,7 @@ static inline void initialize_global_variables (void)
 
 static inline void initialize (void)
 {
+  initialize_boolean_objects();
   initialize_empty_kl_list();
   initialize_empty_vector();
   initialize_empty_loop_frame_pair();

@@ -100,9 +100,9 @@ inline KLObject* kl_string_to_kl_symbol_or_kl_boolean (KLObject* string_object)
   char* string = get_string(string_object);
 
   if (strcmp(string, "true") == 0)
-    return create_kl_boolean(true);
+    return get_true_boolean_object();
   else if (strcmp(string, "false") == 0)
-    return create_kl_boolean(false);
+    return get_false_boolean_object();
 
   return kl_string_to_kl_symbol(string_object);
 }

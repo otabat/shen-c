@@ -86,9 +86,9 @@ static KLObject* read_string_symbol_and_boolean (FILE* file)
       symbol[symbol_length] = '\0';
 
       if (strcmp(symbol, "true") == 0)
-        symbol_or_boolean_object = create_kl_boolean(true);
+        symbol_or_boolean_object = get_true_boolean_object();
       else if (strcmp(symbol, "false") == 0)
-        symbol_or_boolean_object = create_kl_boolean(false);
+        symbol_or_boolean_object = get_false_boolean_object();
       else
         symbol_or_boolean_object = create_kl_symbol(symbol);
 

@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <setjmp.h>
 
+#include "boolean.h"
 #include "character.h"
 #include "environment.h"
 #include "exception.h"

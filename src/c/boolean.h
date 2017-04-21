@@ -5,6 +5,9 @@
 
 #include "kl.h"
 
+extern KLObject* true_boolean_object;
+extern KLObject* false_boolean_object;
+
 inline bool get_boolean (KLObject* boolean_object)
 {
   return boolean_object->value.boolean;
@@ -22,6 +25,32 @@ inline KLObject* create_kl_boolean (bool boolean)
   set_boolean(boolean_object, boolean);
 
   return boolean_object;
+}
+
+inline void initialize_true_boolean_object (void)
+{
+  true_boolean_object = create_kl_boolean(true);
+}
+
+inline void initialize_false_boolean_object (void)
+{
+  false_boolean_object = create_kl_boolean(false);
+}
+
+inline void initialize_boolean_objects (void)
+{
+  initialize_true_boolean_object();
+  initialize_false_boolean_object();
+}
+
+inline KLObject* get_true_boolean_object (void)
+{
+  return true_boolean_object;
+}
+
+inline KLObject* get_false_boolean_object (void)
+{
+  return false_boolean_object;
 }
 
 inline bool is_kl_boolean (KLObject* object)

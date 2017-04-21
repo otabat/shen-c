@@ -112,7 +112,10 @@ static inline KLObject* primitive_function_is_string (KLObject* function_object,
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
-  return create_kl_boolean(is_kl_string(objects[0]));
+  if (is_kl_string(objects[0]))
+    return get_true_boolean_object();
+
+  return get_false_boolean_object();
 }
 
 static inline KLObject* create_primitive_kl_function_is_string (void)
@@ -292,7 +295,10 @@ static inline KLObject* primitive_function_is_cons (KLObject* function_object,
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
-  return create_kl_boolean(is_non_empty_kl_list(objects[0]));
+  if (is_non_empty_kl_list(objects[0]))
+    return get_true_boolean_object();
+
+  return get_false_boolean_object();
 }
 
 static inline KLObject* create_primitive_kl_function_is_cons (void)
@@ -309,7 +315,10 @@ static inline KLObject* primitive_function_is_equal (KLObject* function_object,
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
-  return create_kl_boolean(is_kl_object_equal(objects[0], objects[1]));
+  if (is_kl_object_equal(objects[0], objects[1]))
+    return get_true_boolean_object();
+
+  return get_false_boolean_object();
 }
 
 static inline KLObject* create_primitive_kl_function_is_equal (void)
@@ -394,7 +403,10 @@ static inline KLObject* primitive_function_is_absvector (KLObject* function_obje
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
-  return create_kl_boolean(is_kl_vector(objects[0]));
+  if (is_kl_vector(objects[0]))
+    return get_true_boolean_object();
+
+  return get_false_boolean_object();
 }
 
 static inline KLObject* create_primitive_kl_function_is_absvector (void)
@@ -581,7 +593,10 @@ static inline KLObject* primitive_function_is_greater (KLObject* function_object
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
-  return create_kl_boolean(is_kl_number_greater(objects[0], objects[1]));
+  if (is_kl_number_greater(objects[0], objects[1]))
+    return get_true_boolean_object();
+
+  return get_false_boolean_object();
 }
 
 static inline KLObject* create_primitive_kl_function_is_greater (void)
@@ -598,7 +613,10 @@ static inline KLObject* primitive_function_is_less (KLObject* function_object,
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
-  return create_kl_boolean(is_kl_number_less(objects[0], objects[1]));
+  if (is_kl_number_less(objects[0], objects[1]))
+    return get_true_boolean_object();
+
+  return get_false_boolean_object();
 }
 
 static inline KLObject* create_primitive_kl_function_is_less (void)
@@ -615,7 +633,10 @@ static inline KLObject* primitive_function_is_greater_or_equal
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
-  return create_kl_boolean(is_kl_number_greater_or_equal(objects[0], objects[1]));
+  if (is_kl_number_greater_or_equal(objects[0], objects[1]))
+    return get_true_boolean_object();
+
+  return get_false_boolean_object();
 }
 
 static inline KLObject* create_primitive_kl_function_is_greater_or_equal (void)
@@ -632,7 +653,10 @@ static inline KLObject* primitive_function_is_less_or_equal
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
-  return create_kl_boolean(is_kl_number_less_or_equal(objects[0], objects[1]));
+  if (is_kl_number_less_or_equal(objects[0], objects[1]))
+    return get_true_boolean_object();
+
+  return get_false_boolean_object();
 }
 
 static inline KLObject* create_primitive_kl_function_is_less_or_equal (void)
@@ -649,7 +673,10 @@ static inline KLObject* primitive_function_is_number (KLObject* function_object,
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
-  return create_kl_boolean(is_kl_number(objects[0]));
+  if (is_kl_number(objects[0]))
+    return get_true_boolean_object();
+
+  return get_false_boolean_object();
 }
 
 static inline KLObject* create_primitive_kl_function_is_number (void)
