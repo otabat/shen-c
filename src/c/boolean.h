@@ -5,15 +5,6 @@
 
 #include "kl.h"
 
-inline KLObject* create_kl_boolean (bool boolean)
-{
-  KLObject* object = create_kl_object(KL_TYPE_BOOLEAN);
-
-  object->value.boolean = boolean;
-
-  return object;
-}
-
 inline bool get_boolean (KLObject* boolean_object)
 {
   return boolean_object->value.boolean;
@@ -22,6 +13,15 @@ inline bool get_boolean (KLObject* boolean_object)
 inline void set_boolean (KLObject* boolean_object, bool boolean)
 {
   boolean_object->value.boolean = boolean;
+}
+
+inline KLObject* create_kl_boolean (bool boolean)
+{
+  KLObject* object = create_kl_object(KL_TYPE_BOOLEAN);
+
+  set_boolean(object, boolean);
+
+  return object;
 }
 
 inline bool is_kl_boolean (KLObject* object)
