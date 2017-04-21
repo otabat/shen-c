@@ -1,126 +1,27 @@
 #include "number.h"
 
-KLNumberType get_number_number_type (Number* number)
-{
-  return number->number_type;
-}
+extern KLNumberType get_number_number_type (Number* number);
+extern void set_number_number_type (Number* number, KLNumberType number_type);
+extern long get_number_number_l (Number* number);
+extern void set_number_number_l (Number* number, long x);
+extern double get_number_number_d (Number* number);
+extern void set_number_number_d (Number* number, double x);
+extern Number* create_number_l (long x);
+extern Number* create_number_d (double x);
 
-void set_number_number_type (Number* number, KLNumberType number_type)
-{
-  number->number_type = number_type;
-}
+extern Number* get_number (KLObject* number_object);
+extern void set_number (KLObject* number_object, Number* number);
+extern KLObject* create_kl_number_l (long x);
+extern KLObject* create_kl_number_d (double x);
+extern long get_kl_number_number_l (KLObject* number_object);
+extern double get_kl_number_number_d (KLObject* number_object);
+extern KLNumberType get_kl_number_number_type (KLObject* number_object);
 
-long get_number_number_l (Number* number)
-{
-  return number->value.number_l;
-}
-
-void set_number_number_l (Number* number, long x)
-{
-  number->value.number_l = x;
-}
-
-double get_number_number_d (Number* number)
-{
-  return number->value.number_d;
-}
-
-void set_number_number_d (Number* number, double x)
-{
-  number->value.number_d = x;
-}
-
-Number* create_number_l (long x) 
-{
-  Number* number = malloc(sizeof(Number));
-
-  set_number_number_type(number, KL_NUMBER_TYPE_LONG);
-  set_number_number_l(number, x);
-
-  return number;
-}
-
-Number* create_number_d (double x) 
-{
-  Number* number = malloc(sizeof(Number));
-
-  set_number_number_type(number, KL_NUMBER_TYPE_DOUBLE);
-  set_number_number_d(number, x);
-
-  return number;
-}
-
-Number* get_number (KLObject* number_object)
-{
-  return number_object->value.number;
-}
-
-void set_number (KLObject* number_object, Number* number)
-{
-  number_object->value.number = number;
-}
-
-KLObject* create_kl_number_l (long x)
-{
-  KLObject* number_object = create_kl_object(KL_TYPE_NUMBER);
-  Number* number = create_number_l(x);
-
-  set_number(number_object, number);
-
-  return number_object;
-}
-
-KLObject* create_kl_number_d (double x)
-{
-  KLObject* number_object = create_kl_object(KL_TYPE_NUMBER);
-  Number* number = create_number_d(x);
-
-  set_number(number_object, number);
-
-  return number_object;
-}
-
-long get_kl_number_number_l (KLObject* number_object)
-{
-  return get_number_number_l(get_number(number_object));
-}
-
-double get_kl_number_number_d (KLObject* number_object)
-{
-  return get_number_number_d(get_number(number_object));
-}
-
-KLNumberType get_kl_number_number_type (KLObject* number_object)
-{
-  return get_number_number_type(get_number(number_object));
-}
-
-bool is_kl_number (KLObject* object)
-{
-  return get_kl_object_type(object) == KL_TYPE_NUMBER;
-}
-
-bool is_kl_number_l (KLObject* object)
-{
-  return (is_kl_number(object) &&
-          get_kl_number_number_type(object) == KL_NUMBER_TYPE_LONG);
-}
-
-bool is_kl_number_d (KLObject* object)
-{
-  return (is_kl_number(object) &&
-          get_kl_number_number_type(object) == KL_NUMBER_TYPE_DOUBLE);
-}
-
-KLObject* kl_number_l_to_kl_number_d (KLObject* number_object)
-{
-  return create_kl_number_d((double)get_kl_number_number_l(number_object));
-}
-
-KLObject* kl_number_d_to_kl_number_l (KLObject* number_object)
-{
-  return create_kl_number_l((long)get_kl_number_number_d(number_object));
-}
+extern bool is_kl_number (KLObject* object);
+extern bool is_kl_number_l (KLObject* object);
+extern bool is_kl_number_d (KLObject* object);
+extern KLObject* kl_number_l_to_kl_number_d (KLObject* number_object);
+extern KLObject* kl_number_d_to_kl_number_l (KLObject* number_object);
 
 static inline long add_number_l_l (long x, long y) { return x + y; }
 static inline double add_number_l_d (long x, double y) { return (double)x + y; }
