@@ -1337,11 +1337,9 @@ KLObject* eval_kl_object (KLObject* object,
                           Environment* function_environment,
                           Environment* variable_environment)
 {
-  if (is_empty_kl_list(object))
-    return object;
-  else if (is_non_empty_kl_list(object)) {
+  if (is_non_empty_kl_list(object))
     return eval_kl_list(object, function_environment, variable_environment);
-  } else if (is_kl_symbol(object)) {
+  else if (is_kl_symbol(object)) {
     Environment* matched_variable_environment;
     KLObject* variable_value_object =
       lookup_environment(object, variable_environment,
@@ -1352,22 +1350,7 @@ KLObject* eval_kl_object (KLObject* object,
       return variable_value_object;
     
     return object;
-  } else if (is_kl_string(object))
-    return object;
-  else if (is_kl_number(object))
-    return object;
-  else if (is_kl_boolean(object))
-    return object;
-  else if (is_kl_function(object))
-    return object;
-  else if (is_kl_stream(object))
-    return object;
-  else if (is_kl_exception(object))
-    return object;
-  else if (is_kl_vector(object))
-    return object;
+  }
 
-  throw_kl_exception("Unknown type of object in eval"); 
-
-  return NULL;
+  return object;
 }
