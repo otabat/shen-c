@@ -21,6 +21,8 @@ void load_kl_file (char* file_path)
 void load_shen_kl_files (void)
 {
   load_kl_file("src/kl/toplevel.kl");
+  register_overwrite_toplevel_primitive_kl_functions();
+
   load_kl_file("src/kl/core.kl");
 
   load_kl_file("src/kl/sys.kl");

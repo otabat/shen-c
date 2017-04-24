@@ -2,6 +2,7 @@
 #define SHEN_C_OVERWRITE_H
 
 #include <stdbool.h>
+#include <stdlib.h>
 
 #include "boolean.h"
 #include "exception.h"
@@ -11,6 +12,7 @@
 #include "primitive.h"
 #include "vector.h"
 
+extern KLObject* exit_symbol_object;
 extern KLObject* hash_symbol_object;
 extern KLObject* is_symbol_symbol_object;
 extern KLObject* is_integer_symbol_object;
@@ -23,10 +25,12 @@ extern KLObject* shen_pvar_symbol_object;
 extern KLObject* shen_is_pvar_symbol_object;
 
 void register_overwrite_symbol_objects (void);
+void register_overwrite_toplevel_primitive_kl_functions (void);
 void register_overwrite_sys_primitive_kl_functions (void);
 void register_overwrite_reader_primitive_kl_functions (void);
 void register_overwrite_prolog_primitive_kl_functions (void);
 
+inline KLObject* get_exit_symbol_object (void) { return exit_symbol_object; }
 inline KLObject* get_hash_symbol_object (void) { return hash_symbol_object; }
 
 inline KLObject* get_is_symbol_symbol_object (void)

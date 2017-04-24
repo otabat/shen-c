@@ -1,5 +1,6 @@
 #include "overwrite.h"
 
+KLObject* exit_symbol_object;
 KLObject* hash_symbol_object;
 KLObject* is_symbol_symbol_object;
 KLObject* is_integer_symbol_object;
@@ -11,6 +12,7 @@ KLObject* shen_byte_to_digit_symbol_object;
 KLObject* shen_pvar_symbol_object;
 KLObject* shen_is_pvar_symbol_object;
 
+extern KLObject* get_exit_symbol_object (void);
 extern KLObject* get_hash_symbol_object (void);
 extern KLObject* get_is_symbol_symbol_object (void);
 extern KLObject* get_is_integer_symbol_object (void);
@@ -20,6 +22,39 @@ extern KLObject* get_not_symbol_object (void);
 extern KLObject* get_shen_is_numbyte_symbol_object (void);
 extern KLObject* get_shen_byte_to_digit_symbol_object (void);
 extern KLObject* get_shen_is_pvar_symbol_object (void);
+
+static inline void initialize_exit_symbol_object (void)
+{
+  exit_symbol_object = create_kl_symbol("exit");
+}
+
+static inline void register_exit_symbol_object (void)
+{
+  initialize_exit_symbol_object();
+  extend_symbol_name_table("exit", get_exit_symbol_object());
+}
+
+static inline KLObject* primitive_function_exit (KLObject* function_object,
+                                                 Vector* arguments)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+
+  if (is_kl_number_l(objects[0]))
+    exit(get_kl_number_number_l(objects[0]));
+
+  throw_kl_exception("Argument of exit function should be a number");
+
+  return NULL;
+}
+
+static inline void register_primitive_kl_function_exit (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(1, &primitive_function_exit);
+
+  set_kl_symbol_function(exit_symbol_object, function_object);
+}
 
 static inline void initialize_hash_symbol_object (void)
 {
@@ -338,6 +373,7 @@ static inline void register_primitive_kl_function_shen_is_pvar (void)
 
 void register_overwrite_symbol_objects (void)
 {
+  register_exit_symbol_object();
   register_hash_symbol_object();
   register_is_symbol_symbol_object();
   register_is_boolean_symbol_object();
@@ -348,6 +384,11 @@ void register_overwrite_symbol_objects (void)
   register_shen_byte_to_digit_symbol_object();
   register_shen_pvar_symbol_object();
   register_shen_is_pvar_symbol_object();
+}
+
+void register_overwrite_toplevel_primitive_kl_functions (void)
+{
+  register_primitive_kl_function_exit();
 }
 
 void register_overwrite_sys_primitive_kl_functions (void)
