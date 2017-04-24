@@ -187,14 +187,9 @@ char* kl_function_to_string (KLObject* function_object)
 
 char* kl_object_to_string (KLObject* object)
 {
-  if (is_kl_symbol(object)) {
-    char* string_name = get_kl_symbol_name(object);
-
-    if (strcmp(string_name, "shen.fail!") == 0)
-      return "...";
-    
-    return string_name;
-  } else if (is_kl_string(object))
+  if (is_kl_symbol(object))
+    return get_kl_symbol_name(object);
+  else if (is_kl_string(object))
     return get_double_quoted_string(object);
   else if (is_kl_number(object))
     return kl_number_to_string(object);
