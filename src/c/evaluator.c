@@ -1154,13 +1154,10 @@ static KLObject* eval_symbol_function_application
                                                        function_environment,
                                                        variable_environment);
 
-  if (is_user_kl_function(function_object))
-    return eval_kl_list_user_function_application(list_object,
-                                                  function_object,
-                                                  function_environment,
-                                                  variable_environment);
-  
-  throw_kl_exception("Unknown type of function");
+  return eval_kl_list_user_function_application(list_object,
+                                                function_object,
+                                                function_environment,
+                                                variable_environment);
 
   return NULL;
 } 
