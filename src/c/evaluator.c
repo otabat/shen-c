@@ -1329,15 +1329,13 @@ KLObject* eval_kl_object (KLObject* object,
     if (variable_environment == get_global_variable_environment())
       return object;
 
-    Environment* matched_variable_environment;
     KLObject* variable_value_object =
-      lookup_environment(object, variable_environment,
-                         &matched_variable_environment);
+      lookup_environment(object, variable_environment);
     
-    if (is_not_null(matched_variable_environment))
-      return variable_value_object;
+    if (is_null(variable_value_object))
+      return object;
 
-    return object;
+    return variable_value_object;
   }
 
   return object;

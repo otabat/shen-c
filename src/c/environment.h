@@ -10,9 +10,7 @@
 extern Environment* global_function_environment;
 extern Environment* global_variable_environment;
 
-KLObject* lookup_environment (KLObject* symbol_object,
-                              Environment* environment,
-                              Environment** matched_environment_ref);
+KLObject* lookup_environment (KLObject* symbol_object, Environment* environment);
 
 inline khash_t(SymbolObjectTable)* get_environment_symbol_object_table
 (Environment* environment)

@@ -16,9 +16,7 @@ extern Environment* get_global_variable_environment (void);
 extern void extend_environment (KLObject* symbol_object, KLObject* object,
                                 Environment* environment);
 
-KLObject* lookup_environment (KLObject* symbol_object,
-                              Environment* environment,
-                              Environment** matched_environment_ref)
+KLObject* lookup_environment (KLObject* symbol_object, Environment* environment)
 { 
   khash_t(SymbolObjectTable)* symbol_object_table;
   khiter_t hash_iterator;
@@ -35,18 +33,13 @@ KLObject* lookup_environment (KLObject* symbol_object,
     if (is_key_not_found || kh_exist(symbol_object_table, hash_iterator) == 0) {
       parent_environment = get_parent_environment(new_environment);
 
-      if (is_null(parent_environment)) {
-        *matched_environment_ref = NULL;
-
+      if (is_null(parent_environment))
         return NULL;
-      }
 
       new_environment = parent_environment;
 
       continue;
     }
-
-    *matched_environment_ref = new_environment;
 
     return kh_value(symbol_object_table, hash_iterator);
   }
