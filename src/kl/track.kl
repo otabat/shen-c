@@ -23,57 +23,57 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 
-(defun shen.f_error (V3782) (do (shen.prhush (cn "partial function " (shen.app V3782 ";
-" shen.a)) (stoutput)) (do (if (and (not (shen.tracked? V3782)) (y-or-n? (cn "track " (shen.app V3782 "? " shen.a)))) (shen.track-function (ps V3782)) shen.ok) (simple-error "aborted"))))
+(defun shen.f_error (V3907) (do (shen.prhush (cn "partial function " (shen.app V3907 ";
+" shen.a)) (stoutput)) (do (if (and (not (shen.tracked? V3907)) (y-or-n? (cn "track " (shen.app V3907 "? " shen.a)))) (shen.track-function (ps V3907)) shen.ok) (simple-error "aborted"))))
 
-(defun shen.tracked? (V3784) (element? V3784 (value shen.*tracking*)))
+(defun shen.tracked? (V3909) (element? V3909 (value shen.*tracking*)))
 
-(defun track (V3786) (let Source (ps V3786) (shen.track-function Source)))
+(defun track (V3911) (let Source (ps V3911) (shen.track-function Source)))
 
-(defun shen.track-function (V3788) (cond ((and (cons? V3788) (and (= defun (hd V3788)) (and (cons? (tl V3788)) (and (cons? (tl (tl V3788))) (and (cons? (tl (tl (tl V3788)))) (= () (tl (tl (tl (tl V3788)))))))))) (let KL (cons defun (cons (hd (tl V3788)) (cons (hd (tl (tl V3788))) (cons (shen.insert-tracking-code (hd (tl V3788)) (hd (tl (tl V3788))) (hd (tl (tl (tl V3788))))) ())))) (let Ob (eval-kl KL) (let Tr (set shen.*tracking* (cons Ob (value shen.*tracking*))) Ob)))) (true (shen.f_error shen.track-function))))
+(defun shen.track-function (V3913) (cond ((and (cons? V3913) (and (= defun (hd V3913)) (and (cons? (tl V3913)) (and (cons? (tl (tl V3913))) (and (cons? (tl (tl (tl V3913)))) (= () (tl (tl (tl (tl V3913)))))))))) (let KL (cons defun (cons (hd (tl V3913)) (cons (hd (tl (tl V3913))) (cons (shen.insert-tracking-code (hd (tl V3913)) (hd (tl (tl V3913))) (hd (tl (tl (tl V3913))))) ())))) (let Ob (eval-kl KL) (let Tr (set shen.*tracking* (cons Ob (value shen.*tracking*))) Ob)))) (true (shen.f_error shen.track-function))))
 
-(defun shen.insert-tracking-code (V3792 V3793 V3794) (cons do (cons (cons set (cons shen.*call* (cons (cons + (cons (cons value (cons shen.*call* ())) (cons 1 ()))) ()))) (cons (cons do (cons (cons shen.input-track (cons (cons value (cons shen.*call* ())) (cons V3792 (cons (shen.cons_form V3793) ())))) (cons (cons do (cons (cons shen.terpri-or-read-char ()) (cons (cons let (cons Result (cons V3794 (cons (cons do (cons (cons shen.output-track (cons (cons value (cons shen.*call* ())) (cons V3792 (cons Result ())))) (cons (cons do (cons (cons set (cons shen.*call* (cons (cons - (cons (cons value (cons shen.*call* ())) (cons 1 ()))) ()))) (cons (cons do (cons (cons shen.terpri-or-read-char ()) (cons Result ()))) ()))) ()))) ())))) ()))) ()))) ()))))
+(defun shen.insert-tracking-code (V3917 V3918 V3919) (cons do (cons (cons set (cons shen.*call* (cons (cons + (cons (cons value (cons shen.*call* ())) (cons 1 ()))) ()))) (cons (cons do (cons (cons shen.input-track (cons (cons value (cons shen.*call* ())) (cons V3917 (cons (shen.cons_form V3918) ())))) (cons (cons do (cons (cons shen.terpri-or-read-char ()) (cons (cons let (cons Result (cons V3919 (cons (cons do (cons (cons shen.output-track (cons (cons value (cons shen.*call* ())) (cons V3917 (cons Result ())))) (cons (cons do (cons (cons set (cons shen.*call* (cons (cons - (cons (cons value (cons shen.*call* ())) (cons 1 ()))) ()))) (cons (cons do (cons (cons shen.terpri-or-read-char ()) (cons Result ()))) ()))) ()))) ())))) ()))) ()))) ()))))
 
 (set shen.*step* false)
 
-(defun step (V3800) (cond ((= + V3800) (set shen.*step* true)) ((= - V3800) (set shen.*step* false)) (true (simple-error "step expects a + or a -.
+(defun step (V3925) (cond ((= + V3925) (set shen.*step* true)) ((= - V3925) (set shen.*step* false)) (true (simple-error "step expects a + or a -.
 "))))
 
-(defun spy (V3806) (cond ((= + V3806) (set shen.*spy* true)) ((= - V3806) (set shen.*spy* false)) (true (simple-error "spy expects a + or a -.
+(defun spy (V3931) (cond ((= + V3931) (set shen.*spy* true)) ((= - V3931) (set shen.*spy* false)) (true (simple-error "spy expects a + or a -.
 "))))
 
 (defun shen.terpri-or-read-char () (if (value shen.*step*) (shen.check-byte (read-byte (value *stinput*))) (nl 1)))
 
-(defun shen.check-byte (V3812) (cond ((= V3812 (shen.hat)) (simple-error "aborted")) (true true)))
+(defun shen.check-byte (V3937) (cond ((= V3937 (shen.hat)) (simple-error "aborted")) (true true)))
 
-(defun shen.input-track (V3816 V3817 V3818) (do (shen.prhush (cn "
-" (shen.app (shen.spaces V3816) (cn "<" (shen.app V3816 (cn "> Inputs to " (shen.app V3817 (cn " 
-" (shen.app (shen.spaces V3816) "" shen.a)) shen.a)) shen.a)) shen.a)) (stoutput)) (shen.recursively-print V3818)))
+(defun shen.input-track (V3941 V3942 V3943) (do (shen.prhush (cn "
+" (shen.app (shen.spaces V3941) (cn "<" (shen.app V3941 (cn "> Inputs to " (shen.app V3942 (cn " 
+" (shen.app (shen.spaces V3941) "" shen.a)) shen.a)) shen.a)) shen.a)) (stoutput)) (shen.recursively-print V3943)))
 
-(defun shen.recursively-print (V3820) (cond ((= () V3820) (shen.prhush " ==>" (stoutput))) ((cons? V3820) (do (print (hd V3820)) (do (shen.prhush ", " (stoutput)) (shen.recursively-print (tl V3820))))) (true (shen.f_error shen.recursively-print))))
+(defun shen.recursively-print (V3945) (cond ((= () V3945) (shen.prhush " ==>" (stoutput))) ((cons? V3945) (do (print (hd V3945)) (do (shen.prhush ", " (stoutput)) (shen.recursively-print (tl V3945))))) (true (shen.f_error shen.recursively-print))))
 
-(defun shen.spaces (V3822) (cond ((= 0 V3822) "") (true (cn " " (shen.spaces (- V3822 1))))))
+(defun shen.spaces (V3947) (cond ((= 0 V3947) "") (true (cn " " (shen.spaces (- V3947 1))))))
 
-(defun shen.output-track (V3826 V3827 V3828) (shen.prhush (cn "
-" (shen.app (shen.spaces V3826) (cn "<" (shen.app V3826 (cn "> Output from " (shen.app V3827 (cn " 
-" (shen.app (shen.spaces V3826) (cn "==> " (shen.app V3828 "" shen.s)) shen.a)) shen.a)) shen.a)) shen.a)) (stoutput)))
+(defun shen.output-track (V3951 V3952 V3953) (shen.prhush (cn "
+" (shen.app (shen.spaces V3951) (cn "<" (shen.app V3951 (cn "> Output from " (shen.app V3952 (cn " 
+" (shen.app (shen.spaces V3951) (cn "==> " (shen.app V3953 "" shen.s)) shen.a)) shen.a)) shen.a)) shen.a)) (stoutput)))
 
-(defun untrack (V3830) (let Tracking (value shen.*tracking*) (let Tracking (set shen.*tracking* (remove V3830 Tracking)) (eval (ps V3830)))))
+(defun untrack (V3955) (let Tracking (value shen.*tracking*) (let Tracking (set shen.*tracking* (remove V3955 Tracking)) (eval (ps V3955)))))
 
-(defun profile (V3832) (shen.profile-help (ps V3832)))
+(defun profile (V3957) (shen.profile-help (ps V3957)))
 
-(defun shen.profile-help (V3838) (cond ((and (cons? V3838) (and (= defun (hd V3838)) (and (cons? (tl V3838)) (and (cons? (tl (tl V3838))) (and (cons? (tl (tl (tl V3838)))) (= () (tl (tl (tl (tl V3838)))))))))) (let G (gensym shen.f) (let Profile (cons defun (cons (hd (tl V3838)) (cons (hd (tl (tl V3838))) (cons (shen.profile-func (hd (tl V3838)) (hd (tl (tl V3838))) (cons G (hd (tl (tl V3838))))) ())))) (let Def (cons defun (cons G (cons (hd (tl (tl V3838))) (cons (subst G (hd (tl V3838)) (hd (tl (tl (tl V3838))))) ())))) (let CompileProfile (shen.eval-without-macros Profile) (let CompileG (shen.eval-without-macros Def) (hd (tl V3838)))))))) (true (simple-error "Cannot profile.
+(defun shen.profile-help (V3963) (cond ((and (cons? V3963) (and (= defun (hd V3963)) (and (cons? (tl V3963)) (and (cons? (tl (tl V3963))) (and (cons? (tl (tl (tl V3963)))) (= () (tl (tl (tl (tl V3963)))))))))) (let G (gensym shen.f) (let Profile (cons defun (cons (hd (tl V3963)) (cons (hd (tl (tl V3963))) (cons (shen.profile-func (hd (tl V3963)) (hd (tl (tl V3963))) (cons G (hd (tl (tl V3963))))) ())))) (let Def (cons defun (cons G (cons (hd (tl (tl V3963))) (cons (subst G (hd (tl V3963)) (hd (tl (tl (tl V3963))))) ())))) (let CompileProfile (shen.eval-without-macros Profile) (let CompileG (shen.eval-without-macros Def) (hd (tl V3963)))))))) (true (simple-error "Cannot profile.
 "))))
 
-(defun unprofile (V3840) (untrack V3840))
+(defun unprofile (V3965) (untrack V3965))
 
-(defun shen.profile-func (V3844 V3845 V3846) (cons let (cons Start (cons (cons get-time (cons run ())) (cons (cons let (cons Result (cons V3846 (cons (cons let (cons Finish (cons (cons - (cons (cons get-time (cons run ())) (cons Start ()))) (cons (cons let (cons Record (cons (cons shen.put-profile (cons V3844 (cons (cons + (cons (cons shen.get-profile (cons V3844 ())) (cons Finish ()))) ()))) (cons Result ())))) ())))) ())))) ())))))
+(defun shen.profile-func (V3969 V3970 V3971) (cons let (cons Start (cons (cons get-time (cons run ())) (cons (cons let (cons Result (cons V3971 (cons (cons let (cons Finish (cons (cons - (cons (cons get-time (cons run ())) (cons Start ()))) (cons (cons let (cons Record (cons (cons shen.put-profile (cons V3969 (cons (cons + (cons (cons shen.get-profile (cons V3969 ())) (cons Finish ()))) ()))) (cons Result ())))) ())))) ())))) ())))))
 
-(defun profile-results (V3848) (let Results (shen.get-profile V3848) (let Initialise (shen.put-profile V3848 0) (@p V3848 Results))))
+(defun profile-results (V3973) (let Results (shen.get-profile V3973) (let Initialise (shen.put-profile V3973 0) (@p V3973 Results))))
 
-(defun shen.get-profile (V3850) (trap-error (get V3850 profile (value *property-vector*)) (lambda E 0)))
+(defun shen.get-profile (V3975) (get/or V3975 profile (freeze 0) (value *property-vector*)))
 
-(defun shen.put-profile (V3853 V3854) (put V3853 profile V3854 (value *property-vector*)))
+(defun shen.put-profile (V3978 V3979) (put V3978 profile V3979 (value *property-vector*)))
 
 
 

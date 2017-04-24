@@ -23,14 +23,14 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 
-(defun declare (V3857 V3858) (let Record (set shen.*signedfuncs* (cons (cons V3857 V3858) (value shen.*signedfuncs*))) (let Variancy (trap-error (shen.variancy-test V3857 V3858) (lambda E shen.skip)) (let Type (shen.rcons_form (shen.demodulate V3858)) (let F* (concat shen.type-signature-of- V3857) (let Parameters (shen.parameters 1) (let Clause (cons (cons F* (cons X ())) (cons :- (cons (cons (cons unify! (cons X (cons Type ()))) ()) ()))) (let AUM_instruction (shen.aum Clause Parameters) (let Code (shen.aum_to_shen AUM_instruction) (let ShenDef (cons define (cons F* (append Parameters (append (cons ProcessN (cons Continuation ())) (cons -> (cons Code ())))))) (let Eval (shen.eval-without-macros ShenDef) V3857)))))))))))
+(defun declare (V3982 V3983) (let Record (set shen.*signedfuncs* (cons (cons V3982 V3983) (value shen.*signedfuncs*))) (let Variancy (trap-error (shen.variancy-test V3982 V3983) (lambda E shen.skip)) (let Type (shen.rcons_form (shen.demodulate V3983)) (let F* (concat shen.type-signature-of- V3982) (let Parameters (shen.parameters 1) (let Clause (cons (cons F* (cons X ())) (cons :- (cons (cons (cons unify! (cons X (cons Type ()))) ()) ()))) (let AUM_instruction (shen.aum Clause Parameters) (let Code (shen.aum_to_shen AUM_instruction) (let ShenDef (cons define (cons F* (append Parameters (append (cons ProcessN (cons Continuation ())) (cons -> (cons Code ())))))) (let Eval (shen.eval-without-macros ShenDef) V3982)))))))))))
 
-(defun shen.demodulate (V3860) (trap-error (let Demod (shen.walk (lambda Y (shen.demod Y)) V3860) (if (= Demod V3860) V3860 (shen.demodulate Demod))) (lambda E V3860)))
+(defun shen.demodulate (V3985) (let Demod (shen.walk (value shen.*demodulation-function*) V3985) (if (= Demod V3985) V3985 (shen.demodulate Demod))))
 
-(defun shen.variancy-test (V3863 V3864) (let TypeF (shen.typecheck V3863 B) (let Check (if (= symbol TypeF) shen.skip (if (shen.variant? TypeF V3864) shen.skip (shen.prhush (cn "warning: changing the type of " (shen.app V3863 " may create errors
+(defun shen.variancy-test (V3988 V3989) (let TypeF (shen.typecheck V3988 B) (let Check (if (= symbol TypeF) shen.skip (if (shen.variant? TypeF V3989) shen.skip (shen.prhush (cn "warning: changing the type of " (shen.app V3988 " may create errors
 " shen.a)) (stoutput)))) shen.skip)))
 
-(defun shen.variant? (V3877 V3878) (cond ((= V3878 V3877) true) ((and (cons? V3877) (and (cons? V3878) (= (hd V3878) (hd V3877)))) (shen.variant? (tl V3877) (tl V3878))) ((and (cons? V3877) (and (cons? V3878) (and (shen.pvar? (hd V3877)) (variable? (hd V3878))))) (shen.variant? (subst shen.a (hd V3877) (tl V3877)) (subst shen.a (hd V3878) (tl V3878)))) ((and (cons? V3877) (and (cons? (hd V3877)) (and (cons? V3878) (cons? (hd V3878))))) (shen.variant? (append (hd V3877) (tl V3877)) (append (hd V3878) (tl V3878)))) (true false)))
+(defun shen.variant? (V4002 V4003) (cond ((= V4003 V4002) true) ((and (cons? V4002) (and (cons? V4003) (= (hd V4003) (hd V4002)))) (shen.variant? (tl V4002) (tl V4003))) ((and (cons? V4002) (and (cons? V4003) (and (shen.pvar? (hd V4002)) (variable? (hd V4003))))) (shen.variant? (subst shen.a (hd V4002) (tl V4002)) (subst shen.a (hd V4003) (tl V4003)))) ((and (cons? V4002) (and (cons? (hd V4002)) (and (cons? V4003) (cons? (hd V4003))))) (shen.variant? (append (hd V4002) (tl V4002)) (append (hd V4003) (tl V4003)))) (true false)))
 
 (declare absvector? (cons A (cons --> (cons boolean ()))))
 
@@ -98,9 +98,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 
 (declare <-vector (cons (cons vector (cons A ())) (cons --> (cons (cons number (cons --> (cons A ()))) ()))))
 
+(declare <-vector/or (cons (cons vector (cons A ())) (cons --> (cons (cons number (cons --> (cons (cons (cons lazy (cons A ())) (cons --> (cons A ()))) ()))) ()))))
+
 (declare vector-> (cons (cons vector (cons A ())) (cons --> (cons (cons number (cons --> (cons (cons A (cons --> (cons (cons vector (cons A ())) ()))) ()))) ()))))
 
 (declare vector (cons number (cons --> (cons (cons vector (cons A ())) ()))))
+
+(declare dict (cons number (cons --> (cons (cons dict (cons K (cons V ()))) ()))))
+
+(declare dict? (cons A (cons --> (cons boolean ()))))
+
+(declare dict-count (cons (cons dict (cons K (cons V ()))) (cons --> (cons number ()))))
+
+(declare <-dict (cons (cons dict (cons K (cons V ()))) (cons --> (cons (cons K (cons --> (cons V ()))) ()))))
+
+(declare <-dict/or (cons (cons dict (cons K (cons V ()))) (cons --> (cons (cons K (cons --> (cons (cons (cons lazy (cons V ())) (cons --> (cons V ()))) ()))) ()))))
+
+(declare dict-> (cons (cons dict (cons K (cons V ()))) (cons --> (cons (cons K (cons --> (cons (cons V (cons --> (cons V ()))) ()))) ()))))
+
+(declare dict-rm (cons (cons dict (cons K (cons V ()))) (cons --> (cons (cons K (cons --> (cons K ()))) ()))))
+
+(declare dict-fold (cons (cons K (cons --> (cons (cons V (cons --> (cons (cons A (cons --> (cons A ()))) ()))) ()))) (cons --> (cons (cons (cons dict (cons K (cons V ()))) (cons --> (cons (cons A (cons --> (cons A ()))) ()))) ()))))
+
+(declare dict-keys (cons (cons dict (cons K (cons V ()))) (cons --> (cons (cons list (cons K ())) ()))))
+
+(declare dict-values (cons (cons dict (cons K (cons V ()))) (cons --> (cons (cons list (cons V ())) ()))))
+
+(declare exit (cons number (cons --> (cons unit ()))))
 
 (declare get-time (cons symbol (cons --> (cons number ()))))
 
@@ -142,9 +166,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 
 (declare load (cons string (cons --> (cons symbol ()))))
 
+(declare fold-left (cons (cons B (cons --> (cons (cons A (cons --> (cons B ()))) ()))) (cons --> (cons (cons B (cons --> (cons (cons (cons list (cons A ())) (cons --> (cons B ()))) ()))) ()))))
+
+(declare fold-right (cons (cons A (cons --> (cons (cons B (cons --> (cons B ()))) ()))) (cons --> (cons (cons (cons list (cons A ())) (cons --> (cons (cons B (cons --> (cons B ()))) ()))) ()))))
+
+(declare for-each (cons (cons A (cons --> (cons B ()))) (cons --> (cons (cons (cons list (cons A ())) (cons --> (cons unit ()))) ()))))
+
 (declare map (cons (cons A (cons --> (cons B ()))) (cons --> (cons (cons (cons list (cons A ())) (cons --> (cons (cons list (cons B ())) ()))) ()))))
 
 (declare mapcan (cons (cons A (cons --> (cons (cons list (cons B ())) ()))) (cons --> (cons (cons (cons list (cons A ())) (cons --> (cons (cons list (cons B ())) ()))) ()))))
+
+(declare filter (cons (cons A (cons --> (cons boolean ()))) (cons --> (cons (cons (cons list (cons A ())) (cons --> (cons (cons list (cons A ())) ()))) ()))))
 
 (declare maxinferences (cons number (cons --> (cons number ()))))
 
@@ -200,7 +232,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 
 (declare read-byte (cons (cons stream (cons in ())) (cons --> (cons number ()))))
 
+(declare read-char-code (cons (cons stream (cons in ())) (cons --> (cons number ()))))
+
 (declare read-file-as-bytelist (cons string (cons --> (cons (cons list (cons number ())) ()))))
+
+(declare read-file-as-charlist (cons string (cons --> (cons (cons list (cons number ())) ()))))
 
 (declare read-file-as-string (cons string (cons --> (cons string ()))))
 
@@ -225,6 +261,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 (declare step (cons symbol (cons --> (cons boolean ()))))
 
 (declare stinput (cons --> (cons (cons stream (cons in ())) ())))
+
+(declare sterror (cons --> (cons (cons stream (cons out ())) ())))
 
 (declare stoutput (cons --> (cons (cons stream (cons out ())) ())))
 
