@@ -13,15 +13,12 @@ extern void set_parent_environment (Environment* environment,
 extern Environment* create_environment (void);
 extern Environment* get_global_function_environment (void);
 extern Environment* get_global_variable_environment (void);
-extern KLObject* lookup_environment (KLObject* symbol_object,
-                                     Environment* environment,
-                                     Environment** matched_environment_ref);
 extern void extend_environment (KLObject* symbol_object, KLObject* object,
                                 Environment* environment);
 
-inline KLObject* lookup_environment (KLObject* symbol_object,
-                                     Environment* environment,
-                                     Environment** matched_environment_ref)
+KLObject* lookup_environment (KLObject* symbol_object,
+                              Environment* environment,
+                              Environment** matched_environment_ref)
 { 
   khash_t(SymbolObjectTable)* symbol_object_table;
   khiter_t hash_iterator;
