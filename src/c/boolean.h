@@ -65,8 +65,7 @@ inline char* kl_boolean_to_string (KLObject* boolean_object)
 
 inline bool is_kl_boolean_equal (KLObject* left_object, KLObject* right_object)
 {
-  return (is_kl_boolean(left_object) && is_kl_boolean(right_object) &&
-          get_boolean(left_object) == get_boolean(right_object));
+  return left_object == right_object;
 }
 
 #endif

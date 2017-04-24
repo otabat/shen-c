@@ -2,6 +2,7 @@
 #define SHEN_C_KL_H
 
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <setjmp.h>
 
@@ -38,6 +39,7 @@ typedef enum DefunType {
 } DefunType;
 
 typedef struct KLObject KLObject;
+typedef struct Symbol Symbol;
 typedef struct Number Number;
 typedef struct Function Function;
 typedef struct Stream Stream;
@@ -53,7 +55,7 @@ typedef KLObject* (NativeFunction) (KLObject* function_object, Vector* arguments
 struct KLObject {
   KLType type;
   union {
-    char* symbol;
+    Symbol* symbol;
     char* string;
     Number* number;
     bool boolean;
@@ -63,6 +65,27 @@ struct KLObject {
     Pair* pair;
     Vector* vector;
   } value;
+};
+
+KHASH_MAP_INIT_STR(SymbolNameTable, KLObject*)
+
+#if UINTPTR_MAX == 0xffffffff
+// 32bit
+KHASH_MAP_INIT_INT(SymbolObjectTable, KLObject*)
+
+#elif UINTPTR_MAX == 0xffffffffffffffff
+// 64bit
+KHASH_MAP_INIT_INT64(SymbolObjectTable, KLObject*)
+
+#else
+#error Could not determine pointer size
+
+#endif
+
+struct Symbol {
+  char* name;
+  KLObject* function;
+  KLObject* variable_value;
 };
 
 struct Number {
@@ -119,10 +142,8 @@ struct Vector {
   size_t size;
 };
 
-KHASH_MAP_INIT_STR(SymbolTable, KLObject*)
-
 struct Environment {
-  khash_t(SymbolTable)* symbol_table;
+  khash_t(SymbolObjectTable)* symbol_object_table;
   Environment* parent;
 };
 

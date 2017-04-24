@@ -1,5 +1,8 @@
 #include "stream.h"
 
+KLObject* in_symbol_object;
+KLObject* out_symbol_object;
+
 KLObject* std_input_stream_object;
 KLObject* std_output_stream_object;
 KLObject* std_error_stream_object;
@@ -8,14 +11,15 @@ static size_t read_buffer_allocation_size = 100;
 static char* read_buffer;
 static size_t read_buffer_position = 0;
 
+extern KLObject* get_in_symbol_object (void);
+extern KLObject* get_out_symbol_object (void);
+
 extern FILE* get_stream_file (Stream* stream);
 extern void set_stream_file (Stream* stream, FILE* file);
 extern KLStreamType get_stream_stream_type (Stream* stream);
 extern void set_stream_stream_type (Stream* stream, KLStreamType stream_type);
 extern Stream* create_stream (FILE* file, KLStreamType stream_type);
 
-extern char* stream_type_string_to_open_mode_string (char* stream_type_string);
-extern KLStreamType stream_type_string_to_stream_type (char* stream_type_string);
 extern char* stream_type_to_stream_type_string (KLStreamType stream_type);
 extern KLObject* get_std_input_stream_object (void);
 extern KLObject* get_std_output_stream_object (void);
@@ -23,7 +27,8 @@ extern KLObject* get_std_error_stream_object (void);
 
 extern Stream* get_stream (KLObject* stream_object);
 extern void set_stream (KLObject* stream_object, Stream* stream);
-extern KLObject* create_kl_stream (char* file_path, char* stream_type_string);
+extern KLObject* create_kl_stream (char* file_path,
+                                   KLObject* stream_type_symbol_object);
 extern FILE* get_kl_stream_file (KLObject* stream_object);
 extern void set_kl_stream_file (KLObject* stream_object, FILE* file);
 extern KLStreamType get_kl_stream_stream_type (KLObject* stream_object);
@@ -33,10 +38,46 @@ extern KLObject* close_kl_stream (KLObject* stream_object);
 extern bool is_kl_stream (KLObject* object);
 extern bool is_kl_stream_equal (KLObject* left_object, KLObject* right_object);
 
-static inline KLObject* create_std_kl_stream (FILE* file,
-                                              char* stream_type_string)
+static inline void initialize_in_symbol_object (void)
 {
-  KLStreamType stream_type = stream_type_string_to_stream_type(stream_type_string);
+  in_symbol_object = create_kl_symbol("in");
+}
+
+static inline void register_in_symbol_object (void)
+{
+  initialize_in_symbol_object();
+  extend_symbol_name_table("in", get_in_symbol_object());
+}
+
+static inline void initialize_out_symbol_object (void)
+{
+  out_symbol_object = create_kl_symbol("out");
+}
+
+static inline void register_out_symbol_object (void)
+{
+  initialize_out_symbol_object();
+  extend_symbol_name_table("out", get_out_symbol_object());
+}
+
+void register_stream_symbol_objects (void)
+{
+  register_in_symbol_object();
+  register_out_symbol_object();
+}
+
+static inline KLObject* create_std_kl_stream (FILE* file,
+                                              KLObject* stream_type_symbol_object)
+{
+  KLStreamType stream_type;
+
+  if (stream_type_symbol_object == get_in_symbol_object())
+    stream_type = KL_STREAM_TYPE_IN;
+  else if (stream_type_symbol_object == get_out_symbol_object())
+    stream_type = KL_STREAM_TYPE_OUT;
+  else
+    throw_kl_exception("Unknown stream type");
+
   KLObject* stream_object = create_kl_object(KL_TYPE_STREAM);
   Stream* stream = create_stream(file, stream_type);
 
@@ -47,17 +88,17 @@ static inline KLObject* create_std_kl_stream (FILE* file,
 
 static inline void initialize_std_input_stream_object (void)
 {
-  std_input_stream_object = create_std_kl_stream(stdin, "in");
+  std_input_stream_object = create_std_kl_stream(stdin, get_in_symbol_object());
 }
 
 static inline void initialize_std_output_stream_object (void)
 {
-  std_output_stream_object = create_std_kl_stream(stdout, "out");
+  std_output_stream_object = create_std_kl_stream(stdout, get_out_symbol_object());
 }
 
 static inline void initialize_std_error_stream_object (void)
 {
-  std_error_stream_object = create_std_kl_stream(stderr, "out");
+  std_error_stream_object = create_std_kl_stream(stderr, get_out_symbol_object());
 }
 
 void initialize_std_stream_objects (void)

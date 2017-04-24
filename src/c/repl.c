@@ -2,7 +2,7 @@
 
 void load_kl_file (char* file_path)
 {
-  KLObject* stream = create_kl_stream(file_path , "in");
+  KLObject* stream = create_kl_stream(file_path , get_in_symbol_object());
 
   while (true) {
     KLObject* read_object = read_string(stream);
@@ -75,8 +75,8 @@ void run_kl_repl (void)
 
 void run_shen_repl (void)
 {
-  KLObject* list_object = create_kl_list(create_kl_symbol("shen"),
-                                         get_empty_kl_list());
+  KLObject* shen_symbol_object = lookup_symbol_name_table("shen.shen");
+  KLObject* list_object = create_kl_list(shen_symbol_object, get_empty_kl_list());
 
   eval_kl_object(list_object, get_global_function_environment(),
                  get_global_variable_environment());

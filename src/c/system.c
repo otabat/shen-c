@@ -1,6 +1,11 @@
 #include "system.h"
 
+KLObject* unix_symbol_object;
+KLObject* run_symbol_object;
 clock_t start_clock;
+
+extern KLObject* get_unix_symbol_object (void);
+extern KLObject* get_run_symbol_object (void);
 
 extern void initialize_start_clock (void);
 
@@ -33,16 +38,42 @@ static inline KLObject* get_kl_number_run_time (void)
   return number_object;
 }
 
+static inline void initialize_unix_symbol_object (void)
+{
+  unix_symbol_object = create_kl_symbol("unix");
+}
+
+static inline void register_unix_symbol_object ()
+{
+  initialize_unix_symbol_object();
+  extend_symbol_name_table("unix", get_unix_symbol_object());
+}
+
+static inline void initialize_run_symbol_object (void)
+{
+  run_symbol_object = create_kl_symbol("run");
+}
+
+static inline void register_run_symbol_object ()
+{
+  initialize_run_symbol_object();
+  extend_symbol_name_table("run", get_run_symbol_object());
+}
+
+void register_system_symbol_objects (void)
+{
+  register_unix_symbol_object();
+  register_run_symbol_object();
+}
+
 KLObject* get_kl_number_time (KLObject* symbol_object)
 {
   if (!is_kl_symbol(symbol_object))
     throw_kl_exception("Parameter should be a symbol");
 
-  char* symbol = get_symbol(symbol_object);
-
-  if (strcmp(symbol, "unix") == 0)
+  if (symbol_object == get_unix_symbol_object())
     return get_kl_number_unix_time();
-  else if (strcmp(symbol, "run") == 0)
+  else if (symbol_object == get_run_symbol_object())
     return get_kl_number_run_time();
 
   throw_kl_exception("Parameter should be a symbol unix or run");

@@ -10,26 +10,103 @@
 #include "kl.h"
 #include "string.h"
 
-extern unsigned long auto_increment_symbol_id;
-extern char* auto_increment_symbol_prefix;
+extern unsigned long auto_increment_symbol_name_id;
+extern char* auto_increment_symbol_name_prefix;
+extern khash_t(SymbolNameTable)* symbol_name_table;
 
-inline char* get_symbol (KLObject* symbol_object)
+inline char* get_symbol_name (Symbol* symbol)
+{
+  return symbol->name;
+}
+
+inline void set_symbol_name (Symbol* symbol, char* symbol_name)
+{
+  symbol->name = symbol_name;
+}
+
+inline KLObject* get_symbol_function (Symbol* symbol)
+{
+  return symbol->function;
+}
+
+inline void set_symbol_function (Symbol* symbol, KLObject* function_object)
+{
+  symbol->function = function_object;
+}
+
+inline KLObject* get_symbol_variable_value (Symbol* symbol)
+{
+  return symbol->variable_value;
+}
+
+inline void set_symbol_variable_value (Symbol* symbol,
+                                       KLObject* variable_value_object)
+{
+  symbol->variable_value = variable_value_object;
+}
+
+inline Symbol* create_symbol (char* symbol_name)
+{
+  Symbol *symbol = malloc(sizeof(Symbol));
+
+  set_symbol_name(symbol, symbol_name);
+  set_symbol_function(symbol, NULL);
+  set_symbol_variable_value(symbol, NULL);
+
+  return symbol;
+}
+
+inline Symbol* get_symbol (KLObject* symbol_object)
 {
   return symbol_object->value.symbol;
 }
 
-inline void set_symbol (KLObject* symbol_object, char* symbol)
+inline void set_symbol (KLObject* symbol_object, Symbol* symbol)
 {
   symbol_object->value.symbol = symbol;
 }
 
-inline KLObject* create_kl_symbol (char* symbol)
+inline KLObject* create_kl_symbol (char* symbol_name)
 {
   KLObject* symbol_object = create_kl_object(KL_TYPE_SYMBOL);
+  Symbol* symbol = create_symbol(symbol_name);
 
   set_symbol(symbol_object, symbol);
 
   return symbol_object;
+}
+
+inline char* get_kl_symbol_name (KLObject* symbol_object)
+{
+  return get_symbol_name(get_symbol(symbol_object));
+}
+
+inline void set_kl_symbol_name (KLObject* symbol_object, char* symbol_name)
+{
+  set_symbol_name(get_symbol(symbol_object), symbol_name);
+}
+
+inline KLObject* get_kl_symbol_function (KLObject* symbol_object)
+{
+  return get_symbol_function(get_symbol(symbol_object));
+}
+
+inline void set_kl_symbol_function (KLObject* symbol_object,
+                                    KLObject* function_object)
+{
+  set_symbol_function(get_symbol(symbol_object), function_object);
+}
+
+inline KLObject* get_kl_symbol_variable_value (KLObject* symbol_object)
+{
+  return get_symbol_variable_value(get_symbol(symbol_object));
+}
+
+inline void set_kl_symbol_variable_value (KLObject* symbol_object,
+                                          KLObject* variable_value_object)
+{
+  set_symbol_variable_value(get_symbol(symbol_object),
+                            variable_value_object);
 }
 
 inline bool is_kl_symbol (KLObject* object)
@@ -37,9 +114,9 @@ inline bool is_kl_symbol (KLObject* object)
   return get_kl_object_type(object) == KL_TYPE_SYMBOL;
 }
 
-inline bool is_symbol_equal (char* left_symbol, char* right_symbol)
+inline bool is_symbol_equal (Symbol* left_symbol, Symbol* right_symbol)
 {
-  return strcmp(left_symbol, right_symbol) == 0;
+  return left_symbol == right_symbol;
 }
 
 inline bool is_kl_symbol_equal (KLObject* left_object, KLObject* right_object)
@@ -48,63 +125,73 @@ inline bool is_kl_symbol_equal (KLObject* left_object, KLObject* right_object)
           is_symbol_equal(get_symbol(left_object), get_symbol(right_object)));
 }
 
-inline unsigned long get_auto_increment_symbol_id (void)
+inline unsigned long get_auto_increment_symbol_name_id (void)
 {
-  return auto_increment_symbol_id;
+  return auto_increment_symbol_name_id;
 }
 
-inline unsigned long pre_increment_auto_increment_symbol_id (void)
+inline unsigned long pre_increment_auto_increment_symbol_name_id (void)
 {
-  return ++auto_increment_symbol_id;
+  return ++auto_increment_symbol_name_id;
 }
 
-inline char* get_auto_increment_symbol_prefix (void)
+inline char* get_auto_increment_symbol_name_prefix (void)
 {
-  return auto_increment_symbol_prefix;
+  return auto_increment_symbol_name_prefix;
 }
 
-inline char* create_auto_increment_symbol (void)
+inline char* create_auto_increment_symbol_name (void)
 {
-  pre_increment_auto_increment_symbol_id();
+  pre_increment_auto_increment_symbol_name_id();
 
-  size_t symbol_allocation_size =
-    count_unsigned_digits_length(get_auto_increment_symbol_id()) + 1;
-  char* symbol = malloc(symbol_allocation_size);
+  size_t symbol_name_allocation_size =
+    count_unsigned_digits_length(get_auto_increment_symbol_name_id()) + 1;
+  char* symbol_name = malloc(symbol_name_allocation_size);
 
-  sprintf(symbol, "%s%zu", get_auto_increment_symbol_prefix(),
-          get_auto_increment_symbol_id());
+  sprintf(symbol_name, "%s%zu", get_auto_increment_symbol_name_prefix(),
+          get_auto_increment_symbol_name_id());
 
-  return symbol;
+  return symbol_name;
 }
 
 inline KLObject* create_auto_increment_kl_symbol (void)
 {
-  return create_kl_symbol(create_auto_increment_symbol());
+  return create_kl_symbol(create_auto_increment_symbol_name());
 }
 
-inline KLObject* kl_string_to_kl_symbol (KLObject* string_object)
+inline khash_t(SymbolNameTable)* get_symbol_name_table (void)
 {
-  char* string = get_string(string_object);
-  char* symbol = malloc(strlen(string) + 1);
-
-  strcpy(symbol, string);
-
-  return create_kl_symbol(symbol);
+  return symbol_name_table;
 }
 
-inline KLObject* kl_string_to_kl_symbol_or_kl_boolean (KLObject* string_object)
+inline void initialize_symbol_name_table (void)
 {
-  if (!is_kl_string(string_object))
-    throw_kl_exception("Should be a string object");
+  symbol_name_table = kh_init(SymbolNameTable);
+}
 
-  char* string = get_string(string_object);
+inline KLObject* lookup_symbol_name_table (char* symbol_name)
+{
+  khash_t(SymbolNameTable)* table = get_symbol_name_table();
+  khiter_t hash_iterator = kh_get(SymbolNameTable, table, symbol_name);
+  bool is_key_not_found = hash_iterator == kh_end(table);
 
-  if (strcmp(string, "true") == 0)
-    return get_true_boolean_object();
-  else if (strcmp(string, "false") == 0)
-    return get_false_boolean_object();
+  if (is_key_not_found || kh_exist(table, hash_iterator) == 0)
+    return NULL;
 
-  return kl_string_to_kl_symbol(string_object);
+  return kh_value(table, hash_iterator);
+}
+
+inline void extend_symbol_name_table (char* symbol_name, KLObject* object)
+{
+  khash_t(SymbolNameTable)* table = get_symbol_name_table();
+  int put_result;
+  khiter_t hash_iterator = kh_put(SymbolNameTable, table, symbol_name,
+                                  &put_result);
+
+  if (put_result == -1)
+    throw_kl_exception("Failed to extend symbol name table");
+
+  kh_value(symbol_name_table, hash_iterator) = object;
 }
 
 #endif

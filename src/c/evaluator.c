@@ -132,7 +132,7 @@ static KLObject* eval_cond_expression (KLObject* list_object,
                                    variable_environment);
 }
 
-static void analyze_tail_call_helper (char* function_symbol,
+static void analyze_tail_call_helper (KLObject* function_symbol_object,
                                       size_t parameter_size,
                                       KLObject* head_object, long list_level,
                                       bool is_possibly_self_call,
@@ -144,15 +144,14 @@ static void analyze_tail_call_helper (char* function_symbol,
       KLObject* car_object = get_head_kl_list(head_object);
       
       if (is_kl_symbol(car_object)) {
-        char* symbol = get_symbol(car_object);
-
-        if (strcmp(symbol, function_symbol) == 0 ||
-            strcmp(symbol, "if") == 0 ||
-            strcmp(symbol, "cond") == 0 ||
-            strcmp(symbol, "let") == 0) {
-          analyze_tail_call_helper(function_symbol, parameter_size, head_object,
-                                   list_level +1, is_possibly_self_call,
-                                   defun_type_ref, self_call_number_ref);
+        if (car_object == function_symbol_object ||
+            car_object == get_if_symbol_object() ||
+            car_object == get_cond_symbol_object() ||
+            car_object == get_let_symbol_object()) {
+          analyze_tail_call_helper(function_symbol_object, parameter_size,
+                                   head_object, list_level +1,
+                                   is_possibly_self_call, defun_type_ref,
+                                   self_call_number_ref);
 
           return;
         }
@@ -172,9 +171,7 @@ static void analyze_tail_call_helper (char* function_symbol,
     KLObject* cdr_object = get_tail_kl_list(head_object);
     
     if (is_kl_symbol(car_object)) {
-      char* symbol = get_symbol(car_object);
-        
-      if (strcmp(symbol, function_symbol) == 0) {
+      if (car_object == function_symbol_object) {
         if (!is_possibly_self_call) {
           *defun_type_ref = DEFUN_TYPE_NON_TAIL_CALL;
 
@@ -201,13 +198,13 @@ static void analyze_tail_call_helper (char* function_symbol,
           KLObject* object = get_head_kl_list(list_object);
 
           if (is_non_empty_kl_list(object))
-            analyze_tail_call_helper(function_symbol, parameter_size, object,
-                                     list_level + 1, false, defun_type_ref,
-                                     self_call_number_ref);
+            analyze_tail_call_helper(function_symbol_object, parameter_size,
+                                     object, list_level + 1, false,
+                                     defun_type_ref, self_call_number_ref);
 
           list_object = get_tail_kl_list(list_object);
         }
-      } else if (strcmp(symbol, "if") == 0) {
+      } else if (car_object == get_if_symbol_object()) {
         size_t argument_size = get_kl_list_size(cdr_object);
 
         if (argument_size != 3)
@@ -220,22 +217,24 @@ static void analyze_tail_call_helper (char* function_symbol,
         KLObject* else_object = get_head_kl_list(cdddr_object);
 
         if (is_non_empty_kl_list(test_object))
-          analyze_tail_call_helper(function_symbol, parameter_size, test_object,
-                                   list_level + 1, false, defun_type_ref,
-                                   self_call_number_ref);
+          analyze_tail_call_helper(function_symbol_object, parameter_size,
+                                   test_object, list_level + 1, false,
+                                   defun_type_ref, self_call_number_ref);
 
         if (is_non_empty_kl_list(then_object) &&
             *defun_type_ref == DEFUN_TYPE_POSSIBLY_TAIL_CALL)
-          analyze_tail_call_helper(function_symbol, parameter_size, then_object,
-                                   list_level + 1, is_possibly_self_call,
-                                   defun_type_ref, self_call_number_ref);
+          analyze_tail_call_helper(function_symbol_object, parameter_size,
+                                   then_object, list_level + 1,
+                                   is_possibly_self_call, defun_type_ref,
+                                   self_call_number_ref);
 
         if (is_non_empty_kl_list(else_object) &&
             *defun_type_ref == DEFUN_TYPE_POSSIBLY_TAIL_CALL)
-          analyze_tail_call_helper(function_symbol, parameter_size, else_object,
-                                   list_level + 1, is_possibly_self_call,
-                                   defun_type_ref, self_call_number_ref);
-      } else if (strcmp(symbol, "cond") == 0) {
+          analyze_tail_call_helper(function_symbol_object, parameter_size,
+                                   else_object, list_level + 1,
+                                   is_possibly_self_call, defun_type_ref,
+                                   self_call_number_ref);
+    } else if (car_object == get_cond_symbol_object()) {
         size_t argument_size = get_kl_list_size(cdr_object);
 
         if (argument_size == 0)
@@ -258,20 +257,20 @@ static void analyze_tail_call_helper (char* function_symbol,
 
           if (is_non_empty_kl_list(case_test_object) &&
               *defun_type_ref == DEFUN_TYPE_POSSIBLY_TAIL_CALL)
-            analyze_tail_call_helper(function_symbol, parameter_size,
+            analyze_tail_call_helper(function_symbol_object, parameter_size,
                                      case_test_object, list_level + 1, false,
                                      defun_type_ref, self_call_number_ref);
 
           if (is_non_empty_kl_list(case_then_object) &&
               *defun_type_ref == DEFUN_TYPE_POSSIBLY_TAIL_CALL)
-            analyze_tail_call_helper(function_symbol, parameter_size,
+            analyze_tail_call_helper(function_symbol_object, parameter_size,
                                      case_then_object, list_level + 1,
                                      is_possibly_self_call, defun_type_ref,
                                      self_call_number_ref);
           
           list_object = get_tail_kl_list(list_object);
         }
-      } else if (strcmp(symbol, "let") == 0) {
+      } else if (car_object == get_let_symbol_object()) {
         size_t argument_size = get_kl_list_size(cdr_object);
 
         if (argument_size != 3)
@@ -287,13 +286,13 @@ static void analyze_tail_call_helper (char* function_symbol,
           throw_kl_exception("Let variable should be a symbol");
 
         if (is_non_empty_kl_list(argument_object))
-          analyze_tail_call_helper(function_symbol, parameter_size,
+          analyze_tail_call_helper(function_symbol_object, parameter_size,
                                    argument_object, list_level + 1, false,
                                    defun_type_ref, self_call_number_ref);
 
         if (is_non_empty_kl_list(body_object) &&
             *defun_type_ref == DEFUN_TYPE_POSSIBLY_TAIL_CALL)
-          analyze_tail_call_helper(function_symbol, parameter_size,
+          analyze_tail_call_helper(function_symbol_object, parameter_size,
                                    body_object, list_level + 1,
                                    is_possibly_self_call, defun_type_ref,
                                    self_call_number_ref);
@@ -306,9 +305,7 @@ static void analyze_tail_call_helper (char* function_symbol,
           KLObject* object = get_head_kl_list(list_object);
 
           if (is_kl_symbol(object)) {
-            char* object_symbol = get_symbol(object);
-
-            if (strcmp(object_symbol, function_symbol) == 0) {
+            if (object == function_symbol_object) {
               ++*self_call_number_ref;
 
               if (*self_call_number_ref > 1) {
@@ -318,9 +315,9 @@ static void analyze_tail_call_helper (char* function_symbol,
               }
             }
           } else if (is_non_empty_kl_list(object))
-            analyze_tail_call_helper(function_symbol, parameter_size, object,
-                                     list_level + 1, false, defun_type_ref,
-                                     self_call_number_ref);
+            analyze_tail_call_helper(function_symbol_object, parameter_size,
+                                     object, list_level + 1, false,
+                                     defun_type_ref, self_call_number_ref);
 
           list_object = get_tail_kl_list(list_object);
         }
@@ -329,15 +326,15 @@ static void analyze_tail_call_helper (char* function_symbol,
   }
 }
 
-static bool analyze_tail_call (char* function_symbol,
+static bool analyze_tail_call (KLObject* function_symbol_object,
                                size_t parameter_size,
                                KLObject* body_object)
 {
   DefunType defun_type = DEFUN_TYPE_POSSIBLY_TAIL_CALL;
   size_t self_call_number = 0;
 
-  analyze_tail_call_helper(function_symbol, parameter_size, body_object, 0, true,
-                           &defun_type, &self_call_number);
+  analyze_tail_call_helper(function_symbol_object, parameter_size,
+                           body_object, 0, true, &defun_type, &self_call_number);
 
   if (defun_type == DEFUN_TYPE_POSSIBLY_TAIL_CALL &&
       self_call_number == 1)
@@ -346,7 +343,7 @@ static bool analyze_tail_call (char* function_symbol,
   return false;
 }
 
-static KLObject* tail_call_to_recur_expression (char* function_symbol,
+static KLObject* tail_call_to_recur_expression (KLObject* function_symbol_object,
                                                 KLObject* head_list_object,
                                                 bool* is_finished_ref)
 {
@@ -354,25 +351,23 @@ static KLObject* tail_call_to_recur_expression (char* function_symbol,
   KLObject* cdr_object = get_tail_kl_list(head_list_object);
 
   if (is_kl_symbol(car_object)) {
-    char* symbol = get_symbol(car_object);
-
-    if (strcmp(symbol, function_symbol) == 0) {
-      set_symbol(car_object, "recur");
+    if (car_object == function_symbol_object) {
+      set_head_kl_list(head_list_object, get_recur_symbol_object());
       *is_finished_ref = true;
-    } else if (strcmp(symbol, "if") == 0) {
+    } else if (car_object == get_if_symbol_object()) {
       KLObject* cddr_object = get_tail_kl_list(cdr_object);
       KLObject* cdddr_object = get_tail_kl_list(cddr_object);
       KLObject* then_object = get_head_kl_list(cddr_object);
       KLObject* else_object = get_head_kl_list(cdddr_object);
 
       if (is_non_empty_kl_list(then_object))
-        tail_call_to_recur_expression(function_symbol, then_object,
+        tail_call_to_recur_expression(function_symbol_object, then_object,
                                       is_finished_ref);
 
       if (is_non_empty_kl_list(else_object) && !*is_finished_ref)
-        tail_call_to_recur_expression(function_symbol, else_object,
+        tail_call_to_recur_expression(function_symbol_object, else_object,
                                       is_finished_ref);
-    } else if (strcmp(symbol, "cond") == 0) {
+    } else if (car_object == get_cond_symbol_object()) {
       KLObject* list_object = cdr_object;
 
       while (is_non_empty_kl_list(list_object) && !*is_finished_ref) {
@@ -381,18 +376,18 @@ static KLObject* tail_call_to_recur_expression (char* function_symbol,
           get_head_kl_list(get_tail_kl_list(case_object));
 
         if (is_non_empty_kl_list(case_then_object))
-          tail_call_to_recur_expression(function_symbol, case_then_object,
+          tail_call_to_recur_expression(function_symbol_object, case_then_object,
                                         is_finished_ref);
 
         list_object = get_tail_kl_list(list_object);
       }
-    } else if (strcmp(symbol, "let") == 0) {
+    } else if (car_object == get_let_symbol_object()) {
       KLObject* cddr_object = get_tail_kl_list(cdr_object);
       KLObject* cdddr_object = get_tail_kl_list(cddr_object);
       KLObject* body_object = get_head_kl_list(cdddr_object);
 
       if (is_non_empty_kl_list(body_object))
-        tail_call_to_recur_expression(function_symbol, body_object,
+        tail_call_to_recur_expression(function_symbol_object, body_object,
                                       is_finished_ref);
     }
   }
@@ -412,8 +407,8 @@ static Vector* create_auto_increment_kl_symbols (size_t size)
 }
 
 static KLObject* wrap_function_with_loop_expression (Vector** parameters_ref,
-                                              size_t parameter_size,
-                                              KLObject* body_object)
+                                                     size_t parameter_size,
+                                                     KLObject* body_object)
 {
   KLObject* loop_binding_list_object = get_empty_kl_list();
 
@@ -448,20 +443,20 @@ static KLObject* wrap_function_with_loop_expression (Vector** parameters_ref,
     loop_binding_list_object = head_loop_binding_list_object;
   }
 
-  return create_kl_list(create_kl_symbol("loop"),
+  return create_kl_list(get_loop_symbol_object(),
                         create_kl_list(loop_binding_list_object,
                                        create_kl_list(body_object,
                                                       get_empty_kl_list())));
 }
 
-static KLObject* remove_tail_recursion (char* function_symbol,
+static KLObject* remove_tail_recursion (KLObject* function_symbol_object,
                                         Vector** parameters_ref,
                                         size_t parameter_size,
                                         KLObject* body_object)
 {
   bool is_finished = false;
 
-  body_object = tail_call_to_recur_expression(function_symbol, body_object,
+  body_object = tail_call_to_recur_expression(function_symbol_object, body_object,
                                               &is_finished);
   body_object = wrap_function_with_loop_expression(parameters_ref, parameter_size,
                                                    body_object);
@@ -474,14 +469,13 @@ static KLObject* optimize_tail_call (KLObject* function_symbol_object,
                                      size_t parameter_size,
                                      KLObject* body_object)
 {
-  char* function_symbol = get_symbol(function_symbol_object);
-  bool is_tail_call = analyze_tail_call(function_symbol,
+  bool is_tail_call = analyze_tail_call(function_symbol_object,
                                         parameter_size,
                                         body_object);
 
   if (is_tail_call)
-    return remove_tail_recursion(function_symbol, parameters_ref, parameter_size,
-                                 body_object);
+    return remove_tail_recursion(function_symbol_object, parameters_ref,
+                                 parameter_size, body_object);
 
   return body_object;
 }
@@ -520,8 +514,7 @@ static KLObject* eval_defun_expression (KLObject* list_object)
 
   set_user_function_parameters(user_function, parameters);
   set_user_function_body(user_function, body_object);
-  extend_environment(function_symbol_object, function_object,
-                     get_global_function_environment());
+  set_kl_symbol_function(function_symbol_object, function_object);
 
   return function_symbol_object;
 }
@@ -932,10 +925,10 @@ static KLObject* create_kl_list_function_application (KLObject* list_object,
 static KLObject* create_kl_list_lambda_expression (KLObject* parameter_object,
                                                    KLObject* body_object)
 {
- return create_kl_list(create_kl_symbol("lambda"),
-                       create_kl_list(parameter_object,
-                                      create_kl_list(body_object,
-                                                     get_empty_kl_list())));
+  return create_kl_list(get_lambda_symbol_object(),
+                        create_kl_list(parameter_object,
+                                       create_kl_list(body_object,
+                                                      get_empty_kl_list())));
 }
 
 static KLObject* create_curried_kl_list_closure_function
@@ -1143,16 +1136,14 @@ static KLObject* eval_symbol_function_application
 (KLObject* list_object, KLObject* function_symbol_object,
  Environment* function_environment, Environment* variable_environment)
 {
-  Environment* matched_function_environment;
-  KLObject* function_object =
-    lookup_environment(function_symbol_object, function_environment,
-                       &matched_function_environment);
+  KLObject* function_object = get_kl_symbol_function(function_symbol_object);
 
-  if (is_null(matched_function_environment)) {
-    char* function_symbol = get_symbol(function_symbol_object);
+  if (is_null(function_object)) {
+    char* function_symbol_name = get_kl_symbol_name(function_symbol_object);
     char* error_message =
       concatenate_string("Function ",
-                         concatenate_string(function_symbol, " is undefined"));
+                         concatenate_string(function_symbol_name,
+                                            " is undefined"));
     
     throw_kl_exception(error_message);
   }
@@ -1278,44 +1269,42 @@ static KLObject* eval_kl_list (KLObject* list_object,
     eval_kl_object(car_object, function_environment, variable_environment);
 
   if (is_kl_symbol(evaluated_car_object)) {
-    char* symbol = get_symbol(evaluated_car_object);
-    
-    if (strcmp(symbol, "if") == 0)
+    if (evaluated_car_object == get_if_symbol_object())
       return eval_if_expression(list_object, function_environment,
                                 variable_environment);
-    else if (strcmp(symbol, "or") == 0)
-      return eval_or_expression(list_object, function_environment,
-                                variable_environment); 
-    else if (strcmp(symbol, "and") == 0)
+    if (evaluated_car_object == get_and_symbol_object())
       return eval_and_expression(list_object, function_environment,
                                  variable_environment);
-    else if (strcmp(symbol, "cond") == 0)
+    if (evaluated_car_object == get_or_symbol_object())
+      return eval_or_expression(list_object, function_environment,
+                                variable_environment);
+    if (evaluated_car_object == get_cond_symbol_object())
       return eval_cond_expression(list_object, function_environment,
                                   variable_environment);
-    else if (strcmp(symbol, "trap-error") == 0)
+    if (evaluated_car_object == get_trap_error_symbol_object())
       return eval_trap_error_expression(list_object, function_environment,
                                         variable_environment);
-    else if (strcmp(symbol, "defun") == 0)
+    if (evaluated_car_object == get_defun_symbol_object())
       return eval_defun_expression(list_object);
-    else if (strcmp(symbol, "lambda") == 0)
+    if (evaluated_car_object == get_lambda_symbol_object())
       return eval_kl_list_lambda_expression(list_object, function_environment,
                                             variable_environment);
-    else if (strcmp(symbol, "let") == 0)
+    if (evaluated_car_object == get_let_symbol_object())
       return eval_let_expression(list_object, function_environment,
                                  variable_environment);
-    else if (strcmp(symbol, "freeze") == 0)
+    if (evaluated_car_object == get_freeze_symbol_object())
       return eval_freeze_expression(list_object, function_environment,
                                     variable_environment);
-    else if (strcmp(symbol, "loop") == 0)
+    if (evaluated_car_object == get_loop_symbol_object())
       return eval_kl_list_loop_expression(list_object, function_environment,
                                           variable_environment);
-    else if (strcmp(symbol, "recur") == 0)
+    if (evaluated_car_object == get_recur_symbol_object())
       return eval_recur_expression(list_object, function_environment,
                                    variable_environment);
-    else if (strcmp(symbol, "eval-kl") == 0)
+    if (evaluated_car_object == get_eval_kl_symbol_object())
       return eval_eval_kl_expression(list_object, function_environment,
                                      variable_environment);
-    
+
     return eval_symbol_function_application(list_object,
                                             evaluated_car_object,
                                             function_environment,
@@ -1340,15 +1329,17 @@ KLObject* eval_kl_object (KLObject* object,
   if (is_non_empty_kl_list(object))
     return eval_kl_list(object, function_environment, variable_environment);
   else if (is_kl_symbol(object)) {
+    if (variable_environment == get_global_variable_environment())
+      return object;
+
     Environment* matched_variable_environment;
     KLObject* variable_value_object =
       lookup_environment(object, variable_environment,
                          &matched_variable_environment);
-
-    if (is_not_null(matched_variable_environment) &&
-        matched_variable_environment != get_global_variable_environment()) 
-      return variable_value_object;
     
+    if (is_not_null(matched_variable_environment))
+      return variable_value_object;
+
     return object;
   }
 

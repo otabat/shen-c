@@ -66,31 +66,39 @@ static KLObject* read_string_symbol_and_boolean (FILE* file)
 {
   char c;
   KLObject* symbol_or_boolean_object = NULL;
-  size_t symbol_buffer_allocation_size = get_reader_buffer_allocation_size();
-  char* symbol_buffer = malloc(symbol_buffer_allocation_size);
+  size_t symbol_name_buffer_allocation_size = get_reader_buffer_allocation_size();
+  char* symbol_name_buffer = malloc(symbol_name_buffer_allocation_size);
 
-  symbol_buffer[0] = '\0';
+  symbol_name_buffer[0] = '\0';
 
   while (true) {
     c = (char)read_byte_with_buffer(file);
 
     if (is_symbol_character(c))
-      symbol_buffer = append_character_to_string(symbol_buffer,
-                                                 &symbol_buffer_allocation_size,
-                                                 c);
+      symbol_name_buffer =
+        append_character_to_string(symbol_name_buffer,
+                                   &symbol_name_buffer_allocation_size,
+                                   c);
     else {
-      size_t symbol_length = strlen(symbol_buffer);
-      char* symbol = malloc(symbol_length + 1);
+      size_t symbol_name_length = strlen(symbol_name_buffer);
+      char* symbol_name = malloc(symbol_name_length + 1);
 
-      strncpy(symbol, symbol_buffer, symbol_length);
-      symbol[symbol_length] = '\0';
+      strncpy(symbol_name, symbol_name_buffer, symbol_name_length);
+      symbol_name[symbol_name_length] = '\0';
 
-      if (strcmp(symbol, "true") == 0)
+      if (strcmp(symbol_name, "true") == 0)
         symbol_or_boolean_object = get_true_boolean_object();
-      else if (strcmp(symbol, "false") == 0)
+      else if (strcmp(symbol_name, "false") == 0)
         symbol_or_boolean_object = get_false_boolean_object();
-      else
-        symbol_or_boolean_object = create_kl_symbol(symbol);
+      else {
+        KLObject* symbol_object = lookup_symbol_name_table(symbol_name);
+
+        if (is_null(symbol_object)) {
+          symbol_or_boolean_object = create_kl_symbol(symbol_name);
+          extend_symbol_name_table(symbol_name, symbol_or_boolean_object);
+        } else
+          symbol_or_boolean_object = symbol_object;
+      }
 
       unread_byte_with_buffer(c);
       

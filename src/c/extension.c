@@ -1,5 +1,17 @@
 #include "extension.h"
 
+KLObject* println_symbol_object;
+KLObject* quit_symbol_object;
+KLObject* exit_symbol_object;
+KLObject* loop_symbol_object;
+KLObject* recur_symbol_object;
+
+extern KLObject* get_println_symbol_object (void);
+extern KLObject* get_quit_symbol_object (void);
+extern KLObject* get_exit_symbol_object (void);
+extern KLObject* get_loop_symbol_object (void);
+extern KLObject* get_recur_symbol_object (void);
+
 static inline KLObject* primitive_function_println (KLObject* function_object,
                                                     Vector* arguments)
 {
@@ -11,12 +23,19 @@ static inline KLObject* primitive_function_println (KLObject* function_object,
   return objects[0];
 }
 
-static inline KLObject* create_primitive_kl_function_println (void)
+static inline void initialize_println_symbol_object (KLObject* function_object)
+{
+  println_symbol_object = create_kl_symbol("println");
+  set_kl_symbol_function(println_symbol_object, function_object);
+}
+
+static inline void register_primitive_kl_function_println (void)
 {
   KLObject* function_object =
     create_primitive_kl_function(1, &primitive_function_println);
 
-  return function_object;
+  initialize_println_symbol_object(function_object);
+  extend_symbol_name_table("println", get_println_symbol_object());
 }
 
 static inline KLObject* primitive_function_quit (KLObject* function_object,
@@ -28,12 +47,19 @@ static inline KLObject* primitive_function_quit (KLObject* function_object,
   return NULL;
 }
 
-static inline KLObject* create_primitive_kl_function_quit (void)
+static inline void initialize_quit_symbol_object (KLObject* function_object)
+{
+  quit_symbol_object = create_kl_symbol("quit");
+  set_kl_symbol_function(quit_symbol_object, function_object);
+}
+
+static inline void register_primitive_kl_function_quit (void)
 {
   KLObject* function_object =
     create_primitive_kl_function(0, &primitive_function_quit);
 
-  return function_object;
+  initialize_quit_symbol_object(function_object);
+  extend_symbol_name_table("quit", get_quit_symbol_object());
 }
 
 static inline KLObject* primitive_function_exit (KLObject* function_object,
@@ -45,18 +71,48 @@ static inline KLObject* primitive_function_exit (KLObject* function_object,
   return NULL;
 }
 
-static inline KLObject* create_primitive_kl_function_exit (void)
+static inline void initialize_exit_symbol_object (KLObject* function_object)
+{
+  exit_symbol_object = create_kl_symbol("exit");
+  set_kl_symbol_function(exit_symbol_object, function_object);
+}
+
+static inline void register_primitive_kl_function_exit (void)
 {
   KLObject* function_object =
     create_primitive_kl_function(0, &primitive_function_exit);
 
-  return function_object;
+  initialize_exit_symbol_object(function_object);
+  extend_symbol_name_table("exit", get_exit_symbol_object());
+}
+
+static inline void initialize_loop_symbol_object (void)
+{
+  loop_symbol_object = create_kl_symbol("loop");
+}
+
+static inline void register_primitive_kl_function_loop (void)
+{
+  initialize_loop_symbol_object();
+  extend_symbol_name_table("loop", get_loop_symbol_object());
+}
+
+static inline void initialize_recur_symbol_object (void)
+{
+  recur_symbol_object = create_kl_symbol("recur");
+}
+
+static inline void register_primitive_kl_function_recur (void)
+{
+  initialize_recur_symbol_object();
+  extend_symbol_name_table("recur", get_recur_symbol_object());
 }
 
 void register_extension_primitive_kl_functions (void)
 {
-  register_primitive_kl_function("println",
-                                 &create_primitive_kl_function_println);
-  register_primitive_kl_function("quit", &create_primitive_kl_function_quit);
-  register_primitive_kl_function("exit", &create_primitive_kl_function_exit);
+  register_primitive_kl_function_println();
+  register_primitive_kl_function_quit();
+  register_primitive_kl_function_exit();
+  register_primitive_kl_function_loop();
+  register_primitive_kl_function_recur();
 }

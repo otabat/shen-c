@@ -11,6 +11,7 @@
 #include "overwrite.h"
 #include "reader.h"
 #include "stream.h"
+#include "symbol.h"
 
 void load_kl_file (char* file_path);
 void load_shen_kl_files (void);

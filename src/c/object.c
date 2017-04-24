@@ -87,7 +87,7 @@ char* vector_to_string (Vector* vector)
   KLObject** objects = get_vector_objects(vector);
   size_t vector_string_allocation_size = get_vector_to_string_allocation_size();
   char* vector_string = malloc(vector_string_allocation_size);
-    
+
   for (size_t i = 0; i < vector_size; ++i) {
     if (i == 0)
       vector_string =
@@ -188,12 +188,12 @@ char* kl_function_to_string (KLObject* function_object)
 char* kl_object_to_string (KLObject* object)
 {
   if (is_kl_symbol(object)) {
-    char* string = get_symbol(object);
+    char* string_name = get_kl_symbol_name(object);
 
-    if (strcmp(string, "shen.fail!") == 0)
+    if (strcmp(string_name, "shen.fail!") == 0)
       return "...";
     
-    return get_symbol(object);
+    return string_name;
   } else if (is_kl_string(object))
     return get_double_quoted_string(object);
   else if (is_kl_number(object))

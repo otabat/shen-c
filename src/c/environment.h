@@ -14,16 +14,16 @@ KLObject* lookup_environment (KLObject* symbol_object,
                               Environment* environment,
                               Environment** matched_environment_ref);
 
-inline khash_t(SymbolTable)* get_environment_symbol_table
+inline khash_t(SymbolObjectTable)* get_environment_symbol_object_table
 (Environment* environment)
 {
-  return environment->symbol_table;
+  return environment->symbol_object_table;
 }
 
-inline void set_environment_symbol_table (Environment* environment,
-                                          khash_t(SymbolTable)* symbol_table)
+inline void set_environment_symbol_object_table
+(Environment* environment, khash_t(SymbolObjectTable)* symbol_object_table)
 {
-  environment->symbol_table = symbol_table;
+  environment->symbol_object_table = symbol_object_table;
 }
 
 inline Environment* get_parent_environment (Environment* environment)
@@ -41,20 +41,10 @@ inline Environment* create_environment (void)
 {
   Environment* environment = malloc(sizeof(Environment));
 
-  set_environment_symbol_table(environment, kh_init(SymbolTable));
+  set_environment_symbol_object_table(environment, kh_init(SymbolObjectTable));
   set_parent_environment(environment, NULL);
 
   return environment;
-}
-
-inline void initialize_global_function_environment (void)
-{
-  global_function_environment = create_environment();
-}
-
-inline void initialize_global_variable_environment (void)
-{
-  global_variable_environment = create_environment();
 }
 
 inline Environment* get_global_function_environment (void)
@@ -70,15 +60,16 @@ inline Environment* get_global_variable_environment (void)
 inline void extend_environment (KLObject* symbol_object, KLObject* object,
                                 Environment* environment)
 {
-  khash_t(SymbolTable)* symbol_table = get_environment_symbol_table(environment);
-  char* symbol = get_symbol(symbol_object);
+  khash_t(SymbolObjectTable)* symbol_object_table =
+    get_environment_symbol_object_table(environment);
   int put_result;
-  khiter_t hash_iterator = kh_put(SymbolTable, symbol_table, symbol, &put_result);
+  khiter_t hash_iterator = kh_put(SymbolObjectTable, symbol_object_table,
+                                  (khint64_t)symbol_object, &put_result);
 
   if (put_result == -1)
     throw_kl_exception("Failed to extend environment");
 
-  kh_value(symbol_table, hash_iterator) = object;
+  kh_value(symbol_object_table, hash_iterator) = object;
 }
 
 #endif
