@@ -21,6 +21,7 @@ extern KLObject* get_is_variable_symbol_object (void);
 extern KLObject* get_not_symbol_object (void);
 extern KLObject* get_shen_is_numbyte_symbol_object (void);
 extern KLObject* get_shen_byte_to_digit_symbol_object (void);
+extern KLObject* get_shen_pvar_symbol_object (void);
 extern KLObject* get_shen_is_pvar_symbol_object (void);
 
 static inline void initialize_exit_symbol_object (void)
