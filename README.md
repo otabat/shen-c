@@ -2,12 +2,12 @@
 
 Shen-C is a C port of the [Shen](http://shenlanguage.org/) programming language.  
 
-Shen-C is implemented in C99 currently as an interpreter, mainly tested on macOS using Clang. It should also work using GCC.
+Shen-C is implemented in C99 currently as an interpreter, mainly tested on macOS using Clang. Should also work with GCC.
 
 
 ## Installation for macOS
 
-1. Install [Boehm GC](https://www.hboehm.info/gc/)
+1. Install [Boehm GC](http://www.hboehm.info/gc/) by [Homebrew](https://brew.sh/) or from [sources](http://www.hboehm.info/gc/gc_source/)
 ```
   brew install libgc
 ```
@@ -22,7 +22,7 @@ A binary file named `shen-c` will be created under the `project_root/bin` direct
 
 
 ## Installation for other platforms
-Install [Boehm GC](https://www.hboehm.info/gc/), and change the [Makefile](https://github.com/otabat/shen-c/tree/master/Makefile) to match the platform.
+Install [Boehm GC](http://www.hboehm.info/gc/), and change the [Makefile](https://github.com/otabat/shen-c/tree/master/Makefile) to match the platform.
 
 
 ## Usage
@@ -40,9 +40,9 @@ rlwrap make repl
 ```
 (quit)
 ```
-or
+or with an exit status
 ```
-(exit)
+(exit 1)
 ```
 
 
