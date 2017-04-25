@@ -11,6 +11,7 @@
 #include "number.h"
 #include "primitive.h"
 #include "vector.h"
+#include "variable.h"
 
 extern KLObject* exit_symbol_object;
 extern KLObject* hash_symbol_object;
@@ -19,6 +20,8 @@ extern KLObject* is_integer_symbol_object;
 extern KLObject* is_boolean_symbol_object;
 extern KLObject* is_variable_symbol_object;
 extern KLObject* not_symbol_object;
+extern KLObject* value_slash_or_symbol_object;
+extern KLObject* get_absvector_element_slash_or_symbol_object;
 extern KLObject* shen_is_numbyte_symbol_object;
 extern KLObject* shen_byte_to_digit_symbol_object;
 extern KLObject* shen_pvar_symbol_object;
@@ -29,6 +32,9 @@ void register_overwrite_toplevel_primitive_kl_functions (void);
 void register_overwrite_sys_primitive_kl_functions (void);
 void register_overwrite_reader_primitive_kl_functions (void);
 void register_overwrite_prolog_primitive_kl_functions (void);
+
+extern KLObject* eval_simple_closure_function_application
+(KLObject* function_object);
 
 inline KLObject* get_exit_symbol_object (void) { return exit_symbol_object; }
 inline KLObject* get_hash_symbol_object (void) { return hash_symbol_object; }
@@ -54,6 +60,16 @@ inline KLObject* get_is_variable_symbol_object (void)
 }
 
 inline KLObject* get_not_symbol_object (void) { return not_symbol_object; }
+
+inline KLObject* get_value_slash_or_symbol_object (void)
+{
+  return value_slash_or_symbol_object;
+}
+
+inline KLObject* get_get_absvector_element_slash_or_symbol_object (void)
+{
+  return get_absvector_element_slash_or_symbol_object;
+}
 
 inline KLObject* get_shen_is_numbyte_symbol_object (void)
 {

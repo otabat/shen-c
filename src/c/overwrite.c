@@ -7,6 +7,8 @@ KLObject* is_integer_symbol_object;
 KLObject* is_boolean_symbol_object;
 KLObject* is_variable_symbol_object;
 KLObject* not_symbol_object;
+KLObject* value_slash_or_symbol_object;
+KLObject* get_absvector_element_slash_or_symbol_object;
 KLObject* shen_is_numbyte_symbol_object;
 KLObject* shen_byte_to_digit_symbol_object;
 KLObject* shen_pvar_symbol_object;
@@ -19,6 +21,8 @@ extern KLObject* get_is_integer_symbol_object (void);
 extern KLObject* get_is_boolean_symbol_object (void);
 extern KLObject* get_is_variable_symbol_object (void);
 extern KLObject* get_not_symbol_object (void);
+extern KLObject* get_value_slash_or_symbol_object (void);
+extern KLObject* get_get_absvector_element_slash_or_symbol_object (void);
 extern KLObject* get_shen_is_numbyte_symbol_object (void);
 extern KLObject* get_shen_byte_to_digit_symbol_object (void);
 extern KLObject* get_shen_pvar_symbol_object (void);
@@ -246,6 +250,93 @@ static inline void register_primitive_kl_function_not (void)
   set_kl_symbol_function(get_not_symbol_object(), function_object);
 }
 
+static inline void initialize_value_slash_or_symbol_object (void)
+{
+  value_slash_or_symbol_object = create_kl_symbol("value/or");
+}
+
+static inline void register_value_slash_or_symbol_object (void)
+{
+  initialize_value_slash_or_symbol_object();
+  extend_symbol_name_table("value/or", get_value_slash_or_symbol_object());
+}
+
+static inline KLObject* primitive_function_value_slash_or
+(KLObject* function_object, Vector* arguments)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+
+  KLObject* symbol_object = objects[0];
+  KLObject* clojure_function_object = objects[1];
+
+  if (!is_kl_symbol(symbol_object))
+    return eval_simple_closure_function_application(clojure_function_object);
+
+  KLObject* variable_value_object = get_kl_symbol_variable_value(symbol_object);
+
+  if (is_null(variable_value_object))
+    return eval_simple_closure_function_application(clojure_function_object);
+
+  return variable_value_object;
+}
+
+static inline void register_primitive_kl_function_value_slash_or (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(2, &primitive_function_value_slash_or);
+
+  set_kl_symbol_function(get_value_slash_or_symbol_object(), function_object);
+}
+
+static inline void initialize_get_absvector_element_slash_or_symbol_object (void)
+{
+  get_absvector_element_slash_or_symbol_object = create_kl_symbol("<-address/or");
+}
+
+static inline void register_get_absvector_element_slash_or_symbol_object (void)
+{
+  initialize_get_absvector_element_slash_or_symbol_object();
+  extend_symbol_name_table("<-address/or",
+                           get_get_absvector_element_slash_or_symbol_object());
+}
+
+static inline KLObject* primitive_function_get_absvector_element_slash_or
+(KLObject* function_object, Vector* arguments)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* vector_object = objects[0];
+  KLObject* number_object = objects[1];
+
+  if (!is_kl_vector(vector_object))
+    eval_simple_closure_function_application(objects[2]);
+
+  if (!is_kl_number_l(number_object))
+    eval_simple_closure_function_application(objects[2]);
+
+  long index = get_kl_number_number_l(number_object);
+  Vector* vector = get_vector(vector_object);
+  size_t size = get_vector_size(vector);
+
+  if (index >= (long)size || index < 0)
+    eval_simple_closure_function_application(objects[2]);
+
+  KLObject** vector_objects = get_vector_objects(vector);
+
+  return vector_objects[index];
+}
+
+static inline void register_primitive_kl_function_get_absvector_element_slash_or
+(void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(3, &primitive_function_get_absvector_element_slash_or);
+
+  set_kl_symbol_function(get_get_absvector_element_slash_or_symbol_object(),
+                         function_object);
+}
+
 static inline void initialize_shen_is_numbyte_symbol_object (void)
 {
   shen_is_numbyte_symbol_object = create_kl_symbol("shen.numbyte?");
@@ -381,6 +472,8 @@ void register_overwrite_symbol_objects (void)
   register_is_integer_symbol_object();
   register_is_variable_symbol_object();
   register_not_symbol_object();
+  register_value_slash_or_symbol_object();
+  register_get_absvector_element_slash_or_symbol_object();
   register_shen_is_numbyte_symbol_object();
   register_shen_byte_to_digit_symbol_object();
   register_shen_pvar_symbol_object();
@@ -400,6 +493,8 @@ void register_overwrite_sys_primitive_kl_functions (void)
   register_primitive_kl_function_is_boolean();
   register_primitive_kl_function_is_variable();
   register_primitive_kl_function_not();
+  register_primitive_kl_function_value_slash_or();
+  register_primitive_kl_function_get_absvector_element_slash_or();
 }
 
 void register_overwrite_reader_primitive_kl_functions (void)

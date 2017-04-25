@@ -21,6 +21,8 @@
 #include "string.h"
 #include "symbol.h"
 
+KLObject* eval_simple_closure_function_application
+(KLObject* function_object);
 KLObject* eval_kl_object (KLObject* object, Environment* function_environment,
                           Environment* variable_environment);
 

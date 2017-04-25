@@ -1162,6 +1162,16 @@ static KLObject* eval_symbol_function_application
   return NULL;
 } 
 
+KLObject* eval_simple_closure_function_application
+(KLObject* function_object)
+{
+  Closure* closure = get_kl_function_closure(function_object);
+
+  return eval_kl_object(get_closure_body(closure),
+                        get_closure_parent_function_environment(closure),
+                        get_closure_parent_variable_environment(closure));
+}
+
 static KLObject* eval_closure_function_application (KLObject* function_object,
                                                     KLObject* argument_object)
 {
