@@ -132,22 +132,31 @@ inline void set_kl_vector_size (KLObject* vector_object, size_t size)
   set_vector_size(get_vector(vector_object), size);
 }
 
-inline KLObject* get_kl_vector_element (KLObject* vector_object, KLObject* index)
+inline KLObject* get_kl_vector_element (KLObject* vector_object,
+                                        KLObject* number_object)
 {
   if (!is_kl_vector(vector_object))
     throw_kl_exception("Failed to get an element from a non-vector object");
 
+  if (!is_kl_number_l(number_object))
+    throw_kl_exception("Vector index should be a number object");
+
   return get_vector_element(get_vector(vector_object),
-                            get_kl_number_number_l(index));
+                            get_kl_number_number_l(number_object));
 }
 
-inline KLObject* set_kl_vector_element (KLObject* vector_object, KLObject* index,
+inline KLObject* set_kl_vector_element (KLObject* vector_object,
+                                        KLObject* number_object,
                                         KLObject* object)
 {
   if (!is_kl_vector(vector_object))
     throw_kl_exception("Failed to set an element to a non-vector object");
 
-  set_vector_element(get_vector(vector_object), get_kl_number_number_l(index),
+  if (!is_kl_number_l(number_object))
+    throw_kl_exception("Vector index should be a number object");
+
+  set_vector_element(get_vector(vector_object),
+                     get_kl_number_number_l(number_object),
                      object);
 
   return vector_object;

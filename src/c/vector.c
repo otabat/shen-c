@@ -21,6 +21,8 @@ extern KLObject** get_kl_vector_objects (KLObject* vector_object);
 extern void set_kl_vector_objects (KLObject* vector_object, KLObject** objects);
 extern size_t get_kl_vector_size (KLObject* vector_object);
 extern void set_kl_vector_size (KLObject* vector_object, size_t size);
-extern KLObject* get_kl_vector_element (KLObject* vector_object, KLObject* index);
-extern KLObject* set_kl_vector_element (KLObject* vector_object, KLObject* index,
+extern KLObject* get_kl_vector_element (KLObject* vector_object,
+                                        KLObject* number_object);
+extern KLObject* set_kl_vector_element (KLObject* vector_object,
+                                        KLObject* number_object,
                                         KLObject* object);
