@@ -18,18 +18,11 @@ extern KLObject* std_input_stream_object;
 extern KLObject* std_output_stream_object;
 extern KLObject* std_error_stream_object;
 
-void register_stream_symbol_objects (void);
-
-void initialize_std_stream_objects (void);
+extern size_t read_buffer_allocation_size;
+extern char* read_buffer;
+extern size_t read_buffer_position ;
 
 char* kl_stream_to_string (KLObject* stream_object);
-
-KLObject* read_kl_stream_byte (KLObject* stream_object);
-void initialize_read_buffer (void);
-int read_byte_with_buffer (FILE* file);
-void unread_byte_with_buffer (char c);
-void unread_bytes_with_buffer (char* lookahead_buffer);
-KLObject* write_kl_stream_byte (KLObject* stream_object, KLObject* number_object);
 
 inline KLObject* get_in_symbol_object (void)
 {
@@ -82,21 +75,6 @@ inline char* stream_type_to_stream_type_string (KLStreamType stream_type)
   throw_kl_exception("Unknown stream type");
 
   return NULL;
-}
-
-inline KLObject* get_std_input_stream_object (void)
-{
-  return std_input_stream_object;
-}
-
-inline KLObject* get_std_output_stream_object (void)
-{
-  return std_output_stream_object;
-}
-
-inline KLObject* get_std_error_stream_object (void)
-{
-  return std_error_stream_object;
 }
 
 inline Stream* get_stream (KLObject* stream_object)
@@ -168,6 +146,92 @@ inline KLObject* close_kl_stream (KLObject* stream_object)
   return get_empty_kl_list();
 }
 
+inline void initialize_in_symbol_object (void)
+{
+  in_symbol_object = create_kl_symbol("in");
+}
+
+inline void register_in_symbol_object (void)
+{
+  initialize_in_symbol_object();
+  extend_symbol_name_table("in", get_in_symbol_object());
+}
+
+inline void initialize_out_symbol_object (void)
+{
+  out_symbol_object = create_kl_symbol("out");
+}
+
+inline void register_out_symbol_object (void)
+{
+  initialize_out_symbol_object();
+  extend_symbol_name_table("out", get_out_symbol_object());
+}
+
+inline void register_stream_symbol_objects (void)
+{
+  register_in_symbol_object();
+  register_out_symbol_object();
+}
+
+inline KLObject* create_std_kl_stream (FILE* file,
+                                       KLObject* stream_type_symbol_object)
+{
+  KLStreamType stream_type;
+
+  if (stream_type_symbol_object == get_in_symbol_object())
+    stream_type = KL_STREAM_TYPE_IN;
+  else if (stream_type_symbol_object == get_out_symbol_object())
+    stream_type = KL_STREAM_TYPE_OUT;
+  else
+    throw_kl_exception("Unknown stream type");
+
+  KLObject* stream_object = create_kl_object(KL_TYPE_STREAM);
+  Stream* stream = create_stream(file, stream_type);
+
+  set_stream(stream_object, stream);
+
+  return stream_object;
+}
+
+inline void initialize_std_input_stream_object (void)
+{
+  std_input_stream_object = create_std_kl_stream(stdin, get_in_symbol_object());
+}
+
+inline void initialize_std_output_stream_object (void)
+{
+  std_output_stream_object = create_std_kl_stream(stdout, get_out_symbol_object());
+}
+
+inline void initialize_std_error_stream_object (void)
+{
+  std_error_stream_object = create_std_kl_stream(stderr, get_out_symbol_object());
+}
+
+inline void initialize_std_stream_objects (void)
+{
+  initialize_std_input_stream_object();
+  initialize_std_output_stream_object();
+  initialize_std_error_stream_object();
+}
+
+inline KLObject* get_std_input_stream_object (void)
+{
+  return std_input_stream_object;
+}
+
+inline KLObject* get_std_output_stream_object (void)
+{
+  return std_output_stream_object;
+}
+
+inline KLObject* get_std_error_stream_object (void)
+{
+  return std_error_stream_object;
+}
+
+
 inline bool is_kl_stream (KLObject* object)
 {
   return get_kl_object_type(object) == KL_TYPE_STREAM;
@@ -178,5 +242,103 @@ inline bool is_kl_stream_equal (KLObject* left_object, KLObject* right_object)
   return left_object == right_object;
 }
 
+inline char read_byte (FILE* file)
+{
+  char c = (char)getc(file);
+
+  if (c == EOF) {
+    if (ferror(file) != 0)
+      throw_kl_exception("Failed to read a byte from stream");
+
+    return  -1;
+  }
+
+  return c;
+}
+
+inline KLObject* read_kl_stream_byte (KLObject* stream_object)
+{
+  if (!is_kl_stream(stream_object))
+    throw_kl_exception("Parameter should be a stream object");
+
+  return create_kl_number_l(read_byte(get_kl_stream_file(stream_object)));
+}
+
+inline char* get_read_buffer (void)
+{
+  return read_buffer;
+}
+
+inline void set_read_buffer (char* buffer)
+{
+  read_buffer = buffer;
+}
+
+inline size_t get_read_buffer_allocation_size (void)
+{
+  return read_buffer_allocation_size;
+}
+
+inline void set_read_buffer_allocation_size (size_t size)
+{
+  read_buffer_allocation_size = size;
+}
+
+inline void initialize_read_buffer (void)
+{
+  read_buffer = malloc(get_read_buffer_allocation_size());
+  read_buffer[get_read_buffer_allocation_size() - 1] = '\0';
+}
+
+inline int read_byte_with_buffer (FILE* file)
+{
+  return ((read_buffer_position > 0) ?
+          read_buffer[--read_buffer_position] : getc(file));
+}
+
+inline void unread_byte_with_buffer (char c)
+{
+  if (read_buffer_position >= get_read_buffer_allocation_size() - 1) {
+    size_t new_read_buffer_allocation_size =
+      get_read_buffer_allocation_size() * 2;
+    char* new_read_buffer = malloc(new_read_buffer_allocation_size);
+
+    strcpy(new_read_buffer, get_read_buffer());
+    set_read_buffer(new_read_buffer);
+    set_read_buffer_allocation_size(new_read_buffer_allocation_size);
+  }
+
+  read_buffer[read_buffer_position++] = c;
+}
+
+inline void unread_bytes_with_buffer (char* lookahead_buffer)
+{
+  size_t lookahead_buffer_size = strlen(lookahead_buffer);
+
+  for (long i = (long)lookahead_buffer_size - 1; i >= 0; --i)
+    unread_byte_with_buffer(lookahead_buffer[i]);
+}
+
+inline char write_byte (FILE* file, char c)
+{
+  if (putc(c, file) != c)
+    throw_kl_exception("Failed to write a byte to stream");
+
+  return c;
+}
+
+inline KLObject* write_kl_stream_byte (KLObject* stream_object,
+                                       KLObject* number_object)
+{
+  if (!is_kl_stream(stream_object))
+    throw_kl_exception("Parameter is not a stream object");
+
+  if (!is_kl_number(number_object))
+    throw_kl_exception("Parameter is not a number object");
+
+  char c = (char)get_kl_number_number_l(number_object);
+
+  return create_kl_number_l(write_byte(get_kl_stream_file(stream_object), c));
+}
 
 #endif
