@@ -861,15 +861,17 @@ static KLObject* eval_freeze_expression (KLObject* list_object,
   return function_object;
 }
 
-static KLObject* eval_primitive_function_application (KLObject* function_object,
-                                                      Vector* arguments)
+static KLObject* eval_primitive_function_application
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   PrimitiveFunction* primitive_function =
     get_kl_function_primitive_function(function_object);
   NativeFunction* native_function
     = get_primitive_function_native_function(primitive_function);
   
-  return native_function(function_object, arguments);
+  return native_function(function_object, arguments, function_environment,
+                         variable_environment);
 }
 
 static KLObject* eval_user_function_application (KLObject* function_object,
@@ -1074,7 +1076,9 @@ static KLObject* eval_kl_list_primitive_function_application
                           function_environment, variable_environment);
   }
 
-  return eval_primitive_function_application(function_object, arguments);
+  return eval_primitive_function_application(function_object, arguments,
+                                             function_environment,
+                                             variable_environment);
 }
 
 static KLObject* eval_kl_list_user_function_application

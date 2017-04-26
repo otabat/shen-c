@@ -42,7 +42,9 @@ static inline void register_exit_symbol_object (void)
 }
 
 static inline KLObject* primitive_function_exit (KLObject* function_object,
-                                                 Vector* arguments)
+                                                 Vector* arguments,
+                                                 Environment* function_environment,
+                                                 Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -75,7 +77,9 @@ static inline void register_hash_symbol_object (void)
 }
 
 static inline KLObject* primitive_function_hash (KLObject* function_object,
-                                                 Vector* arguments)
+                                                 Vector* arguments,
+                                                 Environment* function_environment,
+                                                 Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -102,8 +106,9 @@ static inline void register_is_symbol_symbol_object (void)
   extend_symbol_name_table("symbol?", get_is_symbol_symbol_object());
 }
 
-static inline KLObject* primitive_function_is_symbol (KLObject* function_object,
-                                                      Vector* arguments)
+static inline KLObject* primitive_function_is_symbol
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -133,8 +138,9 @@ static inline void register_is_boolean_symbol_object (void)
   extend_symbol_name_table("boolean?", get_is_boolean_symbol_object());
 }
 
-static inline KLObject* primitive_function_is_boolean (KLObject* function_object,
-                                                       Vector* arguments)
+static inline KLObject* primitive_function_is_boolean
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -164,8 +170,9 @@ static inline void register_is_integer_symbol_object (void)
   extend_symbol_name_table("integer?", get_is_integer_symbol_object());
 }
 
-static inline KLObject* primitive_function_is_integer (KLObject* function_object,
-                                                       Vector* arguments)
+static inline KLObject* primitive_function_is_integer
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -195,8 +202,9 @@ static inline void register_is_variable_symbol_object (void)
   extend_symbol_name_table("variable?", get_is_variable_symbol_object());
 }
 
-static inline KLObject* primitive_function_is_variable (KLObject* function_object,
-                                                        Vector* arguments)
+static inline KLObject* primitive_function_is_variable
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -233,7 +241,9 @@ static inline void register_not_symbol_object (void)
 }
 
 static inline KLObject* primitive_function_not (KLObject* function_object,
-                                                Vector* arguments)
+                                                Vector* arguments,
+                                                Environment* function_environment,
+                                                Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -264,7 +274,8 @@ static inline void register_value_slash_or_symbol_object (void)
 }
 
 static inline KLObject* primitive_function_value_slash_or
-(KLObject* function_object, Vector* arguments)
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -304,7 +315,8 @@ static inline void register_get_absvector_element_slash_or_symbol_object (void)
 }
 
 static inline KLObject* primitive_function_get_absvector_element_slash_or
-(KLObject* function_object, Vector* arguments)
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -351,7 +363,8 @@ static inline void register_shen_is_numbyte_symbol_object (void)
 }
 
 static inline KLObject* primitive_function_shen_is_numbyte
-(KLObject* function_object, Vector* arguments)
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -384,7 +397,8 @@ static inline void register_shen_byte_to_digit_symbol_object (void)
 }
 
 static inline KLObject* primitive_function_shen_byte_to_digit
-(KLObject* function_object, Vector* arguments)
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -429,7 +443,8 @@ static inline void register_read_file_as_charlist_symbol_object (void)
 }
 
 static inline KLObject* primitive_function_read_file_as_charlist
-(KLObject* function_object, Vector* arguments)
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -499,7 +514,8 @@ static inline void register_shen_is_pvar_symbol_object (void)
 }
 
 static inline KLObject* primitive_function_shen_is_pvar
-(KLObject* function_object, Vector* arguments)
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);

@@ -50,7 +50,9 @@ typedef struct Environment Environment;
 typedef struct LoopFramePair LoopFramePair;
 
 typedef void (FunctionDeclaration) (void);
-typedef KLObject* (NativeFunction) (KLObject* function_object, Vector* arguments);
+typedef KLObject* (NativeFunction) (KLObject* function_object, Vector* arguments,
+                                    Environment* function_environment,
+                                    Environment* variable_environment);
 
 struct KLObject {
   KLType type;

@@ -141,8 +141,9 @@ static inline void register_primitive_kl_function_cond (void)
   extend_symbol_name_table("cond", get_cond_symbol_object());
 }
 
-static inline KLObject* primitive_function_intern (KLObject* function_object,
-                                                   Vector* arguments)
+static inline KLObject* primitive_function_intern
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -184,7 +185,9 @@ static inline void register_primitive_kl_function_intern (void)
 }
 
 static inline KLObject* primitive_function_pos (KLObject* function_object,
-                                                Vector* arguments)
+                                                Vector* arguments,
+                                                Environment* function_environment,
+                                                Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -207,8 +210,9 @@ static inline void register_primitive_kl_function_pos (void)
   extend_symbol_name_table("pos", get_pos_symbol_object());
 }
 
-static inline KLObject* primitive_function_tlstr (KLObject* function_object,
-                                                  Vector* arguments)
+static inline KLObject* primitive_function_tlstr
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -232,7 +236,9 @@ static inline void register_primitive_kl_function_tlstr (void)
 }
 
 static inline KLObject* primitive_function_cn (KLObject* function_object,
-                                               Vector* arguments)
+                                               Vector* arguments,
+                                               Environment* function_environment,
+                                               Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -256,7 +262,9 @@ static inline void register_primitive_kl_function_cn (void)
 }
 
 static inline KLObject* primitive_function_str (KLObject* function_object,
-                                                Vector* arguments)
+                                                Vector* arguments,
+                                                Environment* function_environment,
+                                                Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -295,8 +303,9 @@ static inline void register_primitive_kl_function_str (void)
   extend_symbol_name_table("str", get_str_symbol_object());
 }
 
-static inline KLObject* primitive_function_is_string (KLObject* function_object,
-                                                      Vector* arguments)
+static inline KLObject* primitive_function_is_string
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -322,8 +331,9 @@ static inline void register_primitive_kl_function_is_string (void)
   extend_symbol_name_table("string?", get_is_string_symbol_object());
 }
 
-static inline KLObject* primitive_function_n_to_string (KLObject* function_object,
-                                                        Vector* arguments)
+static inline KLObject* primitive_function_n_to_string
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -347,8 +357,9 @@ static inline void register_primitive_kl_function_n_to_string (void)
   extend_symbol_name_table("n->string", get_n_to_string_symbol_object());
 }
 
-static inline KLObject* primitive_function_string_to_n (KLObject* function_object,
-                                                        Vector* arguments)
+static inline KLObject* primitive_function_string_to_n
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -373,7 +384,9 @@ static inline void register_primitive_kl_function_string_to_n (void)
 }
 
 static inline KLObject* primitive_function_set (KLObject* function_object,
-                                                Vector* arguments)
+                                                Vector* arguments,
+                                                Environment* function_environment,
+                                                Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -397,8 +410,9 @@ static inline void register_primitive_kl_function_set (void)
   extend_symbol_name_table("set", get_set_symbol_object());
 }
 
-static inline KLObject* primitive_function_value (KLObject* function_object,
-                                                  Vector* arguments)
+static inline KLObject* primitive_function_value
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -421,8 +435,9 @@ static inline void register_primitive_kl_function_value (void)
   extend_symbol_name_table("value", get_value_symbol_object());
 }
 
-static inline KLObject* primitive_function_simple_error (KLObject* function_object,
-                                                         Vector* arguments)
+static inline KLObject* primitive_function_simple_error
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -464,7 +479,8 @@ static inline void register_primitive_kl_function_trap_error (void)
 }
 
 static inline KLObject* primitive_function_error_to_string
-(KLObject* function_object, Vector* arguments)
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -493,7 +509,9 @@ static inline void register_primitive_kl_function_error_to_string (void)
 }
 
 static inline KLObject* primitive_function_cons (KLObject* function_object,
-                                                 Vector* arguments)
+                                                 Vector* arguments,
+                                                 Environment* function_environment,
+                                                 Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -517,7 +535,9 @@ static inline void register_primitive_kl_function_cons (void)
 }
 
 static inline KLObject* primitive_function_hd (KLObject* function_object,
-                                               Vector* arguments)
+                                               Vector* arguments,
+                                               Environment* function_environment,
+                                               Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -541,7 +561,9 @@ static inline void register_primitive_kl_function_hd (void)
 }
 
 static inline KLObject* primitive_function_tl (KLObject* function_object,
-                                               Vector* arguments)
+                                               Vector* arguments,
+                                               Environment* function_environment,
+                                               Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -564,8 +586,9 @@ static inline void register_primitive_kl_function_tl (void)
   extend_symbol_name_table("tl", get_tl_symbol_object());
 }
 
-static inline KLObject* primitive_function_is_cons (KLObject* function_object,
-                                                    Vector* arguments)
+static inline KLObject* primitive_function_is_cons
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -624,8 +647,9 @@ static inline void register_primitive_kl_function_let (void)
   extend_symbol_name_table("let", get_let_symbol_object());
 }
 
-static inline KLObject* primitive_function_is_equal (KLObject* function_object,
-                                                     Vector* arguments)
+static inline KLObject* primitive_function_is_equal
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -673,8 +697,9 @@ static inline void register_primitive_kl_function_freeze (void)
   extend_symbol_name_table("freeze", get_freeze_symbol_object());
 }
 
-static inline KLObject* primitive_function_type (KLObject* function_object,
-                                                 Vector* arguments)
+static inline KLObject* primitive_function_type
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -697,8 +722,9 @@ static inline void register_primitive_kl_function_type (void)
   extend_symbol_name_table("type", get_type_symbol_object());
 }
 
-static inline KLObject* primitive_function_absvector (KLObject* function_object,
-                                                      Vector* arguments)
+static inline KLObject* primitive_function_absvector
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -722,7 +748,8 @@ static inline void register_primitive_kl_function_absvector (void)
 }
 
 static inline KLObject* primitive_function_set_absvector_element
-(KLObject* function_object, Vector* arguments)
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -747,7 +774,8 @@ static inline void register_primitive_kl_function_set_absvector_element (void)
 }
 
 static inline KLObject* primitive_function_get_absvector_element
-(KLObject* function_object, Vector* arguments)
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -773,7 +801,8 @@ static inline void register_primitive_kl_function_get_absvector_element (void)
 }
 
 static inline KLObject* primitive_function_is_absvector
-(KLObject* function_object, Vector* arguments)
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -800,8 +829,9 @@ static inline void register_primitive_kl_function_is_absvector (void)
   extend_symbol_name_table("absvector?", get_is_absvector_symbol_object());
 }
 
-static inline KLObject* primitive_function_write_byte (KLObject* function_object,
-                                                       Vector* arguments)
+static inline KLObject* primitive_function_write_byte
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -824,8 +854,9 @@ static inline void register_primitive_kl_function_write_byte (void)
   extend_symbol_name_table("write-byte", get_write_byte_symbol_object());
 }
 
-static inline KLObject* primitive_function_read_byte (KLObject* function_object,
-                                                      Vector* arguments)
+static inline KLObject* primitive_function_read_byte
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -848,8 +879,9 @@ static inline void register_primitive_kl_function_read_byte (void)
   extend_symbol_name_table("read-byte", get_read_byte_symbol_object());
 }
 
-static inline KLObject* primitive_function_open (KLObject* function_object,
-                                                 Vector* arguments)
+static inline KLObject* primitive_function_open
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -888,8 +920,9 @@ static inline void register_primitive_kl_function_open (void)
   extend_symbol_name_table("open", get_open_symbol_object());
 }
 
-static inline KLObject* primitive_function_close (KLObject* function_object,
-                                                  Vector* arguments)
+static inline KLObject* primitive_function_close
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -912,8 +945,9 @@ static inline void register_primitive_kl_function_close (void)
   extend_symbol_name_table("close", get_close_symbol_object());
 }
 
-static inline KLObject* primitive_function_get_time (KLObject* function_object,
-                                                     Vector* arguments)
+static inline KLObject* primitive_function_get_time
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -937,7 +971,9 @@ static inline void register_primitive_kl_function_get_time (void)
 }
 
 static inline KLObject* primitive_function_add (KLObject* function_object,
-                                                Vector* arguments)
+                                                Vector* arguments,
+                                                Environment* function_environment,
+                                                Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -960,8 +996,9 @@ static inline void register_primitive_kl_function_add (void)
   extend_symbol_name_table("+", get_add_symbol_object());
 }
 
-static inline KLObject* primitive_function_subtract (KLObject* function_object,
-                                                     Vector* arguments)
+static inline KLObject* primitive_function_subtract
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -985,7 +1022,9 @@ static inline void register_primitive_kl_function_subtract (void)
 }
 
 static inline KLObject* primitive_function_multiply (KLObject* function_object,
-                                                     Vector* arguments)
+                                                     Vector* arguments,
+                                                     Environment* function_environment,
+                                                     Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -1008,8 +1047,9 @@ static inline void register_primitive_kl_function_multiply (void)
   extend_symbol_name_table("*", get_multiply_symbol_object());
 }
 
-static inline KLObject* primitive_function_divide (KLObject* function_object,
-                                                   Vector* arguments)
+static inline KLObject* primitive_function_divide
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -1032,8 +1072,9 @@ static inline void register_primitive_kl_function_divide (void)
   extend_symbol_name_table("/", get_divide_symbol_object());
 }
 
-static inline KLObject* primitive_function_is_greater (KLObject* function_object,
-                                                       Vector* arguments)
+static inline KLObject* primitive_function_is_greater
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -1059,8 +1100,9 @@ static inline void register_primitive_kl_function_is_greater (void)
   extend_symbol_name_table(">", get_is_greater_symbol_object());
 }
 
-static inline KLObject* primitive_function_is_less (KLObject* function_object,
-                                                    Vector* arguments)
+static inline KLObject* primitive_function_is_less
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -1087,7 +1129,8 @@ static inline void register_primitive_kl_function_is_less (void)
 }
 
 static inline KLObject* primitive_function_is_greater_or_equal
-(KLObject* function_object, Vector* arguments)
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -1115,7 +1158,8 @@ static inline void register_primitive_kl_function_is_greater_or_equal (void)
 }
 
 static inline KLObject* primitive_function_is_less_or_equal
-(KLObject* function_object, Vector* arguments)
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -1142,8 +1186,9 @@ static inline void register_primitive_kl_function_is_less_or_equal (void)
   extend_symbol_name_table("<=", get_is_less_or_equal_symbol_object());
 }
 
-static inline KLObject* primitive_function_is_number (KLObject* function_object,
-                                                      Vector* arguments)
+static inline KLObject* primitive_function_is_number
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);

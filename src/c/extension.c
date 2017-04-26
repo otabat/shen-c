@@ -10,8 +10,9 @@ extern KLObject* get_quit_symbol_object (void);
 extern KLObject* get_loop_symbol_object (void);
 extern KLObject* get_recur_symbol_object (void);
 
-static inline KLObject* primitive_function_println (KLObject* function_object,
-                                                    Vector* arguments)
+static inline KLObject* primitive_function_println
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
@@ -37,7 +38,9 @@ static inline void register_primitive_kl_function_println (void)
 }
 
 static inline KLObject* primitive_function_quit (KLObject* function_object,
-                                                 Vector* arguments)
+                                                 Vector* arguments,
+                                                 Environment* function_environment,
+                                                 Environment* variable_environment)
 {
   get_kl_function_arguments_with_count_check(function_object, arguments);
   exit(EXIT_SUCCESS);
