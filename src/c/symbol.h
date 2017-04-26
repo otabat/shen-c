@@ -121,8 +121,7 @@ inline bool is_symbol_equal (Symbol* left_symbol, Symbol* right_symbol)
 
 inline bool is_kl_symbol_equal (KLObject* left_object, KLObject* right_object)
 {
-  return (is_kl_symbol(left_object) && is_kl_symbol(right_object) &&
-          is_symbol_equal(get_symbol(left_object), get_symbol(right_object)));
+  return left_object == right_object;
 }
 
 inline unsigned long get_auto_increment_symbol_name_id (void)
