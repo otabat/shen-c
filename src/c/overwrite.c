@@ -9,6 +9,7 @@ KLObject* is_variable_symbol_object;
 KLObject* not_symbol_object;
 KLObject* value_slash_or_symbol_object;
 KLObject* get_absvector_element_slash_or_symbol_object;
+KLObject* map_symbol_object;
 KLObject* shen_is_numbyte_symbol_object;
 KLObject* shen_byte_to_digit_symbol_object;
 KLObject* read_file_as_charlist_symbol_object;
@@ -24,6 +25,7 @@ extern KLObject* get_is_variable_symbol_object (void);
 extern KLObject* get_not_symbol_object (void);
 extern KLObject* get_value_slash_or_symbol_object (void);
 extern KLObject* get_get_absvector_element_slash_or_symbol_object (void);
+extern KLObject* get_map_symbol_object (void);
 extern KLObject* get_shen_is_numbyte_symbol_object (void);
 extern KLObject* get_shen_byte_to_digit_symbol_object (void);
 extern KLObject* get_read_file_as_charlist_symbol_object (void);
@@ -351,6 +353,66 @@ static inline void register_primitive_kl_function_get_absvector_element_slash_or
                          function_object);
 }
 
+static inline void initialize_map_symbol_object (void)
+{
+  map_symbol_object = create_kl_symbol("map");
+}
+
+static inline void register_map_symbol_object (void)
+{
+  initialize_map_symbol_object();
+  extend_symbol_name_table("map", get_map_symbol_object());
+}
+
+static inline KLObject* primitive_function_map
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+
+  KLObject* symbol_or_function_object = objects[0];
+  KLObject* argument_list_object = objects[1];
+  KLObject* head_list_object = get_empty_kl_list();
+  KLObject* tail_list_object = head_list_object;
+
+  while (!is_empty_kl_list(argument_list_object)) {
+    if (!is_non_empty_kl_list(argument_list_object))
+      throw_kl_exception("Wrong arguments for map function");
+
+    KLObject* quoted_argument_object
+      = create_kl_list(get_quote_symbol_object(),
+                       create_kl_list(get_head_kl_list(argument_list_object),
+                                      get_empty_kl_list()));
+    KLObject* function_application_list_object =
+      create_kl_list(symbol_or_function_object,
+                     create_kl_list(quoted_argument_object, get_empty_kl_list()));
+    KLObject* list_object =
+      create_kl_list(eval_kl_object(function_application_list_object,
+                                    function_environment,
+                                    variable_environment),
+                     get_empty_kl_list());
+
+    if (is_empty_kl_list(head_list_object))
+      head_list_object = list_object;
+    else
+      set_tail_kl_list(tail_list_object, list_object);
+
+    tail_list_object = list_object;
+    argument_list_object = get_tail_kl_list(argument_list_object);
+  }
+
+  return head_list_object;
+}
+
+static inline void register_primitive_kl_function_map (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(2, &primitive_function_map);
+
+  set_kl_symbol_function(get_map_symbol_object(), function_object);
+}
+
 static inline void initialize_shen_is_numbyte_symbol_object (void)
 {
   shen_is_numbyte_symbol_object = create_kl_symbol("shen.numbyte?");
@@ -552,6 +614,7 @@ void register_overwrite_symbol_objects (void)
   register_not_symbol_object();
   register_value_slash_or_symbol_object();
   register_get_absvector_element_slash_or_symbol_object();
+  register_map_symbol_object();
   register_shen_is_numbyte_symbol_object();
   register_read_file_as_charlist_symbol_object();
   register_shen_byte_to_digit_symbol_object();
@@ -574,6 +637,7 @@ void register_overwrite_sys_primitive_kl_functions (void)
   register_primitive_kl_function_not();
   register_primitive_kl_function_value_slash_or();
   register_primitive_kl_function_get_absvector_element_slash_or();
+  register_primitive_kl_function_map();
 }
 
 void register_overwrite_reader_primitive_kl_functions (void)

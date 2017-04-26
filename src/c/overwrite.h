@@ -6,10 +6,12 @@
 
 #include "boolean.h"
 #include "exception.h"
+#include "extension.h"
 #include "hash.h"
 #include "kl.h"
 #include "list.h"
 #include "number.h"
+#include "object.h"
 #include "primitive.h"
 #include "reader.h"
 #include "string.h"
@@ -25,6 +27,7 @@ extern KLObject* is_variable_symbol_object;
 extern KLObject* not_symbol_object;
 extern KLObject* value_slash_or_symbol_object;
 extern KLObject* get_absvector_element_slash_or_symbol_object;
+extern KLObject* map_symbol_object;
 extern KLObject* shen_is_numbyte_symbol_object;
 extern KLObject* shen_byte_to_digit_symbol_object;
 extern KLObject* read_file_as_charlist_symbol_object;
@@ -39,6 +42,9 @@ void register_overwrite_prolog_primitive_kl_functions (void);
 
 extern KLObject* eval_simple_closure_function_application
 (KLObject* function_object);
+extern KLObject* eval_kl_object (KLObject* object,
+                                 Environment* function_environment,
+                                 Environment* variable_environment);
 
 inline KLObject* get_exit_symbol_object (void) { return exit_symbol_object; }
 inline KLObject* get_hash_symbol_object (void) { return hash_symbol_object; }
@@ -74,6 +80,8 @@ inline KLObject* get_get_absvector_element_slash_or_symbol_object (void)
 {
   return get_absvector_element_slash_or_symbol_object;
 }
+
+inline KLObject* get_map_symbol_object (void) { return map_symbol_object; }
 
 inline KLObject* get_shen_is_numbyte_symbol_object (void)
 {
