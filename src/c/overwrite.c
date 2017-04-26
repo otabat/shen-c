@@ -11,6 +11,7 @@ KLObject* value_slash_or_symbol_object;
 KLObject* get_absvector_element_slash_or_symbol_object;
 KLObject* shen_is_numbyte_symbol_object;
 KLObject* shen_byte_to_digit_symbol_object;
+KLObject* read_file_as_charlist_symbol_object;
 KLObject* shen_pvar_symbol_object;
 KLObject* shen_is_pvar_symbol_object;
 
@@ -25,6 +26,7 @@ extern KLObject* get_value_slash_or_symbol_object (void);
 extern KLObject* get_get_absvector_element_slash_or_symbol_object (void);
 extern KLObject* get_shen_is_numbyte_symbol_object (void);
 extern KLObject* get_shen_byte_to_digit_symbol_object (void);
+extern KLObject* get_read_file_as_charlist_symbol_object (void);
 extern KLObject* get_shen_pvar_symbol_object (void);
 extern KLObject* get_shen_is_pvar_symbol_object (void);
 
@@ -414,6 +416,66 @@ static inline void register_primitive_kl_function_shen_byte_to_digit (void)
   set_kl_symbol_function(get_shen_byte_to_digit_symbol_object(), function_object);
 }
 
+static inline void initialize_read_file_as_charlist_symbol_object (void)
+{
+  read_file_as_charlist_symbol_object = create_kl_symbol("read-file-as-charlist");
+}
+
+static inline void register_read_file_as_charlist_symbol_object (void)
+{
+  initialize_read_file_as_charlist_symbol_object();
+  extend_symbol_name_table("read-file-as-charlist",
+                           get_read_file_as_charlist_symbol_object());
+}
+
+static inline KLObject* primitive_function_read_file_as_charlist
+(KLObject* function_object, Vector* arguments)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* string_object = objects[0];
+
+  if (!is_kl_string(string_object))
+    throw_kl_exception("The argument to read-file-as-charlist should be a string");
+
+  char* file_path = get_string(string_object);
+  KLObject* home_directory_string_object =
+    get_kl_symbol_variable_value(get_earmuff_home_directory_symbol_object());
+  char* home_directory_string = get_string(home_directory_string_object);
+
+  if (strcmp(home_directory_string, "") != 0)
+    file_path = concatenate_string(home_directory_string, file_path);
+
+  char* string = read_file_by_file_path(file_path);
+  size_t string_length = strlen(string);
+  KLObject* head_list_object = NULL;
+  KLObject* tail_list_object = head_list_object;
+
+  for (long i = 0; i < string_length; ++i) {
+    KLObject* list_object = create_kl_list(create_kl_number_l(string[i]),
+                                           get_empty_kl_list());
+
+    if (is_null(head_list_object))
+      head_list_object = list_object;
+    else
+      set_tail_kl_list(tail_list_object, list_object);
+
+    tail_list_object = list_object;
+  }
+
+  return head_list_object;
+}
+
+static inline void register_primitive_kl_function_read_file_as_charlist (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(1, &primitive_function_read_file_as_charlist);
+
+  set_kl_symbol_function(get_read_file_as_charlist_symbol_object(),
+                         function_object);
+}
+
+
 static inline void initialize_shen_pvar_symbol_object (void)
 {
   shen_pvar_symbol_object = create_kl_symbol("shen.pvar");
@@ -475,6 +537,7 @@ void register_overwrite_symbol_objects (void)
   register_value_slash_or_symbol_object();
   register_get_absvector_element_slash_or_symbol_object();
   register_shen_is_numbyte_symbol_object();
+  register_read_file_as_charlist_symbol_object();
   register_shen_byte_to_digit_symbol_object();
   register_shen_pvar_symbol_object();
   register_shen_is_pvar_symbol_object();
@@ -501,6 +564,7 @@ void register_overwrite_reader_primitive_kl_functions (void)
 {
   register_primitive_kl_function_shen_is_numbyte();
   register_primitive_kl_function_shen_byte_to_digit();
+  register_primitive_kl_function_read_file_as_charlist();
 }
 
 void register_overwrite_prolog_primitive_kl_functions (void)

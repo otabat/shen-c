@@ -341,4 +341,40 @@ inline KLObject* write_kl_stream_byte (KLObject* stream_object,
   return create_kl_number_l(write_byte(get_kl_stream_file(stream_object), c));
 }
 
+inline char* read_file (FILE* file)
+{
+  if (fseek(file, 0, SEEK_END) != 0)
+    throw_kl_exception("Failed to seek to the end position of the file");
+
+  long string_size = ftell(file);
+
+  if (string_size == -1L)
+    throw_kl_exception("Failed to get string size of the file");
+
+  if (fseek(file, 0, SEEK_SET) != 0)
+    throw_kl_exception("Failed to seek to the start position of the file");
+
+  char* string = malloc(string_size + 1);
+
+  fread(string, string_size, 1, file);
+  string[string_size] = '\0';
+
+  return string;
+}
+
+inline char* read_file_by_file_path (char* file_path)
+{
+  FILE* file = fopen(file_path, "r");
+
+  if (is_null(file))
+    throw_kl_exception("Failed to open file");
+
+  char* string = read_file(file);
+
+  if (fclose(file) != 0)
+    throw_kl_exception("Failed to close file");
+
+  return string;
+}
+
 #endif

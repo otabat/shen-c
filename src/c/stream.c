@@ -67,6 +67,9 @@ extern char write_byte (FILE* file, char c);
 extern KLObject* write_kl_stream_byte (KLObject* stream_object,
                                        KLObject* number_object);
 
+extern char* read_file (FILE* file);
+extern char* read_file_by_file_path (char* file_path);
+
 char* kl_stream_to_string (KLObject* stream_object)
 {
   if (stream_object == get_std_input_stream_object())

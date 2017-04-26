@@ -8,8 +8,11 @@
 #include "exception.h"
 #include "hash.h"
 #include "kl.h"
+#include "list.h"
 #include "number.h"
 #include "primitive.h"
+#include "reader.h"
+#include "string.h"
 #include "vector.h"
 #include "variable.h"
 
@@ -24,6 +27,7 @@ extern KLObject* value_slash_or_symbol_object;
 extern KLObject* get_absvector_element_slash_or_symbol_object;
 extern KLObject* shen_is_numbyte_symbol_object;
 extern KLObject* shen_byte_to_digit_symbol_object;
+extern KLObject* read_file_as_charlist_symbol_object;
 extern KLObject* shen_pvar_symbol_object;
 extern KLObject* shen_is_pvar_symbol_object;
 
@@ -79,6 +83,11 @@ inline KLObject* get_shen_is_numbyte_symbol_object (void)
 inline KLObject* get_shen_byte_to_digit_symbol_object (void)
 {
   return shen_byte_to_digit_symbol_object;
+}
+
+inline KLObject* get_read_file_as_charlist_symbol_object (void)
+{
+  return read_file_as_charlist_symbol_object;
 }
 
 inline KLObject* get_shen_pvar_symbol_object (void)
