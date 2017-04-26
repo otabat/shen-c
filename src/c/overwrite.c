@@ -10,6 +10,7 @@ KLObject* not_symbol_object;
 KLObject* value_slash_or_symbol_object;
 KLObject* get_absvector_element_slash_or_symbol_object;
 KLObject* map_symbol_object;
+KLObject* reverse_symbol_object;
 KLObject* shen_is_numbyte_symbol_object;
 KLObject* shen_byte_to_digit_symbol_object;
 KLObject* read_file_as_charlist_symbol_object;
@@ -26,6 +27,7 @@ extern KLObject* get_not_symbol_object (void);
 extern KLObject* get_value_slash_or_symbol_object (void);
 extern KLObject* get_get_absvector_element_slash_or_symbol_object (void);
 extern KLObject* get_map_symbol_object (void);
+extern KLObject* get_reverse_symbol_object (void);
 extern KLObject* get_shen_is_numbyte_symbol_object (void);
 extern KLObject* get_shen_byte_to_digit_symbol_object (void);
 extern KLObject* get_read_file_as_charlist_symbol_object (void);
@@ -370,7 +372,6 @@ static inline KLObject* primitive_function_map
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
-
   KLObject* symbol_or_function_object = objects[0];
   KLObject* argument_list_object = objects[1];
   KLObject* head_list_object = get_empty_kl_list();
@@ -412,6 +413,48 @@ static inline void register_primitive_kl_function_map (void)
 
   set_kl_symbol_function(get_map_symbol_object(), function_object);
 }
+
+static inline void initialize_reverse_symbol_object (void)
+{
+  reverse_symbol_object = create_kl_symbol("reverse");
+}
+
+static inline void register_reverse_symbol_object (void)
+{
+  initialize_reverse_symbol_object();
+  extend_symbol_name_table("reverse", get_reverse_symbol_object());
+}
+
+static inline KLObject* primitive_function_reverse
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* argument_list_object = objects[0];
+
+  if (!is_kl_list(argument_list_object))
+    throw_kl_exception("Wrong argument for reverse function");
+
+  KLObject* head_list_object = get_empty_kl_list();
+
+  while (is_non_empty_kl_list(argument_list_object)) {
+    head_list_object = create_kl_list(get_head_kl_list(argument_list_object),
+                                      head_list_object);
+    argument_list_object = get_tail_kl_list(argument_list_object);
+  }
+
+  return head_list_object;
+}
+
+static inline void register_primitive_kl_function_reverse (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(1, &primitive_function_reverse);
+
+  set_kl_symbol_function(get_reverse_symbol_object(), function_object);
+}
+
 
 static inline void initialize_shen_is_numbyte_symbol_object (void)
 {
@@ -615,6 +658,7 @@ void register_overwrite_symbol_objects (void)
   register_value_slash_or_symbol_object();
   register_get_absvector_element_slash_or_symbol_object();
   register_map_symbol_object();
+  register_reverse_symbol_object();
   register_shen_is_numbyte_symbol_object();
   register_read_file_as_charlist_symbol_object();
   register_shen_byte_to_digit_symbol_object();
@@ -638,6 +682,7 @@ void register_overwrite_sys_primitive_kl_functions (void)
   register_primitive_kl_function_value_slash_or();
   register_primitive_kl_function_get_absvector_element_slash_or();
   register_primitive_kl_function_map();
+  register_primitive_kl_function_reverse();
 }
 
 void register_overwrite_reader_primitive_kl_functions (void)
