@@ -4,11 +4,13 @@ KLObject* println_symbol_object;
 KLObject* quit_symbol_object;
 KLObject* loop_symbol_object;
 KLObject* recur_symbol_object;
+KLObject* quote_symbol_object;
 
 extern KLObject* get_println_symbol_object (void);
 extern KLObject* get_quit_symbol_object (void);
 extern KLObject* get_loop_symbol_object (void);
 extern KLObject* get_recur_symbol_object (void);
+extern KLObject* get_quote_symbol_object (void);
 
 static inline KLObject* primitive_function_println
 (KLObject* function_object, Vector* arguments, Environment* function_environment,
@@ -85,10 +87,22 @@ static inline void register_primitive_kl_function_recur (void)
   extend_symbol_name_table("recur", get_recur_symbol_object());
 }
 
+static inline void initialize_quote_symbol_object (void)
+{
+  quote_symbol_object = create_kl_symbol("quote");
+}
+
+static inline void register_primitive_kl_function_quote (void)
+{
+  initialize_quote_symbol_object();
+  extend_symbol_name_table("quote", get_quote_symbol_object());
+}
+
 void register_extension_primitive_kl_functions (void)
 {
   register_primitive_kl_function_println();
   register_primitive_kl_function_quit();
   register_primitive_kl_function_loop();
   register_primitive_kl_function_recur();
+  register_primitive_kl_function_quote();
 }

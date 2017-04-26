@@ -1271,6 +1271,11 @@ static KLObject* eval_trap_error_expression (KLObject* list_object,
   }
 }
 
+static inline KLObject* eval_quote_expression (KLObject* list_object)
+{
+  return get_head_kl_list(get_tail_kl_list(list_object));
+}
+
 static KLObject* eval_kl_list (KLObject* list_object,
                                Environment* function_environment,
                                Environment* variable_environment)
@@ -1315,6 +1320,8 @@ static KLObject* eval_kl_list (KLObject* list_object,
     if (evaluated_car_object == get_eval_kl_symbol_object())
       return eval_eval_kl_expression(list_object, function_environment,
                                      variable_environment);
+    if (evaluated_car_object == get_quote_symbol_object())
+      return eval_quote_expression(list_object);
 
     return eval_symbol_function_application(list_object,
                                             evaluated_car_object,
