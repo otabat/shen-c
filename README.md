@@ -33,7 +33,7 @@ make repl
 ```
 or if rlwrap is installed
 ```
-rlwrap make repl
+make rrepl
 ```
 
 2. Quit Shen-C REPL
