@@ -38,6 +38,9 @@ ${OBJ_ROOT}/%.o: $(SRC_ROOT)/%.c
 repl: ${TARGET}
 	${TARGET}
 
+rrepl: ${TARGET}
+	rlwrap ${TARGET}
+
 gperf: ${TARGET}
 	mkdir -p prof
 	env CPUPROFILE=${PROFILE} ${TARGET}
@@ -63,4 +66,4 @@ clean:
 	rm -R obj
 	rm -R bin
 
-.PHONY: repl clean pprof pprof_text pprof_signal_text pprof_pdf
+.PHONY: repl rrepl clean pprof pprof_text pprof_signal_text pprof_pdf
