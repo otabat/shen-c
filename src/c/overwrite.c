@@ -11,6 +11,7 @@ KLObject* value_slash_or_symbol_object;
 KLObject* get_absvector_element_slash_or_symbol_object;
 KLObject* map_symbol_object;
 KLObject* reverse_symbol_object;
+KLObject* append_symbol_object;
 KLObject* shen_is_numbyte_symbol_object;
 KLObject* shen_byte_to_digit_symbol_object;
 KLObject* read_file_as_charlist_symbol_object;
@@ -28,6 +29,7 @@ extern KLObject* get_value_slash_or_symbol_object (void);
 extern KLObject* get_get_absvector_element_slash_or_symbol_object (void);
 extern KLObject* get_map_symbol_object (void);
 extern KLObject* get_reverse_symbol_object (void);
+extern KLObject* get_append_symbol_object (void);
 extern KLObject* get_shen_is_numbyte_symbol_object (void);
 extern KLObject* get_shen_byte_to_digit_symbol_object (void);
 extern KLObject* get_read_file_as_charlist_symbol_object (void);
@@ -455,6 +457,54 @@ static inline void register_primitive_kl_function_reverse (void)
   set_kl_symbol_function(get_reverse_symbol_object(), function_object);
 }
 
+static inline void initialize_append_symbol_object (void)
+{
+  append_symbol_object = create_kl_symbol("append");
+}
+
+static inline void register_append_symbol_object (void)
+{
+  initialize_append_symbol_object();
+  extend_symbol_name_table("append", get_append_symbol_object());
+}
+
+static inline KLObject* primitive_function_append
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* left_list_object = objects[0];
+  KLObject* right_object = objects[1];
+  KLObject* head_list_object = right_object;
+  KLObject* tail_list_object = NULL;
+
+  while (!is_empty_kl_list(left_list_object)) {
+    if (!is_non_empty_kl_list(left_list_object))
+      throw_kl_exception("Wrong argument for append function");
+
+    KLObject* list_object = create_kl_list(get_head_kl_list(left_list_object),
+                                           right_object);
+
+    if (is_null(tail_list_object))
+      head_list_object = list_object;
+    else
+      set_tail_kl_list(tail_list_object, list_object);
+
+    tail_list_object = list_object;
+    left_list_object = get_tail_kl_list(left_list_object);
+  }
+
+  return head_list_object;
+}
+
+static inline void register_primitive_kl_function_append (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(2, &primitive_function_append);
+
+  set_kl_symbol_function(get_append_symbol_object(), function_object);
+}
 
 static inline void initialize_shen_is_numbyte_symbol_object (void)
 {
@@ -659,6 +709,7 @@ void register_overwrite_symbol_objects (void)
   register_get_absvector_element_slash_or_symbol_object();
   register_map_symbol_object();
   register_reverse_symbol_object();
+  register_append_symbol_object();
   register_shen_is_numbyte_symbol_object();
   register_read_file_as_charlist_symbol_object();
   register_shen_byte_to_digit_symbol_object();
@@ -683,6 +734,7 @@ void register_overwrite_sys_primitive_kl_functions (void)
   register_primitive_kl_function_get_absvector_element_slash_or();
   register_primitive_kl_function_map();
   register_primitive_kl_function_reverse();
+  register_primitive_kl_function_append();
 }
 
 void register_overwrite_reader_primitive_kl_functions (void)
