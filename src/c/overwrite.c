@@ -12,6 +12,7 @@ KLObject* get_absvector_element_slash_or_symbol_object;
 KLObject* map_symbol_object;
 KLObject* reverse_symbol_object;
 KLObject* append_symbol_object;
+KLObject* is_element_symbol_object;
 KLObject* shen_is_numbyte_symbol_object;
 KLObject* shen_byte_to_digit_symbol_object;
 KLObject* read_file_as_charlist_symbol_object;
@@ -30,6 +31,7 @@ extern KLObject* get_get_absvector_element_slash_or_symbol_object (void);
 extern KLObject* get_map_symbol_object (void);
 extern KLObject* get_reverse_symbol_object (void);
 extern KLObject* get_append_symbol_object (void);
+extern KLObject* get_is_element_symbol_object (void);
 extern KLObject* get_shen_is_numbyte_symbol_object (void);
 extern KLObject* get_shen_byte_to_digit_symbol_object (void);
 extern KLObject* get_read_file_as_charlist_symbol_object (void);
@@ -506,6 +508,46 @@ static inline void register_primitive_kl_function_append (void)
   set_kl_symbol_function(get_append_symbol_object(), function_object);
 }
 
+static inline void initialize_is_element_symbol_object (void)
+{
+  is_element_symbol_object = create_kl_symbol("element?");
+}
+
+static inline void register_is_element_symbol_object (void)
+{
+  initialize_is_element_symbol_object();
+  extend_symbol_name_table("element?", get_is_element_symbol_object());
+}
+
+static inline KLObject* primitive_function_is_element
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* target_object = objects[0];
+  KLObject* target_pool_list_object = objects[1];
+
+  while (is_non_empty_kl_list(target_pool_list_object)) {
+    KLObject* object = get_head_kl_list(target_pool_list_object);
+
+    if (is_kl_object_equal(object, target_object))
+      return get_true_boolean_object();
+
+    target_pool_list_object = get_tail_kl_list(target_pool_list_object);
+  }
+
+  return get_false_boolean_object();
+}
+
+static inline void register_primitive_kl_function_is_element (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(2, &primitive_function_is_element);
+
+  set_kl_symbol_function(get_is_element_symbol_object(), function_object);
+}
+
 static inline void initialize_shen_is_numbyte_symbol_object (void)
 {
   shen_is_numbyte_symbol_object = create_kl_symbol("shen.numbyte?");
@@ -710,6 +752,7 @@ void register_overwrite_symbol_objects (void)
   register_map_symbol_object();
   register_reverse_symbol_object();
   register_append_symbol_object();
+  register_is_element_symbol_object();
   register_shen_is_numbyte_symbol_object();
   register_read_file_as_charlist_symbol_object();
   register_shen_byte_to_digit_symbol_object();
@@ -735,6 +778,7 @@ void register_overwrite_sys_primitive_kl_functions (void)
   register_primitive_kl_function_map();
   register_primitive_kl_function_reverse();
   register_primitive_kl_function_append();
+  register_primitive_kl_function_is_element();
 }
 
 void register_overwrite_reader_primitive_kl_functions (void)
