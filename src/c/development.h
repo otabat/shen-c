@@ -16,7 +16,7 @@ extern KLObject* eval_kl_object (KLObject* object,
                                  Environment* variable_environment);
 
 KLObject* inject_symbol_counter (KLObject* function_symbol_object,
-                                        KLObject* body_object);
+                                 KLObject* body_object);
 void initialize_symbol_counter (void);
 
 #endif
