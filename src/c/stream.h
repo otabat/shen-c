@@ -9,10 +9,7 @@
 #include "exception.h"
 #include "kl.h"
 #include "number.h"
-#include "symbol.h"
-
-extern KLObject* in_symbol_object;
-extern KLObject* out_symbol_object;
+#include "symbol_pool.h"
 
 extern KLObject* std_input_stream_object;
 extern KLObject* std_output_stream_object;
@@ -23,16 +20,6 @@ extern char* read_buffer;
 extern size_t read_buffer_position ;
 
 char* kl_stream_to_string (KLObject* stream_object);
-
-inline KLObject* get_in_symbol_object (void)
-{
-  return in_symbol_object;
-}
-
-inline KLObject* get_out_symbol_object (void)
-{
-  return out_symbol_object;
-}
 
 inline FILE* get_stream_file (Stream* stream)
 {
@@ -144,34 +131,6 @@ inline KLObject* close_kl_stream (KLObject* stream_object)
     throw_kl_exception("Failed to close stream");
 
   return get_empty_kl_list();
-}
-
-inline void initialize_in_symbol_object (void)
-{
-  in_symbol_object = create_kl_symbol("in");
-}
-
-inline void register_in_symbol_object (void)
-{
-  initialize_in_symbol_object();
-  extend_symbol_name_table("in", get_in_symbol_object());
-}
-
-inline void initialize_out_symbol_object (void)
-{
-  out_symbol_object = create_kl_symbol("out");
-}
-
-inline void register_out_symbol_object (void)
-{
-  initialize_out_symbol_object();
-  extend_symbol_name_table("out", get_out_symbol_object());
-}
-
-inline void register_stream_symbol_objects (void)
-{
-  register_in_symbol_object();
-  register_out_symbol_object();
 }
 
 inline KLObject* create_std_kl_stream (FILE* file,
