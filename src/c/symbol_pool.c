@@ -3,6 +3,9 @@
 KLObject* in_symbol_object;
 KLObject* out_symbol_object;
 
+KLObject* unix_symbol_object;
+KLObject* run_symbol_object;
+
 KLObject* exit_symbol_object;
 KLObject* hash_symbol_object;
 KLObject* is_symbol_symbol_object;
@@ -30,6 +33,9 @@ KLObject* quote_symbol_object;
 
 extern KLObject* get_in_symbol_object (void);
 extern KLObject* get_out_symbol_object (void);
+
+extern KLObject* get_unix_symbol_object (void);
+extern KLObject* get_run_symbol_object (void);
 
 extern KLObject* get_exit_symbol_object (void);
 extern KLObject* get_hash_symbol_object (void);
@@ -72,6 +78,24 @@ static inline void register_stream_symbol_objects (void)
 {
   register_in_symbol_object();
   register_out_symbol_object();
+}
+
+static inline void register_unix_symbol_object (void)
+{
+  unix_symbol_object = create_kl_symbol("unix");
+  extend_symbol_name_table("unix", unix_symbol_object);
+}
+
+static inline void register_run_symbol_object (void)
+{
+  run_symbol_object = create_kl_symbol("run");
+  extend_symbol_name_table("run", run_symbol_object);
+}
+
+static inline void register_system_symbol_objects (void)
+{
+  register_unix_symbol_object();
+  register_run_symbol_object();
 }
 
 static inline void register_exit_symbol_object (void)
@@ -248,6 +272,7 @@ static inline void register_extension_symbol_objects (void)
 void register_symbol_objects (void)
 {
   register_stream_symbol_objects();
+  register_system_symbol_objects();
   register_overwrite_symbol_objects();
   register_extension_symbol_objects();
 }

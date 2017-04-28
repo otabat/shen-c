@@ -7,6 +7,9 @@
 extern KLObject* in_symbol_object;
 extern KLObject* out_symbol_object;
 
+extern KLObject* unix_symbol_object;
+extern KLObject* run_symbol_object;
+
 extern KLObject* exit_symbol_object;
 extern KLObject* hash_symbol_object;
 extern KLObject* is_symbol_symbol_object;
@@ -36,6 +39,9 @@ void register_symbol_objects (void);
 
 inline KLObject* get_in_symbol_object (void) { return in_symbol_object; }
 inline KLObject* get_out_symbol_object (void) { return out_symbol_object; }
+
+inline KLObject* get_unix_symbol_object (void) { return unix_symbol_object; }
+inline KLObject* get_run_symbol_object (void) { return run_symbol_object; }
 
 inline KLObject* get_exit_symbol_object (void) { return exit_symbol_object; }
 inline KLObject* get_hash_symbol_object (void) { return hash_symbol_object; }

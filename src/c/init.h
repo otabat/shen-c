@@ -27,7 +27,6 @@ inline void initialize (void)
   initialize_loop_frame_stack();
   initialize_symbol_name_table();
   register_symbol_objects();
-  register_system_symbol_objects();
   register_primitive_kl_functions();
   register_extension_primitive_kl_functions();
   initialize_read_buffer();
