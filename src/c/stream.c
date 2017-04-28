@@ -1,8 +1,5 @@
 #include "stream.h"
 
-KLObject* in_symbol_object;
-KLObject* out_symbol_object;
-
 KLObject* std_input_stream_object;
 KLObject* std_output_stream_object;
 KLObject* std_error_stream_object;
@@ -10,9 +7,6 @@ KLObject* std_error_stream_object;
 size_t read_buffer_allocation_size = 100;
 char* read_buffer;
 size_t read_buffer_position = 0;
-
-extern KLObject* get_in_symbol_object (void);
-extern KLObject* get_out_symbol_object (void);
 
 extern FILE* get_stream_file (Stream* stream);
 extern void set_stream_file (Stream* stream, FILE* file);
@@ -32,12 +26,6 @@ extern KLStreamType get_kl_stream_stream_type (KLObject* stream_object);
 extern void set_kl_stream_stream_type (KLObject* stream_object,
                                        KLStreamType stream_type);
 extern KLObject* close_kl_stream (KLObject* stream_object);
-
-extern void initialize_in_symbol_object (void);
-extern void register_in_symbol_object (void);
-extern void initialize_out_symbol_object (void);
-extern void register_out_symbol_object (void);
-extern void register_stream_symbol_objects (void);
 
 extern KLObject* create_std_kl_stream (FILE* file,
                                        KLObject* stream_type_symbol_object);

@@ -1,5 +1,8 @@
 #include "symbol_pool.h"
 
+KLObject* in_symbol_object;
+KLObject* out_symbol_object;
+
 KLObject* exit_symbol_object;
 KLObject* hash_symbol_object;
 KLObject* is_symbol_symbol_object;
@@ -25,6 +28,9 @@ KLObject* loop_symbol_object;
 KLObject* recur_symbol_object;
 KLObject* quote_symbol_object;
 
+extern KLObject* get_in_symbol_object (void);
+extern KLObject* get_out_symbol_object (void);
+
 extern KLObject* get_exit_symbol_object (void);
 extern KLObject* get_hash_symbol_object (void);
 extern KLObject* get_is_symbol_symbol_object (void);
@@ -49,6 +55,24 @@ extern KLObject* get_quit_symbol_object (void);
 extern KLObject* get_loop_symbol_object (void);
 extern KLObject* get_recur_symbol_object (void);
 extern KLObject* get_quote_symbol_object (void);
+
+static inline void register_in_symbol_object (void)
+{
+  in_symbol_object = create_kl_symbol("in");
+  extend_symbol_name_table("in", in_symbol_object);
+}
+
+static inline void register_out_symbol_object (void)
+{
+  out_symbol_object = create_kl_symbol("out");
+  extend_symbol_name_table("out", get_out_symbol_object());
+}
+
+static inline void register_stream_symbol_objects (void)
+{
+  register_in_symbol_object();
+  register_out_symbol_object();
+}
 
 static inline void register_exit_symbol_object (void)
 {
@@ -223,6 +247,7 @@ static inline void register_extension_symbol_objects (void)
 
 void register_symbol_objects (void)
 {
+  register_stream_symbol_objects();
   register_overwrite_symbol_objects();
   register_extension_symbol_objects();
 }
