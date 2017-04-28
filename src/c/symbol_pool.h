@@ -23,7 +23,13 @@ extern KLObject* read_file_as_charlist_symbol_object;
 extern KLObject* shen_pvar_symbol_object;
 extern KLObject* shen_is_pvar_symbol_object;
 
-void register_overwrite_symbol_objects (void);
+extern KLObject* println_symbol_object;
+extern KLObject* quit_symbol_object;
+extern KLObject* loop_symbol_object;
+extern KLObject* recur_symbol_object;
+extern KLObject* quote_symbol_object;
+
+void register_symbol_objects (void);
 
 inline KLObject* get_exit_symbol_object (void) { return exit_symbol_object; }
 inline KLObject* get_hash_symbol_object (void) { return hash_symbol_object; }
@@ -93,5 +99,11 @@ inline KLObject* get_shen_is_pvar_symbol_object (void)
 {
   return shen_is_pvar_symbol_object;
 }
+
+inline KLObject* get_println_symbol_object (void) { return println_symbol_object; }
+inline KLObject* get_quit_symbol_object (void) { return quit_symbol_object; }
+inline KLObject* get_loop_symbol_object (void) { return loop_symbol_object; }
+inline KLObject* get_recur_symbol_object (void) { return recur_symbol_object; }
+inline KLObject* get_quote_symbol_object (void) { return quote_symbol_object; }
 
 #endif

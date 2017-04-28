@@ -9,7 +9,6 @@
 #include "character.h"
 #include "environment.h"
 #include "exception.h"
-#include "extension.h"
 #include "function.h"
 #include "kl.h"
 #include "list.h"
@@ -20,6 +19,7 @@
 #include "reader.h"
 #include "string.h"
 #include "symbol.h"
+#include "symbol_pool.h"
 
 KLObject* eval_simple_closure_function_application
 (KLObject* function_object);

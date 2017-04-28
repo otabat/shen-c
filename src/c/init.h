@@ -12,7 +12,7 @@
 #include "repl.h"
 #include "stream.h"
 #include "string.h"
-#include "symbol.h"
+#include "symbol_pool.h"
 #include "variable.h"
 #include "vector.h"
 
@@ -26,8 +26,8 @@ inline void initialize (void)
   initialize_trapped_kl_exception_stack();
   initialize_loop_frame_stack();
   initialize_symbol_name_table();
+  register_symbol_objects();
   register_stream_symbol_objects();
-  register_overwrite_symbol_objects();
   register_system_symbol_objects();
   register_primitive_kl_functions();
   register_extension_primitive_kl_functions();
