@@ -71,6 +71,8 @@ KLObject* shen_byte_to_digit_symbol_object;
 KLObject* read_file_as_charlist_symbol_object;
 KLObject* shen_pvar_symbol_object;
 KLObject* shen_is_pvar_symbol_object;
+KLObject* shen_earmuff_prologvectors;
+KLObject* shen_valvector_symbol_objects;
 
 KLObject* println_symbol_object;
 KLObject* quit_symbol_object;
@@ -149,6 +151,8 @@ extern KLObject* get_shen_byte_to_digit_symbol_object (void);
 extern KLObject* get_read_file_as_charlist_symbol_object (void);
 extern KLObject* get_shen_pvar_symbol_object (void);
 extern KLObject* get_shen_is_pvar_symbol_object (void);
+extern KLObject* get_shen_earmuff_prologvectors (void);
+extern KLObject* get_shen_valvector_symbol_objects (void);
 
 extern KLObject* get_println_symbol_object (void);
 extern KLObject* get_quit_symbol_object (void);
@@ -628,6 +632,18 @@ static inline void register_shen_is_pvar_symbol_object (void)
   extend_symbol_name_table("shen.pvar?", shen_is_pvar_symbol_object);
 }
 
+static inline void register_shen_earmuff_prologvectors (void)
+{
+  shen_earmuff_prologvectors = create_kl_symbol("shen.*prologvectors*");
+  extend_symbol_name_table("shen.*prologvectors*", shen_earmuff_prologvectors);
+}
+
+static inline void register_shen_valvector_symbol_objects (void)
+{
+  shen_valvector_symbol_objects = create_kl_symbol("shen.valvector");
+  extend_symbol_name_table("shen.valvector", shen_valvector_symbol_objects);
+}
+
 static inline void register_overwrite_symbol_objects (void)
 {
   register_exit_symbol_object();
@@ -648,6 +664,8 @@ static inline void register_overwrite_symbol_objects (void)
   register_shen_byte_to_digit_symbol_object();
   register_shen_pvar_symbol_object();
   register_shen_is_pvar_symbol_object();
+  register_shen_earmuff_prologvectors();
+  register_shen_valvector_symbol_objects();
 }
 
 static inline void register_println_symbol_object (void)

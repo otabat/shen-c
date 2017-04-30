@@ -498,6 +498,34 @@ static inline void register_primitive_kl_function_shen_is_pvar (void)
   set_kl_symbol_function(get_shen_is_pvar_symbol_object(), function_object);
 }
 
+static inline KLObject* primitive_function_shen_valvector
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* argument_vector_object = objects[0];
+  KLObject* argument_index_object = objects[1];
+  Vector* prolog_vector =
+    get_vector(get_kl_symbol_variable_value(get_shen_earmuff_prologvectors()));
+  KLObject* vector_object =
+    get_vector_element(prolog_vector,
+                       get_kl_number_number_l(argument_index_object));
+  KLObject* index_object =
+    get_vector_element(get_vector(argument_vector_object), 1);
+
+  return get_vector_element(get_vector(vector_object),
+                            get_kl_number_number_l(index_object));
+}
+
+static inline void register_primitive_kl_function_shen_valvector (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(2, &primitive_function_shen_valvector);
+
+  set_kl_symbol_function(get_shen_valvector_symbol_objects(), function_object);
+}
+
 void register_overwrite_toplevel_primitive_kl_functions (void)
 {
   register_primitive_kl_function_exit();
@@ -529,4 +557,5 @@ void register_overwrite_reader_primitive_kl_functions (void)
 void register_overwrite_prolog_primitive_kl_functions (void)
 {
   register_primitive_kl_function_shen_is_pvar();
+  register_primitive_kl_function_shen_valvector();
 }
