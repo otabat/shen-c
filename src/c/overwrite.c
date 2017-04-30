@@ -470,15 +470,10 @@ static inline void register_primitive_kl_function_read_file_as_charlist (void)
                          function_object);
 }
 
-static inline KLObject* primitive_function_shen_is_pvar
-(KLObject* function_object, Vector* arguments, Environment* function_environment,
- Environment* variable_environment)
+static inline KLObject* primitive_function_shen_is_pvar_helper (KLObject* object)
 {
-  KLObject** objects =
-    get_kl_function_arguments_with_count_check(function_object, arguments);
-
-  if (is_kl_vector(objects[0])) {
-    Vector* vector = get_vector(objects[0]);
+  if (is_kl_vector(object)) {
+    Vector* vector = get_vector(object);
     KLObject* object = get_vector_element(vector, 0);
 
     if (object == get_shen_pvar_symbol_object())
@@ -490,6 +485,16 @@ static inline KLObject* primitive_function_shen_is_pvar
   return get_false_boolean_object();
 }
 
+static inline KLObject* primitive_function_shen_is_pvar
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+
+  return primitive_function_shen_is_pvar_helper(objects[0]);
+}
+
 static inline void register_primitive_kl_function_shen_is_pvar (void)
 {
   KLObject* function_object =
@@ -498,16 +503,11 @@ static inline void register_primitive_kl_function_shen_is_pvar (void)
   set_kl_symbol_function(get_shen_is_pvar_symbol_object(), function_object);
 }
 
-static inline KLObject* primitive_function_shen_valvector
-(KLObject* function_object, Vector* arguments, Environment* function_environment,
- Environment* variable_environment)
+static inline KLObject* primitive_function_shen_valvector_helper
+(KLObject* argument_vector_object, KLObject* argument_index_object)
 {
-  KLObject** objects =
-    get_kl_function_arguments_with_count_check(function_object, arguments);
-  KLObject* argument_vector_object = objects[0];
-  KLObject* argument_index_object = objects[1];
   Vector* prolog_vector =
-    get_vector(get_kl_symbol_variable_value(get_shen_earmuff_prologvectors()));
+    get_vector(get_kl_symbol_variable_value(get_shen_earmuff_prologvectors_symbol_object()));
   KLObject* vector_object =
     get_vector_element(prolog_vector,
                        get_kl_number_number_l(argument_index_object));
@@ -518,12 +518,55 @@ static inline KLObject* primitive_function_shen_valvector
                             get_kl_number_number_l(index_object));
 }
 
+static inline KLObject* primitive_function_shen_valvector
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+
+  return primitive_function_shen_valvector_helper(objects[0], objects[1]);
+}
+
 static inline void register_primitive_kl_function_shen_valvector (void)
 {
   KLObject* function_object =
     create_primitive_kl_function(2, &primitive_function_shen_valvector);
 
-  set_kl_symbol_function(get_shen_valvector_symbol_objects(), function_object);
+  set_kl_symbol_function(get_shen_valvector_symbol_object(), function_object);
+}
+
+static inline KLObject* primitive_function_shen_lazyderef
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* vector_object = objects[0];
+  KLObject* index_object = objects[1];
+  bool is_pvar =
+    get_boolean(primitive_function_shen_is_pvar_helper(vector_object));
+
+  while (is_pvar) {
+    KLObject* object =
+      primitive_function_shen_valvector_helper(vector_object, index_object);
+
+    if (is_kl_symbol_equal(object, get_shen_dash_null_symbol_object()))
+      break;
+
+    vector_object = object;
+    is_pvar = get_boolean(primitive_function_shen_is_pvar_helper(vector_object));
+  }
+
+  return vector_object;
+}
+
+static inline void register_primitive_kl_function_shen_lazyderef (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(2, &primitive_function_shen_lazyderef);
+
+  set_kl_symbol_function(get_shen_lazyderef_symbol_object(), function_object);
 }
 
 void register_overwrite_toplevel_primitive_kl_functions (void)
@@ -558,4 +601,5 @@ void register_overwrite_prolog_primitive_kl_functions (void)
 {
   register_primitive_kl_function_shen_is_pvar();
   register_primitive_kl_function_shen_valvector();
+  register_primitive_kl_function_shen_lazyderef();
 }

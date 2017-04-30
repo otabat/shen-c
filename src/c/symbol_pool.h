@@ -75,8 +75,10 @@ extern KLObject* shen_byte_to_digit_symbol_object;
 extern KLObject* read_file_as_charlist_symbol_object;
 extern KLObject* shen_pvar_symbol_object;
 extern KLObject* shen_is_pvar_symbol_object;
-extern KLObject* shen_earmuff_prologvectors;
-extern KLObject* shen_valvector_symbol_objects;
+extern KLObject* shen_earmuff_prologvectors_symbol_object;
+extern KLObject* shen_valvector_symbol_object;
+extern KLObject* shen_dash_null_symbol_object;
+extern KLObject* shen_lazyderef_symbol_object;
 
 extern KLObject* println_symbol_object;
 extern KLObject* quit_symbol_object;
@@ -295,14 +297,23 @@ inline KLObject* get_shen_is_pvar_symbol_object (void)
   return shen_is_pvar_symbol_object;
 }
 
-inline KLObject* get_shen_earmuff_prologvectors (void)
+inline KLObject* get_shen_earmuff_prologvectors_symbol_object (void)
 {
-  return shen_earmuff_prologvectors;
+  return shen_earmuff_prologvectors_symbol_object;
 }
 
-inline KLObject* get_shen_valvector_symbol_objects (void)
+inline KLObject* get_shen_valvector_symbol_object (void)
 {
-  return shen_valvector_symbol_objects;
+  return shen_valvector_symbol_object;
+}
+
+inline KLObject* get_shen_dash_null_symbol_object (void)
+{
+  return shen_dash_null_symbol_object;
+}
+inline KLObject* get_shen_lazyderef_symbol_object (void)
+{
+  return shen_lazyderef_symbol_object;
 }
 
 inline KLObject* get_println_symbol_object (void) { return println_symbol_object; }
