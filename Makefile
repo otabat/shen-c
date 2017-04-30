@@ -39,7 +39,7 @@ repl: ${TARGET}
 	${TARGET}
 
 rrepl: ${TARGET}
-	rlwrap ${TARGET}
+	rlwrap -n ${TARGET}
 
 gperf: ${TARGET}
 	mkdir -p prof
