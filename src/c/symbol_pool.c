@@ -67,6 +67,7 @@ KLObject* reverse_symbol_object;
 KLObject* append_symbol_object;
 KLObject* is_element_symbol_object;
 KLObject* assoc_symbol_object;
+KLObject* occurrences_symbol_object;
 KLObject* shen_is_numbyte_symbol_object;
 KLObject* shen_byte_to_digit_symbol_object;
 KLObject* read_file_as_charlist_symbol_object;
@@ -153,6 +154,7 @@ extern KLObject* get_reverse_symbol_object (void);
 extern KLObject* get_append_symbol_object (void);
 extern KLObject* get_is_element_symbol_object (void);
 extern KLObject* get_assoc_symbol_object (void);
+extern KLObject* get_occurrences_symbol_object (void);
 extern KLObject* get_shen_is_numbyte_symbol_object (void);
 extern KLObject* get_shen_byte_to_digit_symbol_object (void);
 extern KLObject* get_read_file_as_charlist_symbol_object (void);
@@ -619,6 +621,12 @@ static inline void register_assoc_symbol_object (void)
   extend_symbol_name_table("assoc", assoc_symbol_object);
 }
 
+static inline void register_occurrences_symbol_object (void)
+{
+  occurrences_symbol_object = create_kl_symbol("occurrences");
+  extend_symbol_name_table("occurrences", occurrences_symbol_object);
+}
+
 static inline void register_shen_is_numbyte_symbol_object (void)
 {
   shen_is_numbyte_symbol_object = create_kl_symbol("shen.numbyte?");
@@ -710,6 +718,7 @@ static inline void register_overwrite_symbol_objects (void)
   register_append_symbol_object();
   register_is_element_symbol_object();
   register_assoc_symbol_object();
+  register_occurrences_symbol_object();
   register_shen_is_numbyte_symbol_object();
   register_read_file_as_charlist_symbol_object();
   register_shen_byte_to_digit_symbol_object();

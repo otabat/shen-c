@@ -8,7 +8,6 @@
 #include "exception.h"
 #include "kl.h"
 
-KLObject* add_kl_number (KLObject* k, KLObject* l);
 KLObject* subtract_kl_number (KLObject* k, KLObject* l);
 KLObject* multiply_kl_number (KLObject* k, KLObject* l);
 KLObject* divide_kl_number (KLObject* k, KLObject* l);
@@ -140,6 +139,54 @@ inline KLObject* kl_number_l_to_kl_number_d (KLObject* number_object)
 inline KLObject* kl_number_d_to_kl_number_l (KLObject* number_object)
 {
   return create_kl_number_l((long)get_kl_number_number_d(number_object));
+}
+
+inline long add_number_l_l (long x, long y) { return x + y; }
+inline double add_number_l_d (long x, double y) { return (double)x + y; }
+inline double add_number_d_l (double x, long y) { return x + (double)y; }
+inline double add_number_d_d (double x, double y) { return x + y; }
+
+inline KLObject* add_kl_number_l_l (KLObject* k, KLObject* l)
+{
+  long x = add_number_l_l(get_kl_number_number_l(k), get_kl_number_number_l(l));
+
+  return  create_kl_number_l(x);
+}
+
+inline KLObject* add_kl_number_l_d (KLObject* k, KLObject* l)
+{
+  double x = add_number_l_d(get_kl_number_number_l(k), get_kl_number_number_d(l));
+
+  return create_kl_number_d(x);
+}
+
+inline KLObject* add_kl_number_d_l (KLObject* k, KLObject* l)
+{
+  double x = add_number_d_l(get_kl_number_number_d(k), get_kl_number_number_l(l));
+
+  return create_kl_number_d(x);
+}
+
+inline KLObject* add_kl_number_d_d (KLObject* k, KLObject* l)
+{
+  double x = add_number_d_d(get_kl_number_number_d(k), get_kl_number_number_d(l));
+
+  return create_kl_number_d(x);
+}
+
+inline KLObject* add_kl_number (KLObject* k, KLObject* l)
+{
+  if (is_kl_number_l(k)) {
+    if (is_kl_number_l(l))
+      return add_kl_number_l_l(k, l);
+
+    return add_kl_number_l_d(k, l);
+  }
+
+  if (is_kl_number_l(l))
+    return add_kl_number_d_l(k, l);
+
+  return add_kl_number_d_d(k, l);
 }
 
 #endif

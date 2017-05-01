@@ -399,6 +399,39 @@ static inline void register_primitive_kl_function_assoc (void)
   set_kl_symbol_function(get_assoc_symbol_object(), function_object);
 }
 
+static inline KLObject* primitive_function_occurrences_helper
+(KLObject* object, KLObject* list_object)
+{
+  if (is_kl_object_equal(object, list_object))
+    return create_kl_number_l(1);
+
+  if (is_non_empty_kl_list(list_object))
+    return add_kl_number_l_l(primitive_function_occurrences_helper(object,
+                                                                   get_head_kl_list(list_object)),
+                             primitive_function_occurrences_helper(object,
+                                                                   get_tail_kl_list(list_object)));
+
+  return create_kl_number_l(0);
+}
+
+static inline KLObject* primitive_function_occurrences
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+
+  return primitive_function_occurrences_helper(objects[0], objects[1]);
+}
+
+static inline void register_primitive_kl_function_occurrences (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(2, &primitive_function_occurrences);
+
+  set_kl_symbol_function(get_occurrences_symbol_object(), function_object);
+}
+
 static inline KLObject* primitive_function_shen_is_numbyte
 (KLObject* function_object, Vector* arguments, Environment* function_environment,
  Environment* variable_environment)
@@ -745,6 +778,7 @@ void register_overwrite_sys_primitive_kl_functions (void)
   register_primitive_kl_function_append();
   register_primitive_kl_function_is_element();
   register_primitive_kl_function_assoc();
+  register_primitive_kl_function_occurrences();
 }
 
 void register_overwrite_reader_primitive_kl_functions (void)
