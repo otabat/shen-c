@@ -79,6 +79,7 @@ extern KLObject* shen_earmuff_prologvectors_symbol_object;
 extern KLObject* shen_valvector_symbol_object;
 extern KLObject* shen_dash_null_symbol_object;
 extern KLObject* shen_lazyderef_symbol_object;
+extern KLObject* shen_deref_symbol_object;
 extern KLObject* shen_compose_symbol_object;
 
 extern KLObject* println_symbol_object;
@@ -315,6 +316,11 @@ inline KLObject* get_shen_dash_null_symbol_object (void)
 inline KLObject* get_shen_lazyderef_symbol_object (void)
 {
   return shen_lazyderef_symbol_object;
+}
+
+inline KLObject* get_shen_deref_symbol_object (void)
+{
+  return shen_deref_symbol_object;
 }
 
 inline KLObject* get_shen_compose_symbol_object (void)

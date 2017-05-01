@@ -569,6 +569,49 @@ static inline void register_primitive_kl_function_shen_lazyderef (void)
   set_kl_symbol_function(get_shen_lazyderef_symbol_object(), function_object);
 }
 
+static inline KLObject* primitive_function_shen_deref_helper
+(KLObject* vector_object, KLObject* index_object)
+{
+  if (is_non_empty_kl_list(vector_object))
+    return create_kl_list(primitive_function_shen_deref_helper(get_head_kl_list(vector_object),
+                                                               index_object),
+                          primitive_function_shen_deref_helper(get_tail_kl_list(vector_object),
+                                                               index_object));
+
+  bool is_pvar =
+    get_boolean(primitive_function_shen_is_pvar_helper(vector_object));
+
+  if (is_pvar) {
+    KLObject* object =
+      primitive_function_shen_valvector_helper(vector_object, index_object);
+
+    if (is_kl_symbol_equal(object, get_shen_dash_null_symbol_object()))
+      return vector_object;
+
+    return primitive_function_shen_deref_helper(object, index_object);
+  }
+
+  return vector_object;
+}
+
+static inline KLObject* primitive_function_shen_deref
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+
+  return primitive_function_shen_deref_helper(objects[0], objects[1]);
+}
+
+static inline void register_primitive_kl_function_shen_deref (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(2, &primitive_function_shen_deref);
+
+  set_kl_symbol_function(get_shen_deref_symbol_object(), function_object);
+}
+
 static inline KLObject* primitive_function_shen_compose
 (KLObject* function_object, Vector* arguments, Environment* function_environment,
  Environment* variable_environment)
@@ -643,6 +686,7 @@ void register_overwrite_prolog_primitive_kl_functions (void)
   register_primitive_kl_function_shen_is_pvar();
   register_primitive_kl_function_shen_valvector();
   register_primitive_kl_function_shen_lazyderef();
+  register_primitive_kl_function_shen_deref();
 }
 
 void register_overwrite_macros_primitive_kl_functions (void)
