@@ -366,6 +366,39 @@ static inline void register_primitive_kl_function_is_element (void)
   set_kl_symbol_function(get_is_element_symbol_object(), function_object);
 }
 
+static inline KLObject* primitive_function_assoc
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* object = objects[0];
+  KLObject* list_object = objects[1];
+
+  while (!is_empty_kl_list(list_object)) {
+    if (!is_non_empty_kl_list(list_object))
+      throw_kl_exception("Wrong argument for assoc function");
+
+    KLObject* car_object = get_head_kl_list(list_object);
+
+    if (is_non_empty_kl_list(car_object) &&
+        is_kl_object_equal(get_head_kl_list(car_object), object))
+      return car_object;
+
+    list_object = get_tail_kl_list(list_object);
+  }
+
+  return list_object;
+}
+
+static inline void register_primitive_kl_function_assoc (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(2, &primitive_function_assoc);
+
+  set_kl_symbol_function(get_assoc_symbol_object(), function_object);
+}
+
 static inline KLObject* primitive_function_shen_is_numbyte
 (KLObject* function_object, Vector* arguments, Environment* function_environment,
  Environment* variable_environment)
@@ -711,6 +744,7 @@ void register_overwrite_sys_primitive_kl_functions (void)
   register_primitive_kl_function_reverse();
   register_primitive_kl_function_append();
   register_primitive_kl_function_is_element();
+  register_primitive_kl_function_assoc();
 }
 
 void register_overwrite_reader_primitive_kl_functions (void)

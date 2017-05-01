@@ -70,6 +70,7 @@ extern KLObject* map_symbol_object;
 extern KLObject* reverse_symbol_object;
 extern KLObject* append_symbol_object;
 extern KLObject* is_element_symbol_object;
+extern KLObject* assoc_symbol_object;
 extern KLObject* shen_is_numbyte_symbol_object;
 extern KLObject* shen_byte_to_digit_symbol_object;
 extern KLObject* read_file_as_charlist_symbol_object;
@@ -273,6 +274,11 @@ inline KLObject* get_append_symbol_object (void) { return append_symbol_object; 
 inline KLObject* get_is_element_symbol_object (void)
 {
   return is_element_symbol_object;
+}
+
+inline KLObject* get_assoc_symbol_object (void)
+{
+  return assoc_symbol_object;
 }
 
 inline KLObject* get_shen_is_numbyte_symbol_object (void)
