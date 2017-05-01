@@ -612,6 +612,45 @@ static inline void register_primitive_kl_function_shen_deref (void)
   set_kl_symbol_function(get_shen_deref_symbol_object(), function_object);
 }
 
+static inline KLObject* primitive_function_shen_is_occurs_helper
+(KLObject* object, KLObject* list_object)
+{
+  if (is_kl_object_equal(object, list_object))
+    return get_true_boolean_object();
+
+  if (is_non_empty_kl_list(list_object)) {
+    KLObject* boolean_object =
+      primitive_function_shen_is_occurs_helper(object,
+                                               get_head_kl_list(list_object));
+
+    if (is_kl_boolean_equal(boolean_object, get_true_boolean_object()))
+      return boolean_object;
+
+    return primitive_function_shen_is_occurs_helper(object,
+                                                    get_tail_kl_list(list_object));
+  }
+
+  return get_false_boolean_object();
+}
+
+static inline KLObject* primitive_function_shen_is_occurs
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+
+  return primitive_function_shen_is_occurs_helper(objects[0], objects[1]);
+}
+
+static inline void register_primitive_kl_function_shen_is_occurs (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(2, &primitive_function_shen_is_occurs);
+
+  set_kl_symbol_function(get_shen_is_occurs_symbol_object(), function_object);
+}
+
 static inline KLObject* primitive_function_shen_compose
 (KLObject* function_object, Vector* arguments, Environment* function_environment,
  Environment* variable_environment)
@@ -687,6 +726,7 @@ void register_overwrite_prolog_primitive_kl_functions (void)
   register_primitive_kl_function_shen_valvector();
   register_primitive_kl_function_shen_lazyderef();
   register_primitive_kl_function_shen_deref();
+  register_primitive_kl_function_shen_is_occurs();
 }
 
 void register_overwrite_macros_primitive_kl_functions (void)
