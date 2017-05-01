@@ -24,6 +24,7 @@ void register_overwrite_toplevel_primitive_kl_functions (void);
 void register_overwrite_sys_primitive_kl_functions (void);
 void register_overwrite_reader_primitive_kl_functions (void);
 void register_overwrite_prolog_primitive_kl_functions (void);
+void register_overwrite_macros_primitive_kl_functions (void);
 
 extern KLObject* eval_simple_closure_function_application
 (KLObject* function_object);

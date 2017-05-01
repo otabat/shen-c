@@ -40,7 +40,10 @@ void load_shen_kl_files (void)
   load_kl_file("src/kl/track.kl");
   load_kl_file("src/kl/load.kl");
   load_kl_file("src/kl/writer.kl");
+
   load_kl_file("src/kl/macros.kl");
+  register_overwrite_macros_primitive_kl_functions();
+
   load_kl_file("src/kl/declarations.kl");
   load_kl_file("src/kl/types.kl");
   load_kl_file("src/kl/t-star.kl");

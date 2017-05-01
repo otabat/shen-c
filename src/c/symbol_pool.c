@@ -75,6 +75,7 @@ KLObject* shen_earmuff_prologvectors_symbol_object;
 KLObject* shen_valvector_symbol_object;
 KLObject* shen_dash_null_symbol_object;
 KLObject* shen_lazyderef_symbol_object;
+KLObject* shen_compose_symbol_object;
 
 KLObject* println_symbol_object;
 KLObject* quit_symbol_object;
@@ -157,6 +158,7 @@ extern KLObject* get_shen_earmuff_prologvectors_symbol_object (void);
 extern KLObject* get_shen_valvector_symbol_object (void);
 extern KLObject* get_shen_dash_null_symbol_object (void);
 extern KLObject* get_shen_lazyderef_symbol_object (void);
+extern KLObject* get_shen_compose_symbol_object (void);
 
 extern KLObject* get_println_symbol_object (void);
 extern KLObject* get_quit_symbol_object (void);
@@ -662,6 +664,12 @@ static inline void register_shen_lazyderef_symbol_object (void)
   extend_symbol_name_table("shen.lazyderef", shen_lazyderef_symbol_object);
 }
 
+static inline void register_shen_compose_symbol_object (void)
+{
+  shen_compose_symbol_object = create_kl_symbol("shen.compose");
+  extend_symbol_name_table("shen.compose", shen_compose_symbol_object);
+}
+
 static inline void register_overwrite_symbol_objects (void)
 {
   register_exit_symbol_object();
@@ -686,6 +694,7 @@ static inline void register_overwrite_symbol_objects (void)
   register_shen_valvector_symbol_object();
   register_shen_dash_null_symbol_object();
   register_shen_lazyderef_symbol_object();
+  register_shen_compose_symbol_object();
 }
 
 static inline void register_println_symbol_object (void)

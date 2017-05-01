@@ -1,5 +1,9 @@
 #include "overwrite.h"
 
+static KLObject* shen_compose_quoted_list_object;
+static KLObject* shen_compose_quoted_argument_list_object;
+static KLObject* shen_compose_function_application_list_object;
+
 static inline KLObject* primitive_function_exit (KLObject* function_object,
                                                  Vector* arguments,
                                                  Environment* function_environment,
@@ -569,6 +573,92 @@ static inline void register_primitive_kl_function_shen_lazyderef (void)
   set_kl_symbol_function(get_shen_lazyderef_symbol_object(), function_object);
 }
 
+static inline void initialize_shen_compose_object_pool (void)
+{
+  shen_compose_quoted_list_object =
+    create_kl_list(get_quote_symbol_object(),
+                   create_kl_list(get_empty_kl_list(),
+                                  get_empty_kl_list()));
+  shen_compose_quoted_argument_list_object =
+    create_kl_list(create_kl_list(get_quote_symbol_object(),
+                                  create_kl_list(get_empty_kl_list(),
+                                                 get_empty_kl_list())),
+                   get_empty_kl_list());
+  shen_compose_function_application_list_object =
+    create_kl_list(get_empty_kl_list(), get_empty_kl_list());
+}
+
+static inline KLObject* get_shen_compose_quoted_list_object (void)
+{
+  return shen_compose_quoted_list_object;
+}
+
+static inline void set_shen_compose_quoted_list_object (KLObject* list_object)
+{
+  set_head_kl_list(get_tail_kl_list(get_shen_compose_quoted_list_object()),
+                   list_object);
+}
+
+static inline KLObject* get_shen_compose_quoted_argument_list_object (void)
+{
+  return shen_compose_quoted_argument_list_object;
+}
+
+static inline void set_shen_compose_quoted_argument_list_object
+(KLObject* list_object)
+{
+  set_head_kl_list(get_tail_kl_list(get_head_kl_list(get_shen_compose_quoted_argument_list_object())),
+                   list_object);
+}
+
+static inline KLObject* get_shen_compose_function_application_list_object (void)
+{
+  return shen_compose_function_application_list_object;
+}
+
+static inline void set_shen_compose_function_application_list_object
+(KLObject* car_object, KLObject* cdr_object)
+{
+  set_head_kl_list(get_shen_compose_function_application_list_object(),
+                   car_object);
+  set_tail_kl_list(get_shen_compose_function_application_list_object(),
+                   cdr_object);
+}
+
+static inline KLObject* primitive_function_shen_compose
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* list_object = objects[0];
+  KLObject* object = objects[1];
+
+  while (!is_empty_kl_list(list_object)) {
+    if (!is_non_empty_kl_list(list_object))
+      throw_kl_exception("Wrong argument for shen.compose function");
+
+    set_shen_compose_quoted_list_object(get_head_kl_list(list_object));
+    set_shen_compose_quoted_argument_list_object(object);
+    set_shen_compose_function_application_list_object(get_shen_compose_quoted_list_object(),
+                                                      get_shen_compose_quoted_argument_list_object());
+    object = eval_kl_object(get_shen_compose_function_application_list_object(),
+                            function_environment, variable_environment);
+    list_object = get_tail_kl_list(list_object);
+  }
+
+  return object;
+}
+
+static inline void register_primitive_kl_function_shen_compose (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(2, &primitive_function_shen_compose);
+
+  initialize_shen_compose_object_pool();
+  set_kl_symbol_function(get_shen_compose_symbol_object(), function_object);
+}
+
 void register_overwrite_toplevel_primitive_kl_functions (void)
 {
   register_primitive_kl_function_exit();
@@ -602,4 +692,9 @@ void register_overwrite_prolog_primitive_kl_functions (void)
   register_primitive_kl_function_shen_is_pvar();
   register_primitive_kl_function_shen_valvector();
   register_primitive_kl_function_shen_lazyderef();
+}
+
+void register_overwrite_macros_primitive_kl_functions (void)
+{
+  register_primitive_kl_function_shen_compose();
 }
