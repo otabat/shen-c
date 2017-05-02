@@ -730,17 +730,13 @@ static inline KLObject* primitive_function_shen_compose
     if (!is_non_empty_kl_list(list_object))
       throw_kl_exception("Wrong argument for shen.compose function");
 
-    KLObject* quoted_list_object =
-      create_kl_list(get_quote_symbol_object(),
-                     create_kl_list(get_head_kl_list(list_object),
-                                    get_empty_kl_list()));
     KLObject* quoted_argument_list_object =
       create_kl_list(create_kl_list(get_quote_symbol_object(),
                                     create_kl_list(object,
                                                    get_empty_kl_list())),
                      get_empty_kl_list());
     KLObject* function_application_list_object =
-      create_kl_list(quoted_list_object, quoted_argument_list_object);
+      create_kl_list(get_head_kl_list(list_object), quoted_argument_list_object);
 
     object = eval_kl_object(function_application_list_object,
                             function_environment, variable_environment);
