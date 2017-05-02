@@ -1176,12 +1176,17 @@ KLObject* eval_simple_closure_function_application
                         get_closure_parent_variable_environment(closure));
 }
 
-static KLObject* eval_closure_function_application (KLObject* function_object,
-                                                    KLObject* argument_object)
+static KLObject* eval_closure_function_application
+(KLObject* function_object, KLObject* argument_object,
+ Environment* function_environment, Environment* variable_environment)
 {
+  KLObject* evaluated_argument_object =
+    (is_null(argument_object)) ?
+    NULL: eval_kl_object(argument_object, function_environment,
+                         variable_environment);
   Closure* closure = get_kl_function_closure(function_object);
   KLObject* parameter_object = get_closure_parameter(closure);
-  size_t argument_size = (is_null(argument_object)) ? 0 : 1;
+  size_t argument_size = (is_null(evaluated_argument_object)) ? 0 : 1;
   size_t parameter_size = (is_null(parameter_object)) ? 0 : 1;
 
   check_function_argument_size(argument_size, parameter_size);
@@ -1196,7 +1201,7 @@ static KLObject* eval_closure_function_application (KLObject* function_object,
                          get_closure_parent_variable_environment(closure));
 
   if (parameter_size > 0)
-    extend_environment(parameter_object, argument_object,
+    extend_environment(parameter_object, evaluated_argument_object,
                        closure_variable_environment);
 
   return eval_kl_object(body_object,
@@ -1208,12 +1213,9 @@ static KLObject* eval_kl_list_closure_function_application
 (KLObject* list_object, KLObject* function_object,
  Environment* function_environment, Environment* variable_environment)
 {
-  KLObject* evaluated_cdr_object =
-    eval_function_application_arguments(get_tail_kl_list(list_object),
-                                        function_environment,
-                                        variable_environment);
-  Vector* arguments = ((is_empty_kl_list(evaluated_cdr_object)) ?
-                       NULL : kl_list_to_vector(evaluated_cdr_object));
+  KLObject* cdr_object = get_tail_kl_list(list_object);
+  Vector* arguments = ((is_empty_kl_list(cdr_object)) ?
+                       NULL : kl_list_to_vector(cdr_object));
   size_t argument_size = (is_null(arguments)) ? 0 : get_vector_size(arguments);
 
   if (argument_size > 1) {
@@ -1228,10 +1230,11 @@ static KLObject* eval_kl_list_closure_function_application
   } 
 
   KLObject* argument_object =
-    (is_empty_kl_list(evaluated_cdr_object)) ?
-    NULL : get_head_kl_list(evaluated_cdr_object);
+    (is_empty_kl_list(cdr_object)) ? NULL : get_head_kl_list(cdr_object);
   
-  return eval_closure_function_application(function_object, argument_object);
+  return eval_closure_function_application(function_object, argument_object,
+                                           function_environment,
+                                           variable_environment);
 }
 
 static KLObject* eval_trap_error_expression (KLObject* list_object,
@@ -1267,7 +1270,9 @@ static KLObject* eval_trap_error_expression (KLObject* list_object,
       eval_kl_object(handler_object, function_environment, variable_environment);
 
     return eval_closure_function_application(function_object,
-                                             exception_object);
+                                             exception_object,
+                                             function_environment,
+                                             variable_environment);
   }
 }
 
