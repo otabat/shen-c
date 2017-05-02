@@ -1340,7 +1340,13 @@ static KLObject* eval_kl_list (KLObject* list_object,
                                                      function_environment,
                                                      variable_environment);
   
-  throw_kl_exception("Should be a function object");
+  char* error_message =
+    concatenate_string(kl_object_to_string(evaluated_car_object),
+                       " should be a function object in ");
+
+  error_message = concatenate_string(error_message,
+                                     kl_object_to_string(list_object));
+  throw_kl_exception(error_message);
 
   return NULL;
 }
