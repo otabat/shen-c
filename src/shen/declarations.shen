@@ -82,7 +82,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (set *infs* 0)
 (set *hush* false)
 (set *optimise* false)
-(set *version* "Shen 20.0")
+(set *version* "Shen 20.1")
 
 (if (not (bound? *home-directory*))
     (set *home-directory* "")
@@ -90,6 +90,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (if (not (bound? *sterror*))
     (set *sterror* (value *stoutput*))
+    skip)
+
+(if (not (bound? *argv*))
+    (set *argv* ["shen"])
     skip)
 
 (define initialise_arity_table
@@ -103,7 +107,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (initialise_arity_table
  [abort 0 absvector? 1 absvector 1 adjoin 2 and 2 append 2 arity 1
   assoc 2 boolean? 1 bound? 1 cd 1 close 1 compile 3 concat 2 cons 2 cons? 1
-  cn 2 declare 2 destroy 1 difference 2 do 2 element? 2 empty? 1
+  command-line 0 cn 2 declare 2 destroy 1 difference 2 do 2 element? 2 empty? 1
   enable-type-theory 1 error-to-string 1 interror 2 eval 1
   eval-kl 1 exit 1 explode 1 external 1 fail-if 2 fail 0 fix 2
   fold-left 3 fold-right 3 filter 2
@@ -149,7 +153,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (put (intern "shen") external-symbols
      [! } { --> <-- && : ; :- := _
       *language* *implementation* *stinput* *stoutput* *sterror*
-      *home-directory* *version*
+      *home-directory* *version* *argv*
       *maximum-print-sequence-size* *macros* *os* *release* *property-vector*
       *port* *porters* *hush*
       @v @p @s
@@ -185,6 +189,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       append and adjoin <-address <-address/or address-> absvector? absvector
       dict dict? dict-count dict-> <-dict/or <-dict dict-rm dict-fold
       dict-keys dict-values
+      command-line
       ])
 
 (define lambda-form-entry

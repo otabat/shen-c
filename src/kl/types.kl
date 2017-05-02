@@ -23,14 +23,14 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 
-(defun declare (V3982 V3983) (let Record (set shen.*signedfuncs* (cons (cons V3982 V3983) (value shen.*signedfuncs*))) (let Variancy (trap-error (shen.variancy-test V3982 V3983) (lambda E shen.skip)) (let Type (shen.rcons_form (shen.demodulate V3983)) (let F* (concat shen.type-signature-of- V3982) (let Parameters (shen.parameters 1) (let Clause (cons (cons F* (cons X ())) (cons :- (cons (cons (cons unify! (cons X (cons Type ()))) ()) ()))) (let AUM_instruction (shen.aum Clause Parameters) (let Code (shen.aum_to_shen AUM_instruction) (let ShenDef (cons define (cons F* (append Parameters (append (cons ProcessN (cons Continuation ())) (cons -> (cons Code ())))))) (let Eval (shen.eval-without-macros ShenDef) V3982)))))))))))
+(defun declare (V4161 V4162) (let Record (set shen.*signedfuncs* (cons (cons V4161 V4162) (value shen.*signedfuncs*))) (let Variancy (trap-error (shen.variancy-test V4161 V4162) (lambda E shen.skip)) (let Type (shen.rcons_form (shen.demodulate V4162)) (let F* (concat shen.type-signature-of- V4161) (let Parameters (shen.parameters 1) (let Clause (cons (cons F* (cons X ())) (cons :- (cons (cons (cons unify! (cons X (cons Type ()))) ()) ()))) (let AUM_instruction (shen.aum Clause Parameters) (let Code (shen.aum_to_shen AUM_instruction) (let ShenDef (cons define (cons F* (append Parameters (append (cons ProcessN (cons Continuation ())) (cons -> (cons Code ())))))) (let Eval (shen.eval-without-macros ShenDef) V4161)))))))))))
 
-(defun shen.demodulate (V3985) (let Demod (shen.walk (value shen.*demodulation-function*) V3985) (if (= Demod V3985) V3985 (shen.demodulate Demod))))
+(defun shen.demodulate (V4164) (let Demod (shen.walk (value shen.*demodulation-function*) V4164) (if (= Demod V4164) V4164 (shen.demodulate Demod))))
 
-(defun shen.variancy-test (V3988 V3989) (let TypeF (shen.typecheck V3988 B) (let Check (if (= symbol TypeF) shen.skip (if (shen.variant? TypeF V3989) shen.skip (shen.prhush (cn "warning: changing the type of " (shen.app V3988 " may create errors
+(defun shen.variancy-test (V4167 V4168) (let TypeF (shen.typecheck V4167 B) (let Check (if (= symbol TypeF) shen.skip (if (shen.variant? TypeF V4168) shen.skip (shen.prhush (cn "warning: changing the type of " (shen.app V4167 " may create errors
 " shen.a)) (stoutput)))) shen.skip)))
 
-(defun shen.variant? (V4002 V4003) (cond ((= V4003 V4002) true) ((and (cons? V4002) (and (cons? V4003) (= (hd V4003) (hd V4002)))) (shen.variant? (tl V4002) (tl V4003))) ((and (cons? V4002) (and (cons? V4003) (and (shen.pvar? (hd V4002)) (variable? (hd V4003))))) (shen.variant? (subst shen.a (hd V4002) (tl V4002)) (subst shen.a (hd V4003) (tl V4003)))) ((and (cons? V4002) (and (cons? (hd V4002)) (and (cons? V4003) (cons? (hd V4003))))) (shen.variant? (append (hd V4002) (tl V4002)) (append (hd V4003) (tl V4003)))) (true false)))
+(defun shen.variant? (V4181 V4182) (cond ((= V4182 V4181) true) ((and (cons? V4181) (and (cons? V4182) (= (hd V4182) (hd V4181)))) (shen.variant? (tl V4181) (tl V4182))) ((and (cons? V4181) (and (cons? V4182) (and (shen.pvar? (hd V4181)) (variable? (hd V4182))))) (shen.variant? (subst shen.a (hd V4181) (tl V4181)) (subst shen.a (hd V4182) (tl V4182)))) ((and (cons? V4181) (and (cons? (hd V4181)) (and (cons? V4182) (cons? (hd V4182))))) (shen.variant? (append (hd V4181) (tl V4181)) (append (hd V4182) (tl V4182)))) (true false)))
 
 (declare absvector? (cons A (cons --> (cons boolean ()))))
 
@@ -55,6 +55,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 (declare close (cons (cons stream (cons A ())) (cons --> (cons (cons list (cons B ())) ()))))
 
 (declare cn (cons string (cons --> (cons (cons string (cons --> (cons string ()))) ()))))
+
+(declare command-line (cons --> (cons (cons list (cons string ())) ())))
 
 (declare compile (cons (cons A (cons shen.==> (cons B ()))) (cons --> (cons (cons A (cons --> (cons (cons (cons A (cons --> (cons B ()))) (cons --> (cons B ()))) ()))) ()))))
 

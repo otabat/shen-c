@@ -29,6 +29,9 @@
 (systemf sterror)
 (systemf read-char-code)
 (systemf read-file-as-charlist)
+(systemf *sterror*)
+(systemf *argv*)
+(systemf command-line)
 
 (define make
   -> (map (function make-file)

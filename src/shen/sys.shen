@@ -385,7 +385,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (define bucket-fold
   F [] Acc -> Acc
-  F [[K | V] | Rest] Acc -> (F K V (fold-right F Rest Acc)))
+  F [[K | V] | Rest] Acc -> (F K V (bucket-fold F Rest Acc)))
 
 (define dict-keys
   Dict -> (dict-fold (/. K _ Acc [K | Acc]) Dict []))
@@ -597,6 +597,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (define sterror
   -> (value *sterror*))
+
+(define command-line
+  -> (value *argv*))
 
 (define string->symbol
   S -> (let Symbol (intern S)
