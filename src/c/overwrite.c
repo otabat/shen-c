@@ -717,23 +717,35 @@ static inline void register_primitive_kl_function_shen_is_occurs (void)
   set_kl_symbol_function(get_shen_is_occurs_symbol_object(), function_object);
 }
 
+
+static inline KLObject* primitive_function_shen_bindv_helper
+(KLObject* argument_vector_object, KLObject* argument_vector_value_object,
+ KLObject* argument_index_object)
+{
+ Vector* prolog_vector =
+    get_vector(get_kl_symbol_variable_value(get_shen_earmuff_prologvectors_symbol_object()));
+  KLObject* vector_object =
+    get_vector_element(prolog_vector,
+                       get_kl_number_number_l(argument_index_object));
+  long vector_index =
+    get_kl_number_number_l(get_vector_element(get_vector(argument_vector_object),
+                                              1));
+
+  set_vector_element(get_vector(vector_object), vector_index,
+                     argument_vector_value_object);
+
+  return vector_object;
+}
+
 static inline KLObject* primitive_function_shen_bindv
 (KLObject* function_object, Vector* arguments, Environment* function_environment,
  Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
-  Vector* prolog_vector =
-    get_vector(get_kl_symbol_variable_value(get_shen_earmuff_prologvectors_symbol_object()));
-  KLObject* vector_object = get_vector_element(prolog_vector,
-                                               get_kl_number_number_l(objects[2]));
-  long vector_index =
-    get_kl_number_number_l(get_vector_element(get_vector(objects[0]), 1));
 
-  set_vector_element(get_vector(vector_object), vector_index, objects[1]);
-
-  return vector_object;
-}
+  return primitive_function_shen_bindv_helper(objects[0], objects[1], objects[2]);
+ }
 
 static inline void register_primitive_kl_function_shen_bindv (void)
 {
@@ -743,23 +755,32 @@ static inline void register_primitive_kl_function_shen_bindv (void)
   set_kl_symbol_function(get_shen_bindv_symbol_object(), function_object);
 }
 
+static inline KLObject* primitive_function_shen_unbindv_helper
+(KLObject* argument_vector_object, KLObject* argument_index_object)
+{
+  Vector* prolog_vector =
+    get_vector(get_kl_symbol_variable_value(get_shen_earmuff_prologvectors_symbol_object()));
+  KLObject* vector_object =
+    get_vector_element(prolog_vector,
+                       get_kl_number_number_l(argument_index_object));
+  long vector_index =
+    get_kl_number_number_l(get_vector_element(get_vector(argument_vector_object),
+                                              1));
+
+  set_vector_element(get_vector(vector_object), vector_index,
+                     get_shen_dash_null_symbol_object());
+
+  return vector_object;
+}
+
 static inline KLObject* primitive_function_shen_unbindv
 (KLObject* function_object, Vector* arguments, Environment* function_environment,
  Environment* variable_environment)
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
-  Vector* prolog_vector =
-    get_vector(get_kl_symbol_variable_value(get_shen_earmuff_prologvectors_symbol_object()));
-  KLObject* vector_object = get_vector_element(prolog_vector,
-                                               get_kl_number_number_l(objects[1]));
-  long vector_index =
-    get_kl_number_number_l(get_vector_element(get_vector(objects[0]), 1));
 
-  set_vector_element(get_vector(vector_object), vector_index,
-                     get_shen_dash_null_symbol_object());
-
-  return vector_object;
+  return primitive_function_shen_unbindv_helper(objects[0], objects[1]);
 }
 
 static inline void register_primitive_kl_function_shen_unbindv (void)
@@ -768,6 +789,33 @@ static inline void register_primitive_kl_function_shen_unbindv (void)
     create_primitive_kl_function(2, &primitive_function_shen_unbindv);
 
   set_kl_symbol_function(get_shen_unbindv_symbol_object(), function_object);
+}
+
+static inline KLObject* primitive_function_bind
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+
+  primitive_function_shen_bindv_helper(objects[0], objects[1], objects[2]);
+
+  KLObject* function_application_list_object =
+    create_kl_list(objects[3], get_empty_kl_list());
+  KLObject* object = eval_kl_object(function_application_list_object,
+                                    function_environment, variable_environment);
+
+  primitive_function_shen_unbindv_helper(objects[0], objects[2]);
+
+  return object;
+}
+
+static inline void register_primitive_kl_function_bind (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(4, &primitive_function_bind);
+
+  set_kl_symbol_function(get_bind_symbol_object(), function_object);
 }
 
 static inline KLObject* primitive_function_shen_compose
@@ -846,6 +894,7 @@ void register_overwrite_prolog_primitive_kl_functions (void)
   register_primitive_kl_function_shen_is_occurs();
   register_primitive_kl_function_shen_bindv();
   register_primitive_kl_function_shen_unbindv();
+  register_primitive_kl_function_bind();
 }
 
 void register_overwrite_macros_primitive_kl_functions (void)

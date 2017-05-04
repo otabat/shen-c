@@ -85,6 +85,7 @@ extern KLObject* shen_deref_symbol_object;
 extern KLObject* shen_is_occurs_symbol_object;
 extern KLObject* shen_bindv_symbol_object;
 extern KLObject* shen_unbindv_symbol_object;
+extern KLObject* bind_symbol_object;
 extern KLObject* shen_compose_symbol_object;
 
 extern KLObject* println_symbol_object;
@@ -352,6 +353,8 @@ inline KLObject* get_shen_unbindv_symbol_object (void)
 {
   return shen_unbindv_symbol_object;
 }
+
+inline KLObject* get_bind_symbol_object (void) { return bind_symbol_object; }
 
 inline KLObject* get_shen_compose_symbol_object (void)
 {
