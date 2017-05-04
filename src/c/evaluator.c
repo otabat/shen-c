@@ -840,16 +840,10 @@ static KLObject* eval_eval_kl_expression (KLObject* list_object,
                         variable_environment);
 }
 
-static KLObject* eval_freeze_expression (KLObject* list_object,
-                                         Environment* function_environment,
-                                         Environment* variable_environment)
+ KLObject* eval_freeze_expression (KLObject* body_object,
+                                   Environment* function_environment,
+                                   Environment* variable_environment)
 {
-  size_t list_object_size = get_kl_list_size(list_object);
-
-  if (list_object_size != 2)
-    throw_kl_exception("Wrong number of arguments for freeze");
-
-  KLObject* body_object = get_head_kl_list(get_tail_kl_list(list_object));
   KLObject* function_object = create_user_kl_function();
   Closure* closure = get_kl_function_closure(function_object);
 
@@ -859,6 +853,21 @@ static KLObject* eval_freeze_expression (KLObject* list_object,
   set_closure_body(closure, body_object);
 
   return function_object;
+}
+
+static KLObject* eval_kl_list_freeze_expression (KLObject* list_object,
+                                                 Environment* function_environment,
+                                                 Environment* variable_environment)
+{
+  size_t list_object_size = get_kl_list_size(list_object);
+
+  if (list_object_size != 2)
+    throw_kl_exception("Wrong number of arguments for freeze");
+
+  KLObject* body_object = get_head_kl_list(get_tail_kl_list(list_object));
+
+  return eval_freeze_expression(body_object, function_environment,
+                                variable_environment);
 }
 
 static KLObject* eval_primitive_function_application
@@ -1314,8 +1323,8 @@ static KLObject* eval_kl_list (KLObject* list_object,
       return eval_let_expression(list_object, function_environment,
                                  variable_environment);
     if (evaluated_car_object == get_freeze_symbol_object())
-      return eval_freeze_expression(list_object, function_environment,
-                                    variable_environment);
+      return eval_kl_list_freeze_expression(list_object, function_environment,
+                                            variable_environment);
     if (evaluated_car_object == get_loop_symbol_object())
       return eval_kl_list_loop_expression(list_object, function_environment,
                                           variable_environment);

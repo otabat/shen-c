@@ -602,14 +602,9 @@ static inline void register_primitive_kl_function_shen_valvector (void)
   set_kl_symbol_function(get_shen_valvector_symbol_object(), function_object);
 }
 
-static inline KLObject* primitive_function_shen_lazyderef
-(KLObject* function_object, Vector* arguments, Environment* function_environment,
- Environment* variable_environment)
+static inline KLObject* primitive_function_shen_lazyderef_helper
+(KLObject* vector_object, KLObject* index_object)
 {
-  KLObject** objects =
-    get_kl_function_arguments_with_count_check(function_object, arguments);
-  KLObject* vector_object = objects[0];
-  KLObject* index_object = objects[1];
   bool is_pvar =
     get_boolean(primitive_function_shen_is_pvar_helper(vector_object));
 
@@ -625,6 +620,16 @@ static inline KLObject* primitive_function_shen_lazyderef
   }
 
   return vector_object;
+}
+
+static inline KLObject* primitive_function_shen_lazyderef
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+
+  return primitive_function_shen_lazyderef_helper(objects[0], objects[1]);
 }
 
 static inline void register_primitive_kl_function_shen_lazyderef (void)
@@ -791,6 +796,26 @@ static inline void register_primitive_kl_function_shen_unbindv (void)
   set_kl_symbol_function(get_shen_unbindv_symbol_object(), function_object);
 }
 
+
+static inline KLObject* primitive_function_bind_helper
+(KLObject* argument_vector_object, KLObject* argument_vector_value_object,
+ KLObject* argument_index_object, KLObject* argument_function_object,
+ Environment* function_environment, Environment* variable_environment)
+{
+  primitive_function_shen_bindv_helper(argument_vector_object,
+                                       argument_vector_value_object,
+                                       argument_index_object);
+
+  KLObject* function_application_list_object =
+    create_kl_list(argument_function_object, get_empty_kl_list());
+  KLObject* object = eval_kl_object(function_application_list_object,
+                                    function_environment, variable_environment);
+
+  primitive_function_shen_unbindv_helper(argument_vector_object, argument_index_object);
+
+  return object;
+}
+
 static inline KLObject* primitive_function_bind
 (KLObject* function_object, Vector* arguments, Environment* function_environment,
  Environment* variable_environment)
@@ -798,16 +823,9 @@ static inline KLObject* primitive_function_bind
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
-  primitive_function_shen_bindv_helper(objects[0], objects[1], objects[2]);
-
-  KLObject* function_application_list_object =
-    create_kl_list(objects[3], get_empty_kl_list());
-  KLObject* object = eval_kl_object(function_application_list_object,
-                                    function_environment, variable_environment);
-
-  primitive_function_shen_unbindv_helper(objects[0], objects[2]);
-
-  return object;
+  return primitive_function_bind_helper(objects[0], objects[1], objects[2],
+                                        objects[3], function_environment,
+                                        variable_environment);
 }
 
 static inline void register_primitive_kl_function_bind (void)
@@ -816,6 +834,106 @@ static inline void register_primitive_kl_function_bind (void)
     create_primitive_kl_function(4, &primitive_function_bind);
 
   set_kl_symbol_function(get_bind_symbol_object(), function_object);
+}
+
+static inline KLObject* primitive_function_shen_lzy_equal_exclamation_helper
+(KLObject* list_or_vector_object, KLObject* object, KLObject* number_object,
+ KLObject* function_object, Environment* function_environment,
+ Environment* variable_environment)
+{
+  if (is_kl_object_equal(object, list_or_vector_object)) {
+    KLObject* function_application_list_object =
+      create_kl_list(function_object, get_empty_kl_list());
+
+    return eval_kl_object(function_application_list_object, function_environment,
+                          variable_environment);
+  } else if (is_kl_boolean_equal(primitive_function_shen_is_pvar_helper(list_or_vector_object),
+                                 get_true_boolean_object()) &&
+             is_kl_boolean_equal(primitive_function_shen_is_occurs_helper(list_or_vector_object,
+                                                                          primitive_function_shen_deref_helper(object,
+                                                                                                               number_object)),
+                                 get_false_boolean_object()))
+    return primitive_function_bind_helper(list_or_vector_object, object, number_object,
+                                          function_object, function_environment,
+                                          variable_environment);
+
+  else if (is_kl_boolean_equal(primitive_function_shen_is_pvar_helper(object),
+                               get_true_boolean_object()) &&
+           is_kl_boolean_equal(primitive_function_shen_is_occurs_helper(object,
+                                                                        primitive_function_shen_deref_helper(list_or_vector_object,
+                                                                                                             number_object)),
+                               get_false_boolean_object()))
+    return primitive_function_bind_helper(object, list_or_vector_object, number_object,
+                                          function_object, function_environment,
+                                          variable_environment);
+  else if (is_non_empty_kl_list(list_or_vector_object) &&
+           is_non_empty_kl_list(object)) {
+    KLObject* freeze_body_object =
+      create_kl_list(get_shen_lzy_equal_exclamation_symbol_object(),
+                     create_kl_list(create_kl_list(get_quote_symbol_object(),
+                                                   create_kl_list(primitive_function_shen_lazyderef_helper(get_tail_kl_list(list_or_vector_object),
+                                                                                                           number_object),
+                                                                  get_empty_kl_list())),
+                                    create_kl_list(create_kl_list(get_quote_symbol_object(),
+                                                                  create_kl_list(primitive_function_shen_lazyderef_helper(get_tail_kl_list(object),
+                                                                                                                          number_object),
+                                                                                 get_empty_kl_list())),
+                                                   create_kl_list(number_object,
+                                                                  create_kl_list(function_object, get_empty_kl_list())))));
+    //KLObject* freeze_body_object =
+    //  create_kl_list(get_shen_lzy_equal_exclamation_symbol_object(),
+    //                 create_kl_list(create_kl_list(get_shen_lazyderef_symbol_object(),
+    //                                               create_kl_list(create_kl_list(get_quote_symbol_object(),
+    //                                                                             create_kl_list(get_tail_kl_list(list_or_vector_object),
+    //                                                                                            get_empty_kl_list())),
+    //                                                              create_kl_list(number_object, get_empty_kl_list()))),
+    //                                create_kl_list(create_kl_list(get_shen_lazyderef_symbol_object(),
+    //                                                              create_kl_list(create_kl_list(get_quote_symbol_object(),
+    //                                                                                            create_kl_list(get_tail_kl_list(object),
+    //                                                                                                           get_empty_kl_list())),
+    //                                                                             create_kl_list(number_object, get_empty_kl_list()))),
+    //                                               create_kl_list(number_object,
+    //                                                              create_kl_list(function_object, get_empty_kl_list())))));
+    KLObject* freeze_object = eval_freeze_expression(freeze_body_object,
+                                                     function_environment,
+                                                     variable_environment);
+
+    return primitive_function_shen_lzy_equal_exclamation_helper(primitive_function_shen_lazyderef_helper(get_head_kl_list(list_or_vector_object),
+                                                                                                         number_object),
+                                                                primitive_function_shen_lazyderef_helper(get_head_kl_list(object),
+                                                                                                         number_object),
+                                                                number_object,
+                                                                freeze_object,
+                                                                function_environment,
+                                                                variable_environment);
+  }
+
+  return get_false_boolean_object();
+}
+
+static inline KLObject* primitive_function_shen_lzy_equal_exclamation
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+
+  return primitive_function_shen_lzy_equal_exclamation_helper(objects[0],
+                                                              objects[1],
+                                                              objects[2],
+                                                              objects[3],
+                                                              function_environment,
+                                                              variable_environment);
+}
+
+static inline void register_primitive_kl_function_shen_lzy_equal_exclamation (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(4,
+                                 &primitive_function_shen_lzy_equal_exclamation);
+
+  set_kl_symbol_function(get_shen_lzy_equal_exclamation_symbol_object(),
+                         function_object);
 }
 
 static inline KLObject* primitive_function_shen_compose
@@ -895,6 +1013,7 @@ void register_overwrite_prolog_primitive_kl_functions (void)
   register_primitive_kl_function_shen_bindv();
   register_primitive_kl_function_shen_unbindv();
   register_primitive_kl_function_bind();
+  register_primitive_kl_function_shen_lzy_equal_exclamation();
 }
 
 void register_overwrite_macros_primitive_kl_functions (void)

@@ -26,6 +26,9 @@ void register_overwrite_reader_primitive_kl_functions (void);
 void register_overwrite_prolog_primitive_kl_functions (void);
 void register_overwrite_macros_primitive_kl_functions (void);
 
+extern KLObject* eval_freeze_expression (KLObject* body_object,
+                                         Environment* function_environment,
+                                         Environment* variable_environment);
 extern KLObject* eval_simple_closure_function_application
 (KLObject* function_object);
 extern KLObject* eval_kl_object (KLObject* object,

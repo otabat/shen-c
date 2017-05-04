@@ -82,6 +82,7 @@ KLObject* shen_is_occurs_symbol_object;
 KLObject* shen_bindv_symbol_object;
 KLObject* shen_unbindv_symbol_object;
 KLObject* bind_symbol_object;
+KLObject* shen_lzy_equal_exclamation_symbol_object;
 KLObject* shen_compose_symbol_object;
 
 KLObject* println_symbol_object;
@@ -172,6 +173,7 @@ extern KLObject* get_shen_is_occurs_symbol_object (void);
 extern KLObject* get_shen_bindv_symbol_object (void);
 extern KLObject* get_shen_unbindv_symbol_object (void);
 extern KLObject* get_bind_symbol_object (void);
+extern KLObject* get_shen_lzy_equal_exclamation_symbol_object (void);
 extern KLObject* get_shen_compose_symbol_object (void);
 
 extern KLObject* get_println_symbol_object (void);
@@ -720,6 +722,12 @@ static inline void register_bind_symbol_object (void)
   extend_symbol_name_table("bind", bind_symbol_object);
 }
 
+static inline void register_shen_lzy_equal_exclamation_symbol_object (void)
+{
+  shen_lzy_equal_exclamation_symbol_object = create_kl_symbol("shen.lzy=!");
+  extend_symbol_name_table("shen.lzy=!", shen_lzy_equal_exclamation_symbol_object);
+}
+
 static inline void register_shen_compose_symbol_object (void)
 {
   shen_compose_symbol_object = create_kl_symbol("shen.compose");
@@ -757,6 +765,7 @@ static inline void register_overwrite_symbol_objects (void)
   register_shen_bindv_symbol_object();
   register_shen_unbindv_symbol_object();
   register_bind_symbol_object();
+  register_shen_lzy_equal_exclamation_symbol_object();
   register_shen_compose_symbol_object();
 }
 

@@ -21,6 +21,9 @@
 #include "symbol.h"
 #include "symbol_pool.h"
 
+KLObject* eval_freeze_expression (KLObject* body_object,
+                                  Environment* function_environment,
+                                  Environment* variable_environment);
 KLObject* eval_simple_closure_function_application
 (KLObject* function_object);
 KLObject* eval_kl_object (KLObject* object, Environment* function_environment,
