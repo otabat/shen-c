@@ -54,6 +54,8 @@ KLObject* unix_symbol_object;
 KLObject* run_symbol_object;
 
 KLObject* exit_symbol_object;
+KLObject* slash_dot_symbol_object;
+KLObject* shen_ebr_symbol_object;
 KLObject* hash_symbol_object;
 KLObject* is_symbol_symbol_object;
 KLObject* is_integer_symbol_object;
@@ -145,6 +147,8 @@ extern KLObject* get_unix_symbol_object (void);
 extern KLObject* get_run_symbol_object (void);
 
 extern KLObject* get_exit_symbol_object (void);
+extern KLObject* get_slash_dot_symbol_object (void);
+extern KLObject* get_shen_ebr_symbol_object (void);
 extern KLObject* get_hash_symbol_object (void);
 extern KLObject* get_is_symbol_symbol_object (void);
 extern KLObject* get_is_integer_symbol_object (void);
@@ -550,6 +554,18 @@ static inline void register_exit_symbol_object (void)
   extend_symbol_name_table("exit", exit_symbol_object);
 }
 
+static inline void register_slash_dot_symbol_object (void)
+{
+  slash_dot_symbol_object = create_kl_symbol("/.");
+  extend_symbol_name_table("/.", slash_dot_symbol_object);
+}
+
+static inline void register_shen_ebr_symbol_object (void)
+{
+  shen_ebr_symbol_object = create_kl_symbol("shen.ebr");
+  extend_symbol_name_table("shen.ebr", shen_ebr_symbol_object);
+}
+
 static inline void register_hash_symbol_object (void)
 {
   hash_symbol_object = create_kl_symbol("hash");
@@ -737,6 +753,8 @@ static inline void register_shen_compose_symbol_object (void)
 static inline void register_overwrite_symbol_objects (void)
 {
   register_exit_symbol_object();
+  register_slash_dot_symbol_object();
+  register_shen_ebr_symbol_object();
   register_hash_symbol_object();
   register_is_symbol_symbol_object();
   register_is_boolean_symbol_object();

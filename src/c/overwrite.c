@@ -24,6 +24,73 @@ static inline void register_primitive_kl_function_exit (void)
   set_kl_symbol_function(get_exit_symbol_object(), function_object);
 }
 
+static inline KLObject* primitive_function_occurrences_helper
+(KLObject* object, KLObject* list_object);
+
+static inline KLObject* primitive_function_shen_ebr_helper
+(KLObject* first_object, KLObject* second_object, KLObject* list_object)
+{
+  if (is_kl_object_equal(second_object, list_object))
+    return first_object;
+  else if (is_non_empty_kl_list(list_object)) {
+    if (is_kl_symbol_equal(get_slash_dot_symbol_object(),
+                           get_head_kl_list(list_object)) &&
+        is_non_empty_kl_list(get_tail_kl_list(list_object)) &&
+        is_non_empty_kl_list(get_tail_kl_list(get_tail_kl_list(list_object))) &&
+        is_empty_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(list_object)))) &&
+        (get_kl_number_number_l(primitive_function_occurrences_helper(second_object,
+                                                                      get_head_kl_list(get_tail_kl_list(list_object))))
+         > 0))
+      return list_object;
+    else if (is_kl_symbol_equal(get_lambda_symbol_object(),
+                                get_head_kl_list(list_object)) &&
+             is_non_empty_kl_list(get_tail_kl_list(list_object)) &&
+             is_non_empty_kl_list(get_tail_kl_list(get_tail_kl_list(list_object))) &&
+             is_empty_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(list_object)))) &&
+             (get_kl_number_number_l(primitive_function_occurrences_helper(second_object,
+                                                                           get_head_kl_list(get_tail_kl_list(list_object))))
+              > 0))
+      return list_object;
+    else if (is_kl_symbol_equal(get_let_symbol_object(),
+                                get_head_kl_list(list_object)) &&
+             is_non_empty_kl_list(get_tail_kl_list(list_object)) &&
+             is_non_empty_kl_list(get_tail_kl_list(get_tail_kl_list(list_object))) &&
+             is_non_empty_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(list_object)))) &&
+             is_empty_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(list_object))))) &&
+             is_kl_object_equal(get_head_kl_list(get_tail_kl_list(list_object)), second_object))
+      return create_kl_list(get_let_symbol_object(),
+                            create_kl_list(get_head_kl_list(get_tail_kl_list(list_object)),
+                                           create_kl_list(primitive_function_shen_ebr_helper(first_object,
+                                                                                             get_head_kl_list(get_tail_kl_list(list_object)),
+                                                                                             get_head_kl_list(get_tail_kl_list(get_tail_kl_list(list_object)))),
+                                                          get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(list_object))))));
+
+    return create_kl_list(primitive_function_shen_ebr_helper(first_object, second_object, get_head_kl_list(list_object)),
+                          primitive_function_shen_ebr_helper(first_object, second_object, get_tail_kl_list(list_object)));
+  }
+
+  return list_object;
+}
+
+static inline KLObject* primitive_function_shen_ebr (KLObject* function_object,
+                                                     Vector* arguments,
+                                                     Environment* function_environment,
+                                                     Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+
+  return primitive_function_shen_ebr_helper(objects[0], objects[1], objects[2]);
+}
+
+static inline void register_primitive_kl_function_shen_ebr (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(3, &primitive_function_shen_ebr);
+
+  set_kl_symbol_function(get_shen_ebr_symbol_object(), function_object);
+}
+
 static inline KLObject* primitive_function_hash (KLObject* function_object,
                                                  Vector* arguments,
                                                  Environment* function_environment,
@@ -976,6 +1043,11 @@ static inline void register_primitive_kl_function_shen_compose (void)
 void register_overwrite_toplevel_primitive_kl_functions (void)
 {
   register_primitive_kl_function_exit();
+}
+
+void register_overwrite_core_primitive_kl_functions (void)
+{
+  register_primitive_kl_function_shen_ebr();
 }
 
 void register_overwrite_sys_primitive_kl_functions (void)

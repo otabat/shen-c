@@ -24,6 +24,7 @@ void load_shen_kl_files (void)
   register_overwrite_toplevel_primitive_kl_functions();
 
   load_kl_file("src/kl/core.kl");
+  register_overwrite_core_primitive_kl_functions();
 
   load_kl_file("src/kl/sys.kl");
   register_overwrite_sys_primitive_kl_functions();
