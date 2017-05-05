@@ -480,6 +480,85 @@ static KLObject* optimize_tail_call (KLObject* function_symbol_object,
   return body_object;
 }
 
+static KLObject* optimize_multiple_function_calls_helper
+(KLObject* body_object, KLObject* target_symbol_object, long function_call_count)
+{
+  KLObject* head_list_object = body_object;
+  KLObject* tail_list_object = head_list_object;
+
+  while (true) {
+    if (is_empty_kl_list(tail_list_object))
+      break;
+    else if (is_non_empty_kl_list(tail_list_object)) {
+      KLObject* car_object = get_head_kl_list(tail_list_object);
+
+      if (is_kl_symbol_equal(car_object, target_symbol_object) &&
+          head_list_object == tail_list_object) {
+        ++function_call_count;
+
+        KLObject* cdr_object = get_tail_kl_list(tail_list_object);
+
+        if (is_non_empty_kl_list(cdr_object) &&
+            is_non_empty_kl_list(get_tail_kl_list(cdr_object)) &&
+            is_empty_kl_list(get_tail_kl_list(get_tail_kl_list(cdr_object)))) {
+          KLObject* cadr_object = get_head_kl_list(cdr_object);
+
+          if (is_non_empty_kl_list(cadr_object))
+            optimize_multiple_function_calls_helper(cadr_object,
+                                                    target_symbol_object,
+                                                    0);
+
+          KLObject* caddr_object = get_head_kl_list(get_tail_kl_list(cdr_object));
+
+          if (is_non_empty_kl_list(caddr_object)) {
+            KLObject* list_object =
+              optimize_multiple_function_calls_helper(caddr_object,
+                                                      target_symbol_object,
+                                                      function_call_count);
+
+            if (is_null(list_object))
+              break;
+
+            if (function_call_count > 1)
+              return create_kl_list(cadr_object, list_object);
+            else if (function_call_count == 1) {
+              set_head_kl_list(tail_list_object, get_mcons_symbol_object());
+              set_tail_kl_list(tail_list_object,
+                               create_kl_list(cadr_object, list_object));
+            }
+          } else if (function_call_count > 1)
+            return create_kl_list(cadr_object,
+                                  create_kl_list(caddr_object,
+                                                 get_empty_kl_list()));
+        }
+
+        break;
+      }
+
+      if (is_non_empty_kl_list(car_object))
+        optimize_multiple_function_calls_helper(car_object,
+                                                target_symbol_object, 0);
+
+      if (function_call_count > 0)
+        function_call_count = 0;
+
+      tail_list_object = get_tail_kl_list(tail_list_object);
+
+      continue;
+    }
+
+    break;
+  }
+
+  return NULL;
+}
+
+static void optimize_multiple_function_calls (KLObject* body_object)
+{
+  optimize_multiple_function_calls_helper(body_object, get_cons_symbol_object(),
+                                          0);
+}
+
 static KLObject* eval_defun_expression (KLObject* list_object)
 {
   size_t list_object_size = get_kl_list_size(list_object);
@@ -508,6 +587,7 @@ static KLObject* eval_defun_expression (KLObject* list_object)
   check_function_user_parameters(parameters);
   body_object = optimize_tail_call(function_symbol_object, &parameters,
                                    parameter_size, body_object);
+  optimize_multiple_function_calls(body_object);
 
   KLObject* function_object = create_user_kl_function();
   UserFunction* user_function = get_kl_function_user_function(function_object);
@@ -1290,6 +1370,35 @@ static inline KLObject* eval_quote_expression (KLObject* list_object)
   return get_head_kl_list(get_tail_kl_list(list_object));
 }
 
+static inline KLObject* eval_mcons_expression (KLObject* list_object,
+                                               Environment* function_environment,
+                                               Environment* variable_environment)
+{
+  KLObject* evaluated_argument_list_object =
+    eval_function_application_arguments(get_tail_kl_list(list_object),
+                                        function_environment,
+                                        variable_environment);
+  KLObject* head_list_object = get_empty_kl_list();
+  KLObject* tail_list_object = get_empty_kl_list();
+
+  while (!is_empty_kl_list(evaluated_argument_list_object)) {
+    KLObject* car_object = get_head_kl_list(evaluated_argument_list_object);
+    KLObject* cdr_object = get_tail_kl_list(evaluated_argument_list_object);
+    KLObject* object = ((is_empty_kl_list(cdr_object)) ?
+                        car_object: create_kl_list(car_object, cdr_object));
+
+    if (is_empty_kl_list(head_list_object))
+      head_list_object = object;
+    else
+      set_tail_kl_list(tail_list_object, object);
+
+    tail_list_object = object;
+    evaluated_argument_list_object = cdr_object;
+  }
+
+  return head_list_object;
+}
+
 static KLObject* eval_kl_list (KLObject* list_object,
                                Environment* function_environment,
                                Environment* variable_environment)
@@ -1299,6 +1408,9 @@ static KLObject* eval_kl_list (KLObject* list_object,
     eval_kl_object(car_object, function_environment, variable_environment);
 
   if (is_kl_symbol(evaluated_car_object)) {
+    if (evaluated_car_object == get_mcons_symbol_object())
+      return eval_mcons_expression(list_object, function_environment,
+                                   variable_environment);
     if (evaluated_car_object == get_if_symbol_object())
       return eval_if_expression(list_object, function_environment,
                                 variable_environment);

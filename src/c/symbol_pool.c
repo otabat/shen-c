@@ -92,6 +92,7 @@ KLObject* quit_symbol_object;
 KLObject* loop_symbol_object;
 KLObject* recur_symbol_object;
 KLObject* quote_symbol_object;
+KLObject* mcons_symbol_object;
 
 extern KLObject* get_if_symbol_object (void);
 extern KLObject* get_and_symbol_object (void);
@@ -185,6 +186,7 @@ extern KLObject* get_quit_symbol_object (void);
 extern KLObject* get_loop_symbol_object (void);
 extern KLObject* get_recur_symbol_object (void);
 extern KLObject* get_quote_symbol_object (void);
+extern KLObject* get_mcons_symbol_object (void);
 
 static inline void register_if_symbol_object (void)
 {
@@ -817,6 +819,12 @@ static inline void register_quote_symbol_object (void)
   extend_symbol_name_table("quote", quote_symbol_object);
 }
 
+static inline void register_mcons_symbol_object (void)
+{
+  mcons_symbol_object = create_kl_symbol("mcons");
+  extend_symbol_name_table("mcons", mcons_symbol_object);
+}
+
 static inline void register_extension_symbol_objects (void)
 {
   register_println_symbol_object();
@@ -824,6 +832,7 @@ static inline void register_extension_symbol_objects (void)
   register_loop_symbol_object();
   register_recur_symbol_object();
   register_quote_symbol_object();
+  register_mcons_symbol_object();
 }
 
 void register_symbol_objects (void)
