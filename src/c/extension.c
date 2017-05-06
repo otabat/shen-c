@@ -63,9 +63,34 @@ static inline void register_primitive_kl_function_nth_hd (void)
   set_kl_symbol_function(get_nth_hd_symbol_object(), function_object);
 }
 
+static inline KLObject* primitive_function_nth_tl
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* number_object = objects[0];
+  KLObject* list_object = objects[1];
+  long index = get_kl_number_number_l(number_object);
+
+  for (long i = index; i > 0; --i)
+    list_object = get_tail_kl_list(list_object);
+
+  return list_object;
+}
+
+static inline void register_primitive_kl_function_nth_tl (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(2, &primitive_function_nth_tl);
+
+  set_kl_symbol_function(get_nth_tl_symbol_object(), function_object);
+}
+
 void register_extension_primitive_kl_functions (void)
 {
   register_primitive_kl_function_println();
   register_primitive_kl_function_quit();
   register_primitive_kl_function_nth_hd();
+  register_primitive_kl_function_nth_tl();
 }
