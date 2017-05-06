@@ -98,6 +98,7 @@ extern KLObject* loop_symbol_object;
 extern KLObject* recur_symbol_object;
 extern KLObject* quote_symbol_object;
 extern KLObject* mcons_symbol_object;
+extern KLObject* ocons_symbol_object;
 extern KLObject* nth_hd_symbol_object;
 extern KLObject* nth_tl_symbol_object;
 
@@ -392,6 +393,7 @@ inline KLObject* get_loop_symbol_object (void) { return loop_symbol_object; }
 inline KLObject* get_recur_symbol_object (void) { return recur_symbol_object; }
 inline KLObject* get_quote_symbol_object (void) { return quote_symbol_object; }
 inline KLObject* get_mcons_symbol_object (void) { return mcons_symbol_object; }
+inline KLObject* get_ocons_symbol_object (void) { return ocons_symbol_object; }
 inline KLObject* get_nth_hd_symbol_object (void) { return nth_hd_symbol_object; }
 inline KLObject* get_nth_tl_symbol_object (void) { return nth_tl_symbol_object; }
 

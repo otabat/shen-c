@@ -1399,6 +1399,21 @@ static inline KLObject* eval_mcons_expression (KLObject* list_object,
   return head_list_object;
 }
 
+static inline KLObject* eval_ocons_expression (KLObject* list_object)
+{
+  KLObject* cdr_object = get_tail_kl_list(list_object);
+
+  if (!is_non_empty_kl_list(cdr_object) ||
+      !is_kl_list(get_head_kl_list(cdr_object)))
+    throw_kl_exception("Argument to ocons should be a list");
+
+  KLObject* cadr_object = get_head_kl_list(cdr_object);
+
+  optimize_multiple_function_calls(cadr_object);
+
+  return cadr_object;
+}
+
 static KLObject* eval_kl_list (KLObject* list_object,
                                Environment* function_environment,
                                Environment* variable_environment)
@@ -1448,6 +1463,8 @@ static KLObject* eval_kl_list (KLObject* list_object,
                                      variable_environment);
     if (evaluated_car_object == get_quote_symbol_object())
       return eval_quote_expression(list_object);
+    //if (evaluated_car_object == get_ocons_symbol_object())
+    //  return eval_ocons_expression(list_object);
 
     return eval_symbol_function_application(list_object,
                                             evaluated_car_object,
