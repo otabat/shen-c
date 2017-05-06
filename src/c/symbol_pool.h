@@ -74,6 +74,7 @@ extern KLObject* append_symbol_object;
 extern KLObject* is_element_symbol_object;
 extern KLObject* assoc_symbol_object;
 extern KLObject* occurrences_symbol_object;
+extern KLObject* nth_symbol_object;
 extern KLObject* shen_is_numbyte_symbol_object;
 extern KLObject* shen_byte_to_digit_symbol_object;
 extern KLObject* read_file_as_charlist_symbol_object;
@@ -304,6 +305,8 @@ inline KLObject* get_occurrences_symbol_object (void)
 {
   return occurrences_symbol_object;
 }
+
+inline KLObject* get_nth_symbol_object (void) { return nth_symbol_object; }
 
 inline KLObject* get_shen_is_numbyte_symbol_object (void)
 {
