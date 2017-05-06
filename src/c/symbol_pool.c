@@ -94,6 +94,7 @@ KLObject* loop_symbol_object;
 KLObject* recur_symbol_object;
 KLObject* quote_symbol_object;
 KLObject* mcons_symbol_object;
+KLObject* nth_hd_symbol_object;
 
 extern KLObject* get_if_symbol_object (void);
 extern KLObject* get_and_symbol_object (void);
@@ -189,6 +190,7 @@ extern KLObject* get_loop_symbol_object (void);
 extern KLObject* get_recur_symbol_object (void);
 extern KLObject* get_quote_symbol_object (void);
 extern KLObject* get_mcons_symbol_object (void);
+extern KLObject* get_nth_hd_symbol_object (void);
 
 static inline void register_if_symbol_object (void)
 {
@@ -834,6 +836,12 @@ static inline void register_mcons_symbol_object (void)
   extend_symbol_name_table("mcons", mcons_symbol_object);
 }
 
+static inline void register_nth_hd_symbol_object (void)
+{
+  nth_hd_symbol_object = create_kl_symbol("nth-hd");
+  extend_symbol_name_table("nth-hd", nth_hd_symbol_object);
+}
+
 static inline void register_extension_symbol_objects (void)
 {
   register_println_symbol_object();
@@ -842,6 +850,7 @@ static inline void register_extension_symbol_objects (void)
   register_recur_symbol_object();
   register_quote_symbol_object();
   register_mcons_symbol_object();
+  register_nth_hd_symbol_object();
 }
 
 void register_symbol_objects (void)

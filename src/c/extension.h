@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #include "kl.h"
+#include "list.h"
 #include "object.h"
 #include "primitive.h"
 #include "symbol_pool.h"
