@@ -50,6 +50,11 @@ void load_shen_kl_files (void)
   load_kl_file("src/kl/t-star.kl");
 }
 
+void load_development_kl_file (void)
+{
+  load_kl_file("src/kl/development.kl");
+}
+
 void run_kl_repl (void)
 {
   KLObject* std_input_stream_object = get_std_input_stream_object();
