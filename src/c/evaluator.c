@@ -1116,19 +1116,17 @@ static KLObject* eval_kl_list_primitive_function_application
 (KLObject* list_object, KLObject* function_object,
  Environment* function_environment, Environment* variable_environment)
 {
-  KLObject* evaluated_cdr_object =
-    eval_function_application_arguments(get_tail_kl_list(list_object),
-                                        function_environment,
-                                        variable_environment);
-  Vector* arguments = ((is_empty_kl_list(evaluated_cdr_object)) ?
-                       NULL : kl_list_to_vector(evaluated_cdr_object));
+  KLObject* cdr_object = get_tail_kl_list(list_object);
   PrimitiveFunction* primitive_function =
     get_kl_function_primitive_function(function_object);
-  size_t argument_size = (is_null(arguments)) ? 0 : get_vector_size(arguments);
+  size_t argument_size = get_kl_list_size(cdr_object);
   size_t parameter_size =
     get_primitive_function_parameter_size(primitive_function);
 
   if (argument_size != parameter_size) {
+    Vector* arguments = ((is_empty_kl_list(cdr_object)) ?
+                         NULL : kl_list_to_vector(cdr_object));
+
     if (parameter_size > 0) {
       KLObject* symbol_object = get_head_kl_list(list_object);
       KLObject* curried_list_object =
@@ -1165,6 +1163,13 @@ static KLObject* eval_kl_list_primitive_function_application
                           function_environment, variable_environment);
   }
 
+  KLObject* evaluated_cdr_object =
+    eval_function_application_arguments(cdr_object,
+                                        function_environment,
+                                        variable_environment);
+  Vector* arguments = ((is_empty_kl_list(evaluated_cdr_object)) ?
+                       NULL : kl_list_to_vector(evaluated_cdr_object));
+
   return eval_primitive_function_application(function_object, arguments,
                                              function_environment,
                                              variable_environment);
@@ -1174,18 +1179,16 @@ static KLObject* eval_kl_list_user_function_application
 (KLObject* list_object, KLObject* function_object,
  Environment* function_environment, Environment* variable_environment)
 {
-  KLObject* evaluated_cdr_object =
-    eval_function_application_arguments(get_tail_kl_list(list_object),
-                                        function_environment,
-                                        variable_environment);
-  Vector* arguments = ((is_empty_kl_list(evaluated_cdr_object)) ?
-                       NULL : kl_list_to_vector(evaluated_cdr_object));
+  KLObject* cdr_object = get_tail_kl_list(list_object);
   UserFunction* user_function = get_kl_function_user_function(function_object);
   Vector* parameters = get_user_function_parameters(user_function);
-  size_t argument_size = (is_null(arguments)) ? 0 : get_vector_size(arguments);
+  size_t argument_size = get_kl_list_size(cdr_object);
   size_t parameter_size = (is_null(parameters)) ? 0 : get_vector_size(parameters);
 
   if (argument_size != parameter_size) {
+    Vector* arguments = ((is_empty_kl_list(cdr_object)) ?
+                         NULL : kl_list_to_vector(cdr_object));
+
     if (parameter_size > 0) {
       KLObject* symbol_object = get_head_kl_list(list_object);
       KLObject* curried_list_object =
@@ -1221,6 +1224,13 @@ static KLObject* eval_kl_list_user_function_application
     return eval_kl_object(partial_function_application_list_object,
                           function_environment, variable_environment);
   }
+
+  KLObject* evaluated_cdr_object =
+    eval_function_application_arguments(cdr_object,
+                                        function_environment,
+                                        variable_environment);
+  Vector* arguments = ((is_empty_kl_list(evaluated_cdr_object)) ?
+                       NULL : kl_list_to_vector(evaluated_cdr_object));
 
   return eval_user_function_application(function_object, arguments);
 }
