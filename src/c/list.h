@@ -56,12 +56,6 @@ inline bool is_non_empty_kl_list (KLObject* object)
 
 inline size_t get_kl_list_size (KLObject* list_object)
 {
-  if (!is_kl_list(list_object))
-    throw_kl_exception("Not a list");
-
-  if (is_empty_kl_list(list_object))
-    return 0;
-
   KLObject* object = list_object;
   size_t size = 0;
 
