@@ -40,6 +40,8 @@ inline void initialize_and_run_shen_repl (void)
   initialize();
   load_shen_kl_files();
   run_shen_repl();
+  //load_development_kl_file();
+  //run_kl_repl();
 }
 
 #endif
