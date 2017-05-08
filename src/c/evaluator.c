@@ -481,8 +481,10 @@ static KLObject* optimize_tail_call (KLObject* function_symbol_object,
 }
 
 static KLObject* optimize_multiple_function_calls_helper
-(KLObject* body_object, KLObject* target_symbol_object, long function_call_count)
+(KLObject* body_object, KLObject* target_symbol_object, long function_call_level,
+ long* function_call_count_ref)
 {
+  long function_call_count = *function_call_count_ref;
   KLObject* head_list_object = body_object;
   KLObject* tail_list_object = head_list_object;
 
@@ -492,55 +494,184 @@ static KLObject* optimize_multiple_function_calls_helper
     else if (is_non_empty_kl_list(tail_list_object)) {
       KLObject* car_object = get_head_kl_list(tail_list_object);
 
-      if (is_kl_symbol_equal(car_object, target_symbol_object) &&
-          head_list_object == tail_list_object) {
-        ++function_call_count;
+      if (head_list_object == tail_list_object) {
+        if (is_kl_symbol_equal(car_object, get_cons_symbol_object())) {
+          if (is_kl_symbol_equal(target_symbol_object,
+                                 get_cons_symbol_object()))
+            ++function_call_level;
+          else
+            function_call_level = 1;
 
-        KLObject* cdr_object = get_tail_kl_list(tail_list_object);
+          KLObject* cdr_object = get_tail_kl_list(tail_list_object);
 
-        if (is_non_empty_kl_list(cdr_object) &&
-            is_non_empty_kl_list(get_tail_kl_list(cdr_object)) &&
-            is_empty_kl_list(get_tail_kl_list(get_tail_kl_list(cdr_object)))) {
-          KLObject* cadr_object = get_head_kl_list(cdr_object);
+          if (is_non_empty_kl_list(cdr_object) &&
+              is_non_empty_kl_list(get_tail_kl_list(cdr_object)) &&
+              is_empty_kl_list(get_tail_kl_list(get_tail_kl_list(cdr_object)))) {
+            KLObject* cadr_object = get_head_kl_list(cdr_object);
 
-          if (is_non_empty_kl_list(cadr_object))
-            optimize_multiple_function_calls_helper(cadr_object,
-                                                    target_symbol_object,
-                                                    0);
+            if (is_non_empty_kl_list(cadr_object)) {
+              long function_call_count = 0;
 
-          KLObject* caddr_object = get_head_kl_list(get_tail_kl_list(cdr_object));
-
-          if (is_non_empty_kl_list(caddr_object)) {
-            KLObject* list_object =
-              optimize_multiple_function_calls_helper(caddr_object,
-                                                      target_symbol_object,
-                                                      function_call_count);
-
-            if (is_null(list_object))
-              break;
-
-            if (function_call_count > 1)
-              return create_kl_list(cadr_object, list_object);
-            else if (function_call_count == 1) {
-              set_head_kl_list(tail_list_object, get_mcons_symbol_object());
-              set_tail_kl_list(tail_list_object,
-                               create_kl_list(cadr_object, list_object));
+              optimize_multiple_function_calls_helper(cadr_object,
+                                                      NULL,
+                                                      0,
+                                                      &function_call_count);
             }
-          } else if (function_call_count > 1)
-            return create_kl_list(cadr_object,
-                                  create_kl_list(caddr_object,
-                                                 get_empty_kl_list()));
-        }
 
-        break;
+            KLObject* cddr_object = get_tail_kl_list(cdr_object);
+            KLObject* caddr_object = get_head_kl_list(cddr_object);
+
+            if (is_non_empty_kl_list(caddr_object)) {
+              KLObject* list_object =
+                optimize_multiple_function_calls_helper(caddr_object,
+                                                        get_cons_symbol_object(),
+                                                        function_call_level,
+                                                        function_call_count_ref);
+
+              if (is_null(list_object)) {
+                if (function_call_level > 1)
+                  return create_kl_list(cadr_object, cddr_object);
+
+                break;
+              }
+
+              if (function_call_level > 1)
+                return create_kl_list(cadr_object, list_object);
+              else if (function_call_level == 1) {
+                set_head_kl_list(tail_list_object, get_mcons_symbol_object());
+                set_tail_kl_list(tail_list_object,
+                                 create_kl_list(cadr_object, list_object));
+              }
+            } else if (function_call_level > 1)
+              return create_kl_list(cadr_object, cddr_object);
+          }
+
+          break;
+        } else if (is_kl_symbol_equal(car_object, get_hd_symbol_object())) {
+          if (is_kl_symbol_equal(target_symbol_object, get_hd_symbol_object())) {
+            ++function_call_level;
+            *function_call_count_ref = ++function_call_count;
+          } else {
+            function_call_level = 1;
+            function_call_count = 1;
+          }
+
+          KLObject* cdr_object = get_tail_kl_list(tail_list_object);
+
+          if (is_non_empty_kl_list(cdr_object) &&
+              is_empty_kl_list(get_tail_kl_list(cdr_object))) {
+            KLObject* cadr_object = get_head_kl_list(cdr_object);
+
+            if (is_non_empty_kl_list(cadr_object)) {
+              KLObject* list_object;
+
+              if (function_call_count == 1)
+                list_object =
+                  optimize_multiple_function_calls_helper(cadr_object,
+                                                          get_hd_symbol_object(),
+                                                          function_call_level,
+                                                          &function_call_count);
+              else
+                list_object =
+                  optimize_multiple_function_calls_helper(cadr_object,
+                                                          get_hd_symbol_object(),
+                                                          function_call_level,
+                                                          function_call_count_ref);
+
+              if (is_null(list_object)) {
+                if (function_call_level > 1)
+                  return create_kl_list(cadr_object, get_empty_kl_list());
+
+                break;
+              }
+
+              if (function_call_level > 1)
+                return list_object;
+
+              if (function_call_level == 1 && function_call_count > 1) {
+                KLObject* list_size_number_object =
+                  create_kl_number_l(function_call_count);
+                KLObject* new_cdr_object =
+                  create_kl_list(list_size_number_object, list_object);
+
+                set_head_kl_list(tail_list_object, get_nth_hd_symbol_object());
+                set_tail_kl_list(tail_list_object, new_cdr_object);
+              }
+            } else if (function_call_level > 1)
+              return create_kl_list(cadr_object, get_empty_kl_list());
+          }
+
+          break;
+        } else if (is_kl_symbol_equal(car_object, get_tl_symbol_object())) {
+          if (is_kl_symbol_equal(target_symbol_object, get_tl_symbol_object())) {
+            ++function_call_level;
+            *function_call_count_ref = ++function_call_count;
+          } else {
+            function_call_level = 1;
+            function_call_count = 1;
+          }
+
+          KLObject* cdr_object = get_tail_kl_list(tail_list_object);
+
+          if (is_non_empty_kl_list(cdr_object) &&
+              is_empty_kl_list(get_tail_kl_list(cdr_object))) {
+            KLObject* cadr_object = get_head_kl_list(cdr_object);
+
+            if (is_non_empty_kl_list(cadr_object)) {
+              KLObject* list_object;
+
+              if (function_call_count == 1)
+                list_object =
+                  optimize_multiple_function_calls_helper(cadr_object,
+                                                          get_tl_symbol_object(),
+                                                          function_call_level,
+                                                          &function_call_count);
+              else
+                list_object =
+                  optimize_multiple_function_calls_helper(cadr_object,
+                                                          get_tl_symbol_object(),
+                                                          function_call_level,
+                                                          function_call_count_ref);
+
+              if (is_null(list_object)) {
+                if (function_call_level > 1)
+                  return create_kl_list(cadr_object, get_empty_kl_list());
+
+                break;
+              }
+
+              if (function_call_level > 1)
+                return list_object;
+
+              if (function_call_level == 1 && function_call_count > 1) {
+                KLObject* list_size_number_object =
+                  create_kl_number_l(function_call_count);
+                KLObject* new_cdr_object =
+                  create_kl_list(list_size_number_object, list_object);
+
+                set_head_kl_list(tail_list_object, get_nth_tl_symbol_object());
+                set_tail_kl_list(tail_list_object, new_cdr_object);
+              }
+            } else if (function_call_level > 1)
+              return create_kl_list(cadr_object, get_empty_kl_list());
+          }
+
+          break;
+        }
       }
 
-      if (is_non_empty_kl_list(car_object))
-        optimize_multiple_function_calls_helper(car_object,
-                                                target_symbol_object, 0);
+      if (is_non_empty_kl_list(car_object)) {
+        long function_call_count = 0;
 
-      if (function_call_count > 0)
+        optimize_multiple_function_calls_helper(car_object, NULL, 0,
+                                                &function_call_count);
+      }
+
+      if (function_call_level > 0) {
+        function_call_level = 0;
         function_call_count = 0;
+        *function_call_count_ref = 0;
+      }
 
       tail_list_object = get_tail_kl_list(tail_list_object);
 
@@ -555,8 +686,10 @@ static KLObject* optimize_multiple_function_calls_helper
 
 static void optimize_multiple_function_calls (KLObject* body_object)
 {
-  optimize_multiple_function_calls_helper(body_object, get_cons_symbol_object(),
-                                          0);
+  long function_call_count = 0;
+
+  optimize_multiple_function_calls_helper(body_object, NULL, 0,
+                                          &function_call_count);
 }
 
 static KLObject* eval_defun_expression (KLObject* list_object)
