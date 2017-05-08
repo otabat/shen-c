@@ -49,6 +49,25 @@ static inline KLObject* primitive_function_nth_hd
   KLObject* list_object = objects[1];
   long index = get_kl_number_number_l(number_object);
 
+  if (index == 2)
+    return get_head_kl_list(get_head_kl_list(list_object));
+  if (index == 3)
+    return get_head_kl_list(get_head_kl_list(get_head_kl_list(list_object)));
+  if (index == 4)
+    return get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(list_object))));
+  if (index == 5)
+    return get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(list_object)))));
+  if (index == 6)
+    return get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(list_object))))));
+  if (index == 7)
+    return get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(list_object)))))));
+  if (index == 8)
+    return get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(list_object))))))));
+  if (index == 9)
+    return get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(list_object)))))))));
+  if (index == 10)
+    return get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(get_head_kl_list(list_object))))))))));
+
   for (long i = index; i > 0; --i)
     list_object = get_head_kl_list(list_object);
 
@@ -72,6 +91,25 @@ static inline KLObject* primitive_function_nth_tl
   KLObject* number_object = objects[0];
   KLObject* list_object = objects[1];
   long index = get_kl_number_number_l(number_object);
+
+  if (index == 2)
+    return get_tail_kl_list(get_tail_kl_list(list_object));
+  if (index == 3)
+    return get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(list_object)));
+  if (index == 4)
+    return get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(list_object))));
+  if (index == 5)
+    return get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(list_object)))));
+  if (index == 6)
+    return get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(list_object))))));
+  if (index == 7)
+    return get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(list_object)))))));
+  if (index == 8)
+    return get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(list_object))))))));
+  if (index == 9)
+    return get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(list_object)))))))));
+  if (index == 10)
+    return get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(list_object))))))))));
 
   for (long i = index; i > 0; --i)
     list_object = get_tail_kl_list(list_object);
