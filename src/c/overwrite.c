@@ -1087,6 +1087,121 @@ static inline void register_primitive_kl_function_shen_mk_pvar (void)
   set_kl_symbol_function(get_shen_mk_pvar_symbol_object(), function_object);
 }
 
+static inline KLObject* primitive_function_shen_copy_vector_helper
+(KLObject* source_vector_object, KLObject* destination_vector_object,
+ size_t source_vector_limit, size_t destination_vector_limit, KLObject* fill_object)
+{
+  KLObject** source_vector_objects =
+    get_vector_objects(get_vector(source_vector_object));
+  KLObject** destination_vector_objects =
+    get_vector_objects(get_vector(destination_vector_object));
+
+  for (long i = 1; i <= source_vector_limit; ++i)
+    destination_vector_objects[i] = source_vector_objects[i];
+
+  for (long i = source_vector_limit + 1; i <= destination_vector_limit; ++i)
+    destination_vector_objects[i] = fill_object;
+
+  return destination_vector_object;
+}
+
+static inline KLObject* primitive_function_shen_copy_vector
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+
+  return primitive_function_shen_copy_vector_helper(objects[0],
+                                                    objects[1],
+                                                    get_kl_number_number_l(objects[2]),
+                                                    get_kl_number_number_l(objects[3]),
+                                                    objects[4]);
+}
+
+static inline void register_primitive_kl_function_shen_copy_vector (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(5, &primitive_function_shen_copy_vector);
+
+  set_kl_symbol_function(get_shen_copy_vector_symbol_object(), function_object);
+}
+
+static inline KLObject* primitive_function_shen_resize_vector_helper
+(KLObject* source_vector_object, size_t destination_vector_limit,
+ KLObject* fill_object)
+{
+  size_t source_vector_limit =
+    get_kl_number_number_l(get_vector_element(get_vector(source_vector_object),
+                                              0));
+  KLObject* destination_vector_object =
+    create_kl_vector(destination_vector_limit + 1);
+
+  set_vector_element(get_vector(destination_vector_object), 0,
+                     create_kl_number_l(destination_vector_limit));
+
+  return primitive_function_shen_copy_vector_helper(source_vector_object,
+                                                    destination_vector_object,
+                                                    source_vector_limit,
+                                                    destination_vector_limit,
+                                                    fill_object);
+}
+
+static inline KLObject* primitive_function_shen_resize_vector
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+
+  return primitive_function_shen_resize_vector_helper(objects[0],
+                                                      get_kl_number_number_l(objects[1]),
+                                                      objects[2]);
+}
+
+static inline void register_primitive_kl_function_shen_resize_vector (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(3, &primitive_function_shen_resize_vector);
+
+  set_kl_symbol_function(get_shen_resize_vector_symbol_object(), function_object);
+}
+
+static inline KLObject* primitive_function_shen_resizeprocessvector
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* index_object = objects[0];
+  KLObject* limit_object = objects[1];
+  long limit = get_kl_number_number_l(limit_object);
+  KLObject* prolog_vector_object =
+    get_kl_symbol_variable_value(get_shen_earmuff_prologvectors_symbol_object());
+  Vector* prolog_vector = get_vector(prolog_vector_object);
+  KLObject* source_vector_object =
+    get_vector_element(prolog_vector, get_kl_number_number_l(index_object));
+  size_t destination_vector_limit = limit + limit;
+  KLObject* destination_vector_object =
+    primitive_function_shen_resize_vector_helper(source_vector_object,
+                                                 destination_vector_limit,
+                                                 get_shen_dash_null_symbol_object());
+
+  set_vector_element(prolog_vector, get_kl_number_number_l(index_object),
+                     destination_vector_object);
+
+  return prolog_vector_object;
+}
+
+static inline void register_primitive_kl_function_shen_resizeprocessvector (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(2, &primitive_function_shen_resizeprocessvector);
+
+  set_kl_symbol_function(get_shen_resizeprocessvector_symbol_object(),
+                         function_object);
+}
+
 static inline KLObject* primitive_function_shen_compose
 (KLObject* function_object, Vector* arguments, Environment* function_environment,
  Environment* variable_environment)
@@ -1177,6 +1292,9 @@ void register_overwrite_prolog_primitive_kl_functions (void)
   register_primitive_kl_function_bind();
   register_primitive_kl_function_shen_lzy_equal_exclamation();
   register_primitive_kl_function_shen_mk_pvar();
+  register_primitive_kl_function_shen_copy_vector();
+  register_primitive_kl_function_shen_resize_vector();
+  register_primitive_kl_function_shen_resizeprocessvector();
 }
 
 void register_overwrite_macros_primitive_kl_functions (void)

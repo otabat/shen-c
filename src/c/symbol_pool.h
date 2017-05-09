@@ -92,6 +92,9 @@ extern KLObject* shen_unbindv_symbol_object;
 extern KLObject* bind_symbol_object;
 extern KLObject* shen_lzy_equal_exclamation_symbol_object;
 extern KLObject* shen_mk_pvar_symbol_object;
+extern KLObject* shen_copy_vector_symbol_object;
+extern KLObject* shen_resize_vector_symbol_object;
+extern KLObject* shen_resizeprocessvector_symbol_object;
 extern KLObject* shen_compose_symbol_object;
 
 extern KLObject* println_symbol_object;
@@ -392,6 +395,21 @@ inline KLObject* get_shen_lzy_equal_exclamation_symbol_object (void)
 inline KLObject* get_shen_mk_pvar_symbol_object (void)
 {
   return shen_mk_pvar_symbol_object;
+}
+
+inline KLObject* get_shen_copy_vector_symbol_object (void)
+{
+  return shen_copy_vector_symbol_object;
+}
+
+inline KLObject* get_shen_resize_vector_symbol_object (void)
+{
+  return shen_resize_vector_symbol_object;
+}
+
+inline KLObject* get_shen_resizeprocessvector_symbol_object (void)
+{
+  return shen_resizeprocessvector_symbol_object;
 }
 
 inline KLObject* get_shen_compose_symbol_object (void)

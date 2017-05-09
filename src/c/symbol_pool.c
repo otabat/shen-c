@@ -88,6 +88,9 @@ KLObject* shen_unbindv_symbol_object;
 KLObject* bind_symbol_object;
 KLObject* shen_lzy_equal_exclamation_symbol_object;
 KLObject* shen_mk_pvar_symbol_object;
+KLObject* shen_copy_vector_symbol_object;
+KLObject* shen_resize_vector_symbol_object;
+KLObject* shen_resizeprocessvector_symbol_object;
 KLObject* shen_compose_symbol_object;
 
 KLObject* println_symbol_object;
@@ -188,6 +191,9 @@ extern KLObject* get_shen_unbindv_symbol_object (void);
 extern KLObject* get_bind_symbol_object (void);
 extern KLObject* get_shen_lzy_equal_exclamation_symbol_object (void);
 extern KLObject* get_shen_mk_pvar_symbol_object (void);
+extern KLObject* get_shen_copy_vector_symbol_object (void);
+extern KLObject* get_shen_resize_vector_symbol_object (void);
+extern KLObject* get_shen_resizeprocessvector_symbol_object (void);
 extern KLObject* get_shen_compose_symbol_object (void);
 
 extern KLObject* get_println_symbol_object (void);
@@ -776,6 +782,26 @@ static inline void register_shen_mk_pvar_symbol_object (void)
   extend_symbol_name_table("shen.mk-pvar", shen_mk_pvar_symbol_object);
 }
 
+static inline void register_shen_copy_vector_symbol_object (void)
+{
+  shen_copy_vector_symbol_object = create_kl_symbol("shen.copy-vector");
+  extend_symbol_name_table("shen.copy-vector", shen_copy_vector_symbol_object);
+}
+
+static inline void register_shen_resize_vector_symbol_object (void)
+{
+  shen_resize_vector_symbol_object = create_kl_symbol("shen.resize-vector");
+  extend_symbol_name_table("shen.resize-vector", shen_resize_vector_symbol_object);
+}
+
+static inline void register_shen_resizeprocessvector_symbol_object (void)
+{
+  shen_resizeprocessvector_symbol_object =
+    create_kl_symbol("shen.resizeprocessvector");
+  extend_symbol_name_table("shen.resizeprocessvector",
+                           shen_resizeprocessvector_symbol_object);
+}
+
 static inline void register_shen_compose_symbol_object (void)
 {
   shen_compose_symbol_object = create_kl_symbol("shen.compose");
@@ -819,6 +845,9 @@ static inline void register_overwrite_symbol_objects (void)
   register_bind_symbol_object();
   register_shen_lzy_equal_exclamation_symbol_object();
   register_shen_mk_pvar_symbol_object();
+  register_shen_copy_vector_symbol_object();
+  register_shen_resize_vector_symbol_object();
+  register_shen_resizeprocessvector_symbol_object();
   register_shen_compose_symbol_object();
 }
 
