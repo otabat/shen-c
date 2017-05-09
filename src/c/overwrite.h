@@ -23,6 +23,7 @@
 void register_overwrite_toplevel_primitive_kl_functions (void);
 void register_overwrite_core_primitive_kl_functions (void);
 void register_overwrite_sys_primitive_kl_functions (void);
+void register_overwrite_yacc_primitive_kl_functions (void);
 void register_overwrite_reader_primitive_kl_functions (void);
 void register_overwrite_prolog_primitive_kl_functions (void);
 void register_overwrite_macros_primitive_kl_functions (void);
