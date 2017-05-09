@@ -1058,6 +1058,35 @@ static inline void register_primitive_kl_function_shen_lzy_equal_exclamation (vo
                          function_object);
 }
 
+static inline KLObject* primitive_function_shen_mk_pvar_helper (KLObject* object)
+{
+  KLObject* vector_object = create_kl_vector(2);
+  Vector* vector = get_vector(vector_object);
+
+  set_vector_element(vector, 0, get_shen_pvar_symbol_object());
+  set_vector_element(vector, 1, object);
+
+  return vector_object;
+}
+
+static inline KLObject* primitive_function_shen_mk_pvar
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+
+  return primitive_function_shen_mk_pvar_helper(objects[0]);
+}
+
+static inline void register_primitive_kl_function_shen_mk_pvar (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(1, &primitive_function_shen_mk_pvar);
+
+  set_kl_symbol_function(get_shen_mk_pvar_symbol_object(), function_object);
+}
+
 static inline KLObject* primitive_function_shen_compose
 (KLObject* function_object, Vector* arguments, Environment* function_environment,
  Environment* variable_environment)
@@ -1147,6 +1176,7 @@ void register_overwrite_prolog_primitive_kl_functions (void)
   register_primitive_kl_function_shen_unbindv();
   register_primitive_kl_function_bind();
   register_primitive_kl_function_shen_lzy_equal_exclamation();
+  register_primitive_kl_function_shen_mk_pvar();
 }
 
 void register_overwrite_macros_primitive_kl_functions (void)
