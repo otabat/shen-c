@@ -82,6 +82,7 @@ extern KLObject* read_file_as_charlist_symbol_object;
 extern KLObject* shen_pvar_symbol_object;
 extern KLObject* shen_is_pvar_symbol_object;
 extern KLObject* shen_earmuff_prologvectors_symbol_object;
+extern KLObject* shen_earmuff_varcounter_symbol_object;
 extern KLObject* shen_valvector_symbol_object;
 extern KLObject* shen_dash_null_symbol_object;
 extern KLObject* shen_lazyderef_symbol_object;
@@ -95,6 +96,7 @@ extern KLObject* shen_mk_pvar_symbol_object;
 extern KLObject* shen_copy_vector_symbol_object;
 extern KLObject* shen_resize_vector_symbol_object;
 extern KLObject* shen_resizeprocessvector_symbol_object;
+extern KLObject* shen_newpv_symbol_object;
 extern KLObject* shen_compose_symbol_object;
 
 extern KLObject* println_symbol_object;
@@ -351,6 +353,11 @@ inline KLObject* get_shen_earmuff_prologvectors_symbol_object (void)
   return shen_earmuff_prologvectors_symbol_object;
 }
 
+inline KLObject* get_shen_earmuff_varcounter_symbol_object (void)
+{
+  return shen_earmuff_varcounter_symbol_object;
+}
+
 inline KLObject* get_shen_valvector_symbol_object (void)
 {
   return shen_valvector_symbol_object;
@@ -410,6 +417,11 @@ inline KLObject* get_shen_resize_vector_symbol_object (void)
 inline KLObject* get_shen_resizeprocessvector_symbol_object (void)
 {
   return shen_resizeprocessvector_symbol_object;
+}
+
+inline KLObject* get_shen_newpv_symbol_object (void)
+{
+  return shen_newpv_symbol_object;
 }
 
 inline KLObject* get_shen_compose_symbol_object (void)
