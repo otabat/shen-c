@@ -130,7 +130,7 @@ inline KLObject* close_kl_stream (KLObject* stream_object)
   if (stream_status != 0)
     throw_kl_exception("Failed to close stream");
 
-  return EL();
+  return EL;
 }
 
 inline KLObject* create_std_kl_stream (FILE* file,

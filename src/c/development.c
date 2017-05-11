@@ -16,7 +16,7 @@ static inline void set_symbol_counter_name_list_object (KLObject* list_object)
 
 static inline void initialize_symbol_counter_name_list_object (void)
 {
-  set_symbol_counter_name_list_object(EL());
+  set_symbol_counter_name_list_object(EL);
 }
 
 static inline KLObject* get_symbol_counter_names_symbol_object (void)
@@ -41,7 +41,7 @@ KLObject* inject_symbol_counter (KLObject* symbol_object, KLObject* object)
   extend_symbol_name_table(symbol_counter_symbol_name, symbol_counter_symbol_object);
   eval_kl_object(CONS(get_set_symbol_object(),
                       CONS(symbol_counter_symbol_object,
-                           CONS(create_kl_number_l(0), EL()))),
+                           CONS(create_kl_number_l(0), EL))),
                  get_global_function_environment(),
                  get_global_variable_environment());
 
@@ -54,10 +54,10 @@ KLObject* inject_symbol_counter (KLObject* symbol_object, KLObject* object)
                                        CONS(create_kl_number_l(1),
                                             CONS(CONS(get_value_symbol_object(),
                                                       CONS(symbol_counter_symbol_object,
-                                                           EL())),
-                                                 EL()))),
-                                  EL()))),
-                   CONS(object, EL()))));
+                                                           EL)),
+                                                 EL))),
+                                  EL))),
+                   CONS(object, EL))));
   KLObject* list_object = CONS(symbol_counter_symbol_object, get_symbol_counter_name_list_object());
 
   set_symbol_counter_name_list_object(list_object);
@@ -92,7 +92,7 @@ static inline KLObject* primitive_function_output_symbol_count
     KLObject* symbol_object = get_head_kl_list(list_object);
     KLObject* number_object = get_kl_symbol_variable_value(symbol_object);
     KLObject* pair_object = CONS(symbol_object, number_object);
-    KLObject* new_list_object = CONS(pair_object, EL());
+    KLObject* new_list_object = CONS(pair_object, EL);
 
     if (is_null(head_list_object))
       head_list_object = new_list_object;
@@ -141,7 +141,7 @@ static inline KLObject* primitive_function_output_symbol_count
 
   fclose(file);
 
-  return EL();
+  return EL;
 }
 
 static inline void register_primitive_kl_function_output_symbol_count (void)

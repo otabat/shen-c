@@ -277,10 +277,10 @@ static KLObject* read_string_helper (FILE* file, int list_level)
       append_read_kl_object(object, &head_list_object, &tail_list_object);
     } else if (is_right_parenthesis_character(c)) {
       if (is_null(head_list_object)) {
-        head_list_object = EL();
+        head_list_object = EL;
         tail_list_object = head_list_object;
       } else
-        set_tail_kl_list(tail_list_object, EL());
+        set_tail_kl_list(tail_list_object, EL);
 
       return head_list_object;
     } else if (is_double_quotation_character(c)) {

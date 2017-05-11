@@ -249,6 +249,6 @@ inline bool is_empty_kl_list (KLObject* object)
   return object == get_empty_kl_list();
 }
 
-#define EL() get_empty_kl_list()
+#define EL get_empty_kl_list()
 
 #endif

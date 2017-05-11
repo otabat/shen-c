@@ -299,7 +299,7 @@ static inline KLObject* primitive_function_map
     get_kl_function_arguments_with_count_check(function_object, arguments);
   KLObject* symbol_or_function_object = objects[0];
   KLObject* argument_list_object = objects[1];
-  KLObject* head_list_object = EL();
+  KLObject* head_list_object = EL;
   KLObject* tail_list_object = head_list_object;
 
   while (!is_empty_kl_list(argument_list_object)) {
@@ -308,15 +308,15 @@ static inline KLObject* primitive_function_map
 
     KLObject* quoted_argument_object =
       CONS(get_quote_symbol_object(),
-           CONS(get_head_kl_list(argument_list_object), EL()));
+           CONS(get_head_kl_list(argument_list_object), EL));
     KLObject* function_application_list_object =
       CONS(symbol_or_function_object,
-           CONS(quoted_argument_object, EL()));
+           CONS(quoted_argument_object, EL));
     KLObject* list_object =
       CONS(eval_kl_object(function_application_list_object,
                           function_environment,
                           variable_environment),
-           EL());
+           EL);
 
     if (is_empty_kl_list(head_list_object))
       head_list_object = list_object;
@@ -349,7 +349,7 @@ static inline KLObject* primitive_function_reverse
   if (!is_kl_list(argument_list_object))
     throw_kl_exception("Wrong argument for reverse function");
 
-  KLObject* head_list_object = EL();
+  KLObject* head_list_object = EL;
 
   while (is_non_empty_kl_list(argument_list_object)) {
     head_list_object = CONS(get_head_kl_list(argument_list_object),
@@ -659,7 +659,7 @@ static inline KLObject* primitive_function_read_file_as_charlist
   KLObject* tail_list_object = head_list_object;
 
   for (size_t i = 0; i < string_length; ++i) {
-    KLObject* list_object = CONS(create_kl_number_l(string[i]), EL());
+    KLObject* list_object = CONS(create_kl_number_l(string[i]), EL);
 
     if (is_null(head_list_object))
       head_list_object = list_object;
@@ -939,8 +939,7 @@ static inline KLObject* primitive_function_bind_helper
                                        argument_vector_value_object,
                                        argument_index_object);
 
-  KLObject* function_application_list_object = CONS(argument_function_object,
-                                                    EL());
+  KLObject* function_application_list_object = CONS(argument_function_object, EL);
   KLObject* object = eval_kl_object(function_application_list_object,
                                     function_environment, variable_environment);
 
@@ -975,7 +974,7 @@ static inline KLObject* primitive_function_shen_lzy_equal_exclamation_helper
  Environment* variable_environment)
 {
   if (is_kl_object_equal(object, list_or_vector_object)) {
-    KLObject* function_application_list_object = CONS(function_object, EL());
+    KLObject* function_application_list_object = CONS(function_object, EL);
 
     return eval_kl_object(function_application_list_object, function_environment,
                           variable_environment);
@@ -1005,12 +1004,12 @@ static inline KLObject* primitive_function_shen_lzy_equal_exclamation_helper
            CONS(CONS(get_quote_symbol_object(),
                      CONS(primitive_function_shen_lazyderef_helper(get_tail_kl_list(list_or_vector_object),
                                                                    number_object),
-                          EL())),
+                          EL)),
                 CONS(CONS(get_quote_symbol_object(),
                           CONS(primitive_function_shen_lazyderef_helper(get_tail_kl_list(object),
                                                                         number_object),
-                               EL())),
-                     CONS(number_object, CONS(function_object, EL())))));
+                               EL)),
+                     CONS(number_object, CONS(function_object, EL)))));
     KLObject* freeze_object = eval_freeze_expression(freeze_body_object,
                                                      function_environment,
                                                      variable_environment);
@@ -1251,7 +1250,7 @@ static inline KLObject* primitive_function_shen_compose
       throw_kl_exception("Wrong argument for shen.compose function");
 
     KLObject* quoted_argument_list_object =
-      CONS(CONS(get_quote_symbol_object(), CONS(object, EL())), EL());
+      CONS(CONS(get_quote_symbol_object(), CONS(object, EL)), EL);
     KLObject* function_application_list_object =
       CONS(get_head_kl_list(list_object), quoted_argument_list_object);
 

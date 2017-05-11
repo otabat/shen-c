@@ -89,7 +89,7 @@ void run_kl_repl (void)
 void run_shen_repl (void)
 {
   KLObject* shen_symbol_object = lookup_symbol_name_table("shen.shen");
-  KLObject* list_object = CONS(shen_symbol_object, EL());
+  KLObject* list_object = CONS(shen_symbol_object, EL);
 
   eval_kl_object(list_object, get_global_function_environment(),
                  get_global_variable_environment());
