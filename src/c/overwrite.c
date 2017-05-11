@@ -1,5 +1,10 @@
 #include "overwrite.h"
 
+static inline KLObject* get_prolog_vector_object (void)
+{
+  return get_kl_symbol_variable_value(get_shen_earmuff_prologvectors_symbol_object());
+}
+
 static inline KLObject* primitive_function_exit (KLObject* function_object,
                                                  Vector* arguments,
                                                  Environment* function_environment,
@@ -273,9 +278,7 @@ static inline KLObject* primitive_function_get_absvector_element_slash_or
   if (index >= (long)size || index < 0)
     eval_simple_closure_function_application(objects[2]);
 
-  KLObject** vector_objects = get_vector_objects(vector);
-
-  return vector_objects[index];
+  return get_vector_element(vector, index);
 }
 
 static inline void register_primitive_kl_function_get_absvector_element_slash_or
@@ -694,16 +697,12 @@ static inline void register_primitive_kl_function_shen_is_pvar (void)
 static inline KLObject* primitive_function_shen_valvector_helper
 (KLObject* argument_vector_object, KLObject* argument_index_object)
 {
-  Vector* prolog_vector =
-    get_vector(get_kl_symbol_variable_value(get_shen_earmuff_prologvectors_symbol_object()));
   KLObject* vector_object =
-    get_vector_element(prolog_vector,
-                       get_kl_number_number_l(argument_index_object));
+    get_kl_vector_element(get_prolog_vector_object(), argument_index_object);
   KLObject* index_object =
     get_vector_element(get_vector(argument_vector_object), 1);
 
-  return get_vector_element(get_vector(vector_object),
-                            get_kl_number_number_l(index_object));
+  return get_kl_vector_element(vector_object, index_object);
 }
 
 static inline KLObject* primitive_function_shen_valvector
@@ -849,17 +848,13 @@ static inline KLObject* primitive_function_shen_bindv_helper
 (KLObject* argument_vector_object, KLObject* argument_vector_value_object,
  KLObject* argument_index_object)
 {
- Vector* prolog_vector =
-    get_vector(get_kl_symbol_variable_value(get_shen_earmuff_prologvectors_symbol_object()));
   KLObject* vector_object =
-    get_vector_element(prolog_vector,
-                       get_kl_number_number_l(argument_index_object));
-  long vector_index =
-    get_kl_number_number_l(get_vector_element(get_vector(argument_vector_object),
-                                              1));
+    get_kl_vector_element(get_prolog_vector_object(), argument_index_object);
+  KLObject* index_object = get_vector_element(get_vector(argument_vector_object),
+                                              1);
 
-  set_vector_element(get_vector(vector_object), vector_index,
-                     argument_vector_value_object);
+  set_kl_vector_element(vector_object, index_object,
+                        argument_vector_value_object);
 
   return vector_object;
 }
@@ -885,17 +880,13 @@ static inline void register_primitive_kl_function_shen_bindv (void)
 static inline KLObject* primitive_function_shen_unbindv_helper
 (KLObject* argument_vector_object, KLObject* argument_index_object)
 {
-  Vector* prolog_vector =
-    get_vector(get_kl_symbol_variable_value(get_shen_earmuff_prologvectors_symbol_object()));
   KLObject* vector_object =
-    get_vector_element(prolog_vector,
-                       get_kl_number_number_l(argument_index_object));
-  long vector_index =
-    get_kl_number_number_l(get_vector_element(get_vector(argument_vector_object),
-                                              1));
+    get_kl_vector_element(get_prolog_vector_object(), argument_index_object);
+  KLObject* index_object = get_vector_element(get_vector(argument_vector_object),
+                                              1);
 
-  set_vector_element(get_vector(vector_object), vector_index,
-                     get_shen_dash_null_symbol_object());
+  set_kl_vector_element(vector_object, index_object,
+                        get_shen_dash_null_symbol_object());
 
   return vector_object;
 }
@@ -1091,10 +1082,9 @@ static inline KLObject* primitive_function_shen_copy_vector_helper
 (KLObject* source_vector_object, KLObject* destination_vector_object,
  size_t source_vector_limit, size_t destination_vector_limit, KLObject* fill_object)
 {
-  KLObject** source_vector_objects =
-    get_vector_objects(get_vector(source_vector_object));
+  KLObject** source_vector_objects = get_kl_vector_objects(source_vector_object);
   KLObject** destination_vector_objects =
-    get_vector_objects(get_vector(destination_vector_object));
+    get_kl_vector_objects(destination_vector_object);
 
   for (long i = 1; i <= source_vector_limit; ++i)
     destination_vector_objects[i] = source_vector_objects[i];
@@ -1170,8 +1160,7 @@ static inline void register_primitive_kl_function_shen_resize_vector (void)
 static inline KLObject* primitive_function_shen_resizeprocessvector_helper
 (size_t index, size_t limit)
 {
-  KLObject* prolog_vector_object =
-    get_kl_symbol_variable_value(get_shen_earmuff_prologvectors_symbol_object());
+  KLObject* prolog_vector_object = get_prolog_vector_object();
   Vector* prolog_vector = get_vector(prolog_vector_object);
   KLObject* source_vector_object = get_vector_element(prolog_vector, index);
   size_t destination_vector_limit = limit + limit;
@@ -1217,8 +1206,7 @@ static inline KLObject* primitive_function_shen_newpv_helper (size_t index)
 
   set_vector_element(var_counter_vector, index, incremented_var_count_object);
 
-  Vector* prolog_vector =
-    get_vector(get_kl_symbol_variable_value(get_shen_earmuff_prologvectors_symbol_object()));
+  Vector* prolog_vector = get_vector(get_prolog_vector_object());
   Vector* vector = get_vector(get_vector_element(prolog_vector, index));
   size_t vector_limit = get_kl_number_number_l(get_vector_element(vector, 0));
 
