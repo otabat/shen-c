@@ -539,6 +539,28 @@ static inline void register_primitive_kl_function_nth (void)
   set_kl_symbol_function(get_nth_symbol_object(), function_object);
 }
 
+static inline KLObject* primitive_function_limit
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* vector_object = objects[0];
+
+  if (!is_kl_vector(vector_object))
+    throw_kl_exception("Argument of limit should be a vector");
+
+  return get_vector_element(get_vector(vector_object), 0);
+}
+
+static inline void register_primitive_kl_function_limit (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(1, &primitive_function_limit);
+
+  set_kl_symbol_function(get_limit_symbol_object(), function_object);
+}
+
 static inline KLObject* primitive_function_shen_hdtl
 (KLObject* function_object, Vector* arguments, Environment* function_environment,
  Environment* variable_environment)
@@ -1297,6 +1319,7 @@ void register_overwrite_sys_primitive_kl_functions (void)
   register_primitive_kl_function_assoc();
   register_primitive_kl_function_occurrences();
   register_primitive_kl_function_nth();
+  register_primitive_kl_function_limit();
 }
 
 void register_overwrite_yacc_primitive_kl_functions (void)
