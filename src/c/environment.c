@@ -3,10 +3,10 @@
 Environment* global_function_environment = NULL;
 Environment* global_variable_environment = NULL;
 
-extern khash_t(SymbolObjectTable)* get_environment_symbol_object_table
+extern khash_t(ObjectTable)* get_environment_symbol_object_table
 (Environment* environment);
 extern void set_environment_symbol_object_table
-(Environment* environment, khash_t(SymbolObjectTable)* symbol_object_table);
+(Environment* environment, khash_t(ObjectTable)* symbol_object_table);
 extern Environment* get_parent_environment (Environment* environment);
 extern void set_parent_environment (Environment* environment,
                                     Environment* parent_environment);
@@ -18,7 +18,7 @@ extern void extend_environment (KLObject* symbol_object, KLObject* object,
 
 KLObject* lookup_environment (KLObject* symbol_object, Environment* environment)
 { 
-  khash_t(SymbolObjectTable)* symbol_object_table;
+  khash_t(ObjectTable)* symbol_object_table;
   khiter_t hash_iterator;
   bool is_key_not_found;
   Environment* new_environment = environment;
@@ -26,7 +26,7 @@ KLObject* lookup_environment (KLObject* symbol_object, Environment* environment)
 
   while (true) {
     symbol_object_table = get_environment_symbol_object_table(new_environment);
-    hash_iterator = kh_get(SymbolObjectTable, symbol_object_table,
+    hash_iterator = kh_get(ObjectTable, symbol_object_table,
                            (khint64_t)symbol_object);
     is_key_not_found = hash_iterator == kh_end(symbol_object_table);
 

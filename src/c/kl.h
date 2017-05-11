@@ -73,11 +73,11 @@ KHASH_MAP_INIT_STR(SymbolNameTable, KLObject*)
 
 #if UINTPTR_MAX == 0xffffffff
 // 32bit
-KHASH_MAP_INIT_INT(SymbolObjectTable, KLObject*)
+KHASH_MAP_INIT_INT(ObjectTable, KLObject*)
 
 #elif UINTPTR_MAX == 0xffffffffffffffff
 // 64bit
-KHASH_MAP_INIT_INT64(SymbolObjectTable, KLObject*)
+KHASH_MAP_INIT_INT64(ObjectTable, KLObject*)
 
 #else
 #error Could not determine pointer size
@@ -145,7 +145,7 @@ struct Vector {
 };
 
 struct Environment {
-  khash_t(SymbolObjectTable)* symbol_object_table;
+  khash_t(ObjectTable)* symbol_object_table;
   Environment* parent;
 };
 
