@@ -31,7 +31,7 @@ inline Stack* create_stack (void)
 {
   Stack* stack = malloc(sizeof(Stack));
 
-  set_stack_top(stack, get_empty_kl_list());
+  set_stack_top(stack, EL());
   set_stack_size(stack, 0);
 
   return stack;
