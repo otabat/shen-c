@@ -63,15 +63,15 @@ static inline KLObject* primitive_function_shen_ebr_helper
              is_non_empty_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(list_object)))) &&
              is_empty_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(list_object))))) &&
              is_kl_object_equal(get_head_kl_list(get_tail_kl_list(list_object)), second_object))
-      return create_kl_list(get_let_symbol_object(),
-                            create_kl_list(get_head_kl_list(get_tail_kl_list(list_object)),
-                                           create_kl_list(primitive_function_shen_ebr_helper(first_object,
-                                                                                             get_head_kl_list(get_tail_kl_list(list_object)),
-                                                                                             get_head_kl_list(get_tail_kl_list(get_tail_kl_list(list_object)))),
-                                                          get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(list_object))))));
+      return CONS(get_let_symbol_object(),
+                  CONS(get_head_kl_list(get_tail_kl_list(list_object)),
+                       CONS(primitive_function_shen_ebr_helper(first_object,
+                                                               get_head_kl_list(get_tail_kl_list(list_object)),
+                                                               get_head_kl_list(get_tail_kl_list(get_tail_kl_list(list_object)))),
+                            get_tail_kl_list(get_tail_kl_list(get_tail_kl_list(list_object))))));
 
-    return create_kl_list(primitive_function_shen_ebr_helper(first_object, second_object, get_head_kl_list(list_object)),
-                          primitive_function_shen_ebr_helper(first_object, second_object, get_tail_kl_list(list_object)));
+    return CONS(primitive_function_shen_ebr_helper(first_object, second_object, get_head_kl_list(list_object)),
+                primitive_function_shen_ebr_helper(first_object, second_object, get_tail_kl_list(list_object)));
   }
 
   return list_object;
@@ -306,18 +306,17 @@ static inline KLObject* primitive_function_map
     if (!is_non_empty_kl_list(argument_list_object))
       throw_kl_exception("Wrong arguments for map function");
 
-    KLObject* quoted_argument_object
-      = create_kl_list(get_quote_symbol_object(),
-                       create_kl_list(get_head_kl_list(argument_list_object),
-                                      get_empty_kl_list()));
+    KLObject* quoted_argument_object =
+      CONS(get_quote_symbol_object(),
+           CONS(get_head_kl_list(argument_list_object), get_empty_kl_list()));
     KLObject* function_application_list_object =
-      create_kl_list(symbol_or_function_object,
-                     create_kl_list(quoted_argument_object, get_empty_kl_list()));
+      CONS(symbol_or_function_object,
+           CONS(quoted_argument_object, get_empty_kl_list()));
     KLObject* list_object =
-      create_kl_list(eval_kl_object(function_application_list_object,
-                                    function_environment,
-                                    variable_environment),
-                     get_empty_kl_list());
+      CONS(eval_kl_object(function_application_list_object,
+                          function_environment,
+                          variable_environment),
+           get_empty_kl_list());
 
     if (is_empty_kl_list(head_list_object))
       head_list_object = list_object;
@@ -353,8 +352,8 @@ static inline KLObject* primitive_function_reverse
   KLObject* head_list_object = get_empty_kl_list();
 
   while (is_non_empty_kl_list(argument_list_object)) {
-    head_list_object = create_kl_list(get_head_kl_list(argument_list_object),
-                                      head_list_object);
+    head_list_object = CONS(get_head_kl_list(argument_list_object),
+                            head_list_object);
     argument_list_object = get_tail_kl_list(argument_list_object);
   }
 
@@ -384,8 +383,8 @@ static inline KLObject* primitive_function_append
     if (!is_non_empty_kl_list(left_list_object))
       throw_kl_exception("Wrong argument for append function");
 
-    KLObject* list_object = create_kl_list(get_head_kl_list(left_list_object),
-                                           right_object);
+    KLObject* list_object = CONS(get_head_kl_list(left_list_object),
+                                 right_object);
 
     if (is_null(tail_list_object))
       head_list_object = list_object;
@@ -660,8 +659,8 @@ static inline KLObject* primitive_function_read_file_as_charlist
   KLObject* tail_list_object = head_list_object;
 
   for (size_t i = 0; i < string_length; ++i) {
-    KLObject* list_object = create_kl_list(create_kl_number_l(string[i]),
-                                           get_empty_kl_list());
+    KLObject* list_object = CONS(create_kl_number_l(string[i]),
+                                 get_empty_kl_list());
 
     if (is_null(head_list_object))
       head_list_object = list_object;
@@ -787,10 +786,10 @@ static inline KLObject* primitive_function_shen_deref_helper
 (KLObject* vector_object, KLObject* index_object)
 {
   if (is_non_empty_kl_list(vector_object))
-    return create_kl_list(primitive_function_shen_deref_helper(get_head_kl_list(vector_object),
-                                                               index_object),
-                          primitive_function_shen_deref_helper(get_tail_kl_list(vector_object),
-                                                               index_object));
+    return CONS(primitive_function_shen_deref_helper(get_head_kl_list(vector_object),
+                                                     index_object),
+                primitive_function_shen_deref_helper(get_tail_kl_list(vector_object),
+                                                     index_object));
 
   bool is_pvar =
     get_boolean(primitive_function_shen_is_pvar_helper(vector_object));
@@ -941,8 +940,8 @@ static inline KLObject* primitive_function_bind_helper
                                        argument_vector_value_object,
                                        argument_index_object);
 
-  KLObject* function_application_list_object =
-    create_kl_list(argument_function_object, get_empty_kl_list());
+  KLObject* function_application_list_object = CONS(argument_function_object,
+                                                    get_empty_kl_list());
   KLObject* object = eval_kl_object(function_application_list_object,
                                     function_environment, variable_environment);
 
@@ -977,8 +976,8 @@ static inline KLObject* primitive_function_shen_lzy_equal_exclamation_helper
  Environment* variable_environment)
 {
   if (is_kl_object_equal(object, list_or_vector_object)) {
-    KLObject* function_application_list_object =
-      create_kl_list(function_object, get_empty_kl_list());
+    KLObject* function_application_list_object = CONS(function_object,
+                                                      get_empty_kl_list());
 
     return eval_kl_object(function_application_list_object, function_environment,
                           variable_environment);
@@ -1004,31 +1003,17 @@ static inline KLObject* primitive_function_shen_lzy_equal_exclamation_helper
   else if (is_non_empty_kl_list(list_or_vector_object) &&
            is_non_empty_kl_list(object)) {
     KLObject* freeze_body_object =
-      create_kl_list(get_shen_lzy_equal_exclamation_symbol_object(),
-                     create_kl_list(create_kl_list(get_quote_symbol_object(),
-                                                   create_kl_list(primitive_function_shen_lazyderef_helper(get_tail_kl_list(list_or_vector_object),
-                                                                                                           number_object),
-                                                                  get_empty_kl_list())),
-                                    create_kl_list(create_kl_list(get_quote_symbol_object(),
-                                                                  create_kl_list(primitive_function_shen_lazyderef_helper(get_tail_kl_list(object),
-                                                                                                                          number_object),
-                                                                                 get_empty_kl_list())),
-                                                   create_kl_list(number_object,
-                                                                  create_kl_list(function_object, get_empty_kl_list())))));
-    //KLObject* freeze_body_object =
-    //  create_kl_list(get_shen_lzy_equal_exclamation_symbol_object(),
-    //                 create_kl_list(create_kl_list(get_shen_lazyderef_symbol_object(),
-    //                                               create_kl_list(create_kl_list(get_quote_symbol_object(),
-    //                                                                             create_kl_list(get_tail_kl_list(list_or_vector_object),
-    //                                                                                            get_empty_kl_list())),
-    //                                                              create_kl_list(number_object, get_empty_kl_list()))),
-    //                                create_kl_list(create_kl_list(get_shen_lazyderef_symbol_object(),
-    //                                                              create_kl_list(create_kl_list(get_quote_symbol_object(),
-    //                                                                                            create_kl_list(get_tail_kl_list(object),
-    //                                                                                                           get_empty_kl_list())),
-    //                                                                             create_kl_list(number_object, get_empty_kl_list()))),
-    //                                               create_kl_list(number_object,
-    //                                                              create_kl_list(function_object, get_empty_kl_list())))));
+      CONS(get_shen_lzy_equal_exclamation_symbol_object(),
+           CONS(CONS(get_quote_symbol_object(),
+                     CONS(primitive_function_shen_lazyderef_helper(get_tail_kl_list(list_or_vector_object),
+                                                                   number_object),
+                          get_empty_kl_list())),
+                CONS(CONS(get_quote_symbol_object(),
+                          CONS(primitive_function_shen_lazyderef_helper(get_tail_kl_list(object),
+                                                                        number_object),
+                               get_empty_kl_list())),
+                     CONS(number_object,
+                          CONS(function_object, get_empty_kl_list())))));
     KLObject* freeze_object = eval_freeze_expression(freeze_body_object,
                                                      function_environment,
                                                      variable_environment);
@@ -1269,12 +1254,10 @@ static inline KLObject* primitive_function_shen_compose
       throw_kl_exception("Wrong argument for shen.compose function");
 
     KLObject* quoted_argument_list_object =
-      create_kl_list(create_kl_list(get_quote_symbol_object(),
-                                    create_kl_list(object,
-                                                   get_empty_kl_list())),
-                     get_empty_kl_list());
+      CONS(CONS(get_quote_symbol_object(), CONS(object, get_empty_kl_list())),
+           get_empty_kl_list());
     KLObject* function_application_list_object =
-      create_kl_list(get_head_kl_list(list_object), quoted_argument_list_object);
+      CONS(get_head_kl_list(list_object), quoted_argument_list_object);
 
     object = eval_kl_object(function_application_list_object,
                             function_environment, variable_environment);

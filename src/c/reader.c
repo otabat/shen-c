@@ -13,7 +13,7 @@ static void append_read_kl_object (KLObject* object,
 {
   KLObject* head_list_object = *head_list_object_ref;
   KLObject* tail_list_object = *tail_list_object_ref;
-  KLObject* list_object = create_kl_list(object, NULL);
+  KLObject* list_object = CONS(object, NULL);
 
   if (is_null(tail_list_object)) {
     head_list_object = list_object;

@@ -278,7 +278,7 @@ static inline KLObject* primitive_function_cons (KLObject* function_object,
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
-  return create_kl_list(objects[0], objects[1]);
+  return CONS(objects[0], objects[1]);
 }
 
 static inline void register_primitive_kl_function_cons (void)

@@ -39,27 +39,26 @@ KLObject* inject_symbol_counter (KLObject* symbol_object, KLObject* object)
   KLObject* symbol_counter_symbol_object = create_kl_symbol(symbol_counter_symbol_name);
 
   extend_symbol_name_table(symbol_counter_symbol_name, symbol_counter_symbol_object);
-  eval_kl_object(create_kl_list(get_set_symbol_object(),
-                                create_kl_list(symbol_counter_symbol_object,
-                                               create_kl_list(create_kl_number_l(0),
-                                                              get_empty_kl_list()))),
+  eval_kl_object(CONS(get_set_symbol_object(),
+                      CONS(symbol_counter_symbol_object,
+                           CONS(create_kl_number_l(0), get_empty_kl_list()))),
                  get_global_function_environment(),
                  get_global_variable_environment());
 
   KLObject* new_object =
-    create_kl_list(get_let_symbol_object(),
-                   create_kl_list(create_kl_symbol("_"),
-                                  create_kl_list(create_kl_list(get_set_symbol_object(),
-                                                                create_kl_list(symbol_counter_symbol_object,
-                                                                               create_kl_list(create_kl_list(get_add_symbol_object(),
-                                                                                                             create_kl_list(create_kl_number_l(1),
-                                                                                                                            create_kl_list(create_kl_list(get_value_symbol_object(),
-                                                                                                                                                          create_kl_list(symbol_counter_symbol_object,
-                                                                                                                                                                         get_empty_kl_list())),
-                                                                                                                                           get_empty_kl_list()))),
-                                                                                              get_empty_kl_list()))),
-                                                 create_kl_list(object, get_empty_kl_list()))));
-  KLObject* list_object = create_kl_list(symbol_counter_symbol_object, get_symbol_counter_name_list_object());
+    CONS(get_let_symbol_object(),
+         CONS(create_kl_symbol("_"),
+              CONS(CONS(get_set_symbol_object(),
+                        CONS(symbol_counter_symbol_object,
+                             CONS(CONS(get_add_symbol_object(),
+                                       CONS(create_kl_number_l(1),
+                                            CONS(CONS(get_value_symbol_object(),
+                                                      CONS(symbol_counter_symbol_object,
+                                                           get_empty_kl_list())),
+                                                 get_empty_kl_list()))),
+                                  get_empty_kl_list()))),
+                   CONS(object, get_empty_kl_list()))));
+  KLObject* list_object = CONS(symbol_counter_symbol_object, get_symbol_counter_name_list_object());
 
   set_symbol_counter_name_list_object(list_object);
   set_kl_symbol_variable_value(get_symbol_counter_names_symbol_object(),
@@ -92,8 +91,8 @@ static inline KLObject* primitive_function_output_symbol_count
   while (!is_empty_kl_list(list_object)) {
     KLObject* symbol_object = get_head_kl_list(list_object);
     KLObject* number_object = get_kl_symbol_variable_value(symbol_object);
-    KLObject* pair_object = create_kl_list(symbol_object, number_object);
-    KLObject* new_list_object = create_kl_list(pair_object, get_empty_kl_list());
+    KLObject* pair_object = CONS(symbol_object, number_object);
+    KLObject* new_list_object = CONS(pair_object, get_empty_kl_list());
 
     if (is_null(head_list_object))
       head_list_object = new_list_object;

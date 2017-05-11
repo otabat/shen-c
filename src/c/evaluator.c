@@ -426,10 +426,9 @@ static KLObject* wrap_function_with_loop_expression (Vector** parameters_ref,
     KLObject** loop_parameter_objects = get_vector_objects(loop_parameters);
 
     for (long i = 0; i < parameter_size; ++i) {
-      KLObject* list_object =
-        create_kl_list(loop_parameter_objects[i],
-                       create_kl_list(new_function_parameter_objects[i],
-                                      get_empty_kl_list()));
+      KLObject* list_object = CONS(loop_parameter_objects[i],
+                                   CONS(new_function_parameter_objects[i],
+                                        get_empty_kl_list()));
 
       if (is_empty_kl_list(head_loop_binding_list_object))
         head_loop_binding_list_object = list_object;
@@ -443,10 +442,9 @@ static KLObject* wrap_function_with_loop_expression (Vector** parameters_ref,
     loop_binding_list_object = head_loop_binding_list_object;
   }
 
-  return create_kl_list(get_loop_symbol_object(),
-                        create_kl_list(loop_binding_list_object,
-                                       create_kl_list(body_object,
-                                                      get_empty_kl_list())));
+  return CONS(get_loop_symbol_object(),
+              CONS(loop_binding_list_object,
+                   CONS(body_object, get_empty_kl_list())));
 }
 
 static KLObject* remove_tail_recursion (KLObject* function_symbol_object,
@@ -530,20 +528,20 @@ static KLObject* optimize_multiple_function_calls_helper
 
               if (is_null(list_object)) {
                 if (function_call_level > 1)
-                  return create_kl_list(cadr_object, cddr_object);
+                  return CONS(cadr_object, cddr_object);
 
                 break;
               }
 
               if (function_call_level > 1)
-                return create_kl_list(cadr_object, list_object);
+                return CONS(cadr_object, list_object);
               else if (function_call_level == 1) {
                 set_head_kl_list(tail_list_object, get_mcons_symbol_object());
                 set_tail_kl_list(tail_list_object,
-                                 create_kl_list(cadr_object, list_object));
+                                 CONS(cadr_object, list_object));
               }
             } else if (function_call_level > 1)
-              return create_kl_list(cadr_object, cddr_object);
+              return CONS(cadr_object, cddr_object);
           }
 
           break;
@@ -580,7 +578,7 @@ static KLObject* optimize_multiple_function_calls_helper
 
               if (is_null(list_object)) {
                 if (function_call_level > 1)
-                  return create_kl_list(cadr_object, get_empty_kl_list());
+                  return CONS(cadr_object, get_empty_kl_list());
 
                 break;
               }
@@ -592,13 +590,13 @@ static KLObject* optimize_multiple_function_calls_helper
                 KLObject* list_size_number_object =
                   create_kl_number_l(function_call_count);
                 KLObject* new_cdr_object =
-                  create_kl_list(list_size_number_object, list_object);
+                  CONS(list_size_number_object, list_object);
 
                 set_head_kl_list(tail_list_object, get_nth_hd_symbol_object());
                 set_tail_kl_list(tail_list_object, new_cdr_object);
               }
             } else if (function_call_level > 1)
-              return create_kl_list(cadr_object, get_empty_kl_list());
+              return CONS(cadr_object, get_empty_kl_list());
           }
 
           break;
@@ -635,7 +633,7 @@ static KLObject* optimize_multiple_function_calls_helper
 
               if (is_null(list_object)) {
                 if (function_call_level > 1)
-                  return create_kl_list(cadr_object, get_empty_kl_list());
+                  return CONS(cadr_object, get_empty_kl_list());
 
                 break;
               }
@@ -647,13 +645,13 @@ static KLObject* optimize_multiple_function_calls_helper
                 KLObject* list_size_number_object =
                   create_kl_number_l(function_call_count);
                 KLObject* new_cdr_object =
-                  create_kl_list(list_size_number_object, list_object);
+                  CONS(list_size_number_object, list_object);
 
                 set_head_kl_list(tail_list_object, get_nth_tl_symbol_object());
                 set_tail_kl_list(tail_list_object, new_cdr_object);
               }
             } else if (function_call_level > 1)
-              return create_kl_list(cadr_object, get_empty_kl_list());
+              return CONS(cadr_object, get_empty_kl_list());
           }
 
           break;
@@ -744,8 +742,7 @@ static KLObject* eval_function_application_arguments
     KLObject* evaluated_car_object =  eval_kl_object(get_head_kl_list(object),
                                                      function_environment,
                                                      variable_environment);
-    KLObject* new_list_object = create_kl_list(evaluated_car_object,
-                                               get_empty_kl_list());
+    KLObject* new_list_object = CONS(evaluated_car_object, get_empty_kl_list());
     
     if (is_null(head_list_object))
       head_list_object = new_list_object;
@@ -883,10 +880,10 @@ static void eval_loop_arguments_and_parameters
     KLObject* evaluated_argument_object =  eval_kl_object(argument_object,
                                                           function_environment,
                                                           variable_environment);
-    KLObject* new_argument_list_object = create_kl_list(evaluated_argument_object,
-                                                        get_empty_kl_list());
-    KLObject* new_parameter_list_object = create_kl_list(parameter_object,
-                                                         get_empty_kl_list());
+    KLObject* new_argument_list_object = CONS(evaluated_argument_object,
+                                              get_empty_kl_list());
+    KLObject* new_parameter_list_object = CONS(parameter_object,
+                                               get_empty_kl_list());
     
     if (is_empty_kl_list(head_argument_list_object))
       head_argument_list_object = new_argument_list_object;
@@ -1135,8 +1132,7 @@ static KLObject* create_kl_list_function_application (KLObject* list_object,
 
   while (argument_index < argument_size) {
     KLObject* new_list_object =
-      create_kl_list(get_vector_element(arguments, argument_index),
-                     get_empty_kl_list());
+      CONS(get_vector_element(arguments, argument_index), get_empty_kl_list());
 
     set_tail_kl_list(tail_list_object, new_list_object);
     tail_list_object = new_list_object;
@@ -1149,10 +1145,9 @@ static KLObject* create_kl_list_function_application (KLObject* list_object,
 static KLObject* create_kl_list_lambda_expression (KLObject* parameter_object,
                                                    KLObject* body_object)
 {
-  return create_kl_list(get_lambda_symbol_object(),
-                        create_kl_list(parameter_object,
-                                       create_kl_list(body_object,
-                                                      get_empty_kl_list())));
+  return CONS(get_lambda_symbol_object(),
+              CONS(parameter_object,
+                   CONS(body_object, get_empty_kl_list())));
 }
 
 static KLObject* create_curried_kl_list_closure_function
@@ -1168,8 +1163,8 @@ static KLObject* create_curried_kl_list_closure_function
 
   if (closure_parameter_index >= closure_parameter_size - 1)
     closure_body_object = 
-      create_kl_list_function_application(create_kl_list(function_symbol_object,
-                                                         get_empty_kl_list()),
+      create_kl_list_function_application(CONS(function_symbol_object,
+                                               get_empty_kl_list()),
                                           closure_parameters,
                                           0);
   else {
@@ -1232,8 +1227,7 @@ static KLObject* create_kl_list_partial_function_application
 {
   long argument_size = get_vector_size(arguments);
   KLObject* argument_object = get_vector_element(arguments, argument_index);
-  KLObject* new_object =
-    create_kl_list(object, create_kl_list(argument_object, get_empty_kl_list()));
+  KLObject* new_object = CONS(object, CONS(argument_object, get_empty_kl_list()));
 
   ++argument_index;
 
@@ -1284,7 +1278,7 @@ static KLObject* eval_kl_list_primitive_function_application
 
     KLObject* function_symbol_object = get_head_kl_list(list_object);
     KLObject* function_appliation_list_object =
-      create_kl_list(function_symbol_object, get_empty_kl_list());
+      CONS(function_symbol_object, get_empty_kl_list());
     KLObject* partial_function_application_list_object
       = create_kl_list_partial_function_application(function_appliation_list_object,
                                                     arguments,
@@ -1346,7 +1340,7 @@ static KLObject* eval_kl_list_user_function_application
 
     KLObject* function_symbol_object = get_head_kl_list(list_object);
     KLObject* function_appliation_list_object =
-      create_kl_list(function_symbol_object, get_empty_kl_list());
+      CONS(function_symbol_object, get_empty_kl_list());
     KLObject* partial_function_application_list_object
       = create_kl_list_partial_function_application(function_appliation_list_object,
                                                     arguments,
@@ -1526,7 +1520,7 @@ static inline KLObject* eval_mcons_expression (KLObject* list_object,
     KLObject* car_object = get_head_kl_list(evaluated_argument_list_object);
     KLObject* cdr_object = get_tail_kl_list(evaluated_argument_list_object);
     KLObject* object = ((is_empty_kl_list(cdr_object)) ?
-                        car_object: create_kl_list(car_object, cdr_object));
+                        car_object: CONS(car_object, cdr_object));
 
     if (is_empty_kl_list(head_list_object))
       head_list_object = object;
