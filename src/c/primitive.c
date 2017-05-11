@@ -411,8 +411,25 @@ static inline KLObject* primitive_function_set_absvector_element
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* vector_object = objects[0];
+  KLObject* index_object = objects[1];
 
-  return set_kl_vector_element(objects[0], objects[1], objects[2]);
+  if (!is_kl_vector(vector_object))
+    throw_kl_exception("Failed to set an element to a non-vector object");
+
+  if (!is_kl_number_l(index_object))
+    throw_kl_exception("Vector index should be a number object");
+
+  Vector* vector = get_vector(vector_object);
+  long index = get_kl_number_number_l(index_object);
+  size_t size = get_vector_size(vector);
+
+  if (index >= (long)size || index < 0)
+    throw_kl_exception("Vector index is out of bound");
+
+  set_vector_element(vector, index, objects[2]);
+
+  return vector_object;
 }
 
 static inline void register_primitive_kl_function_set_absvector_element (void)
@@ -429,8 +446,23 @@ static inline KLObject* primitive_function_get_absvector_element
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* vector_object = objects[0];
+  KLObject* index_object = objects[1];
 
-  return get_kl_vector_element(objects[0], objects[1]);
+  if (!is_kl_vector(vector_object))
+    throw_kl_exception("Failed to get an element from a non-vector object");
+
+  if (!is_kl_number_l(index_object))
+    throw_kl_exception("Vector index should be a number object");
+
+  Vector* vector = get_vector(vector_object);
+  long index = get_kl_number_number_l(index_object);
+  size_t size = get_vector_size(vector);
+
+  if (index >= (long)size || index < 0)
+    throw_kl_exception("Vector index is out of bound");
+
+  return get_vector_element(vector, index);
 }
 
 static inline void register_primitive_kl_function_get_absvector_element (void)
