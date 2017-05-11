@@ -34,8 +34,8 @@ static char* kl_list_to_string_helper
                                     &object_string_allocation_size,
                                     "[");
     
-    KLObject* car_object = get_head_kl_list(object);
-    KLObject* cdr_object = get_tail_kl_list(object); 
+    KLObject* car_object = CAR(object);
+    KLObject* cdr_object = CDR(object);
     
     if (is_kl_list(car_object))
       object_string = kl_list_to_string_helper(car_object, object_string,
@@ -233,12 +233,12 @@ bool is_kl_list_equal (KLObject* left_object, KLObject* right_object)
   if (is_empty_kl_list(lo) && is_empty_kl_list(ro))
     return true;
   else if (is_non_empty_kl_list(lo) && is_non_empty_kl_list(ro)) {
-    KLObject* car_lo = get_head_kl_list(lo);
-    KLObject* car_ro = get_head_kl_list(ro);
+    KLObject* car_lo = CAR(lo);
+    KLObject* car_ro = CAR(ro);
     
     if (is_kl_object_equal(car_lo, car_ro)) {
-      KLObject* cdr_lo = get_tail_kl_list(lo);
-      KLObject* cdr_ro = get_tail_kl_list(ro);
+      KLObject* cdr_lo = CDR(lo);
+      KLObject* cdr_ro = CDR(ro);
       
       if (is_kl_list(cdr_lo))
         return is_kl_list_equal(cdr_lo, cdr_ro);

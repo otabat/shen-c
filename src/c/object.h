@@ -35,8 +35,8 @@ inline Vector* kl_list_to_vector (KLObject* list_object)
   KLObject* object = list_object;
 
   for (long i = 0; i < size; ++i) {
-    vector->objects[i] = get_head_kl_list(object);
-    object = get_tail_kl_list(object);
+    vector->objects[i] = CAR(object);
+    object = CDR(object);
   }
 
   return vector;

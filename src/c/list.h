@@ -4,6 +4,53 @@
 #include "exception.h"
 #include "kl.h"
 
+#define CONS(car_object, cdr_object) create_kl_list(car_object, cdr_object)
+
+#define CAR(list_object) get_head_kl_list(list_object)
+#define CAAR(list_object) CAR(CAR(list_object))
+#define CAAAR(list_object) CAR(CAAR(list_object))
+#define CAAAAR(list_object) CAR(CAAAR(list_object))
+#define CAAAAAR(list_object) CAR(CAAAAR(list_object))
+#define CAAAAAAR(list_object) CAR(CAAAAAR(list_object))
+#define CAAAAAAAR(list_object) CAR(CAAAAAAR(list_object))
+#define CAAAAAAAAR(list_object) CAR(CAAAAAAAR(list_object))
+#define CAAAAAAAAAR(list_object) CAR(CAAAAAAAAR(list_object))
+#define CAAAAAAAAAAR(list_object) CAR(CAAAAAAAAAR(list_object))
+
+#define CDR(list_object) get_tail_kl_list(list_object)
+#define CDDR(list_object) CDR(CDR(list_object))
+#define CDDDR(list_object) CDR(CDDR(list_object))
+#define CDDDDR(list_object) CDR(CDDDR(list_object))
+#define CDDDDDR(list_object) CDR(CDDDDR(list_object))
+#define CDDDDDDR(list_object) CDR(CDDDDDR(list_object))
+#define CDDDDDDDR(list_object) CDR(CDDDDDDR(list_object))
+#define CDDDDDDDDR(list_object) CDR(CDDDDDDDR(list_object))
+#define CDDDDDDDDDR(list_object) CDR(CDDDDDDDDR(list_object))
+#define CDDDDDDDDDDR(list_object) CDR(CDDDDDDDDDR(list_object))
+
+#define CADR(list_object) CAR(CDR(list_object))
+#define CDAR(list_object) CDR(CAR(list_object))
+#define CADDR(list_object) CAR(CDR(CDR(list_object)))
+#define CDADR(list_object) CDR(CAR(CDR(list_object)))
+#define CDDAR(list_object) CDR(CDR(CAR(list_object)))
+#define CAADR(list_object) CAR(CAR(CDR(list_object)))
+#define CADAR(list_object) CAR(CDR(CAR(list_object)))
+#define CDAAR(list_object) CDR(CAR(CAR(list_object)))
+#define CADDDR(list_object) CAR(CDR(CDR(CDR(list_object))))
+#define CDADDR(list_object) CDR(CAR(CDR(CDR(list_object))))
+#define CDDADR(list_object) CDR(CDR(CAR(CDR(list_object))))
+#define CDDDAR(list_object) CDR(CDR(CDR(CAR(list_object))))
+#define CAADDR(list_object) CAR(CAR(CDR(CDR(list_object))))
+#define CADADR(list_object) CAR(CDR(CAR(CDR(list_object))))
+#define CADDAR(list_object) CAR(CDR(CDR(CAR(list_object))))
+#define CDAADR(list_object) CDR(CAR(CAR(CDR(list_object))))
+#define CDADAR(list_object) CDR(CAR(CDR(CAR(list_object))))
+#define CDDAAR(list_object) CDR(CDR(CAR(CAR(list_object))))
+#define CAAADR(list_object) CAR(CAR(CAR(CDR(list_object))))
+#define CAADAR(list_object) CAR(CAR(CDR(CAR(list_object))))
+#define CADAAR(list_object) CAR(CDR(CAR(CAR(list_object))))
+#define CDAAAR(list_object) CDR(CAR(CAR(CAR(list_object))))
+
 inline Pair* get_pair (KLObject* list_object)
 {
   return list_object->value.pair;
@@ -61,55 +108,10 @@ inline long get_kl_list_size (KLObject* list_object)
 
   while (!is_empty_kl_list(object)) {
     ++size;
-    object = get_tail_kl_list(object);
+    object = CDR(object);
   }
 
   return size;
 }
-
-#define CONS(car_object, cdr_object) create_kl_list(car_object, cdr_object)
-
-#define CAR(list_object) get_head_kl_list(list_object)
-#define CAAR(list_object) CAR(CAR(list_object))
-#define CAAAR(list_object) CAR(CAAR(list_object))
-#define CAAAAR(list_object) CAR(CAAAR(list_object))
-#define CAAAAAR(list_object) CAR(CAAAAR(list_object))
-#define CAAAAAAR(list_object) CAR(CAAAAAR(list_object))
-#define CAAAAAAAR(list_object) CAR(CAAAAAAR(list_object))
-#define CAAAAAAAAR(list_object) CAR(CAAAAAAAR(list_object))
-#define CAAAAAAAAAR(list_object) CAR(CAAAAAAAAR(list_object))
-
-#define CDR(list_object) get_tail_kl_list(list_object)
-#define CDDR(list_object) CDR(CDR(list_object))
-#define CDDDR(list_object) CDR(CDDR(list_object))
-#define CDDDDR(list_object) CDR(CDDDR(list_object))
-#define CDDDDDR(list_object) CDR(CDDDDR(list_object))
-#define CDDDDDDR(list_object) CDR(CDDDDDR(list_object))
-#define CDDDDDDDR(list_object) CDR(CDDDDDDR(list_object))
-#define CDDDDDDDDR(list_object) CDR(CDDDDDDDR(list_object))
-#define CDDDDDDDDDR(list_object) CDR(CDDDDDDDDR(list_object))
-
-#define CADR(list_object) CAR(CDR(list_object))
-#define CDAR(list_object) CDR(CAR(list_object))
-#define CADDR(list_object) CAR(CDR(CDR(list_object)))
-#define CDADR(list_object) CDR(CAR(CDR(list_object)))
-#define CDDAR(list_object) CDR(CDR(CAR(list_object)))
-#define CAADR(list_object) CAR(CAR(CDR(list_object)))
-#define CADAR(list_object) CAR(CDR(CAR(list_object)))
-#define CDAAR(list_object) CDR(CAR(CAR(list_object)))
-#define CADDDR(list_object) CAR(CDR(CDR(CDR(list_object))))
-#define CDADDR(list_object) CDR(CAR(CDR(CDR(list_object))))
-#define CDDADR(list_object) CDR(CDR(CAR(CDR(list_object))))
-#define CDDDAR(list_object) CDR(CDR(CDR(CAR(list_object))))
-#define CAADDR(list_object) CAR(CAR(CDR(CDR(list_object))))
-#define CADADR(list_object) CAR(CDR(CAR(CDR(list_object))))
-#define CADDAR(list_object) CAR(CDR(CDR(CAR(list_object))))
-#define CDAADR(list_object) CDR(CAR(CAR(CDR(list_object))))
-#define CDADAR(list_object) CDR(CAR(CDR(CAR(list_object))))
-#define CDDAAR(list_object) CDR(CDR(CAR(CAR(list_object))))
-#define CAAADR(list_object) CAR(CAR(CAR(CDR(list_object))))
-#define CAADAR(list_object) CAR(CAR(CDR(CAR(list_object))))
-#define CADAAR(list_object) CAR(CDR(CAR(CAR(list_object))))
-#define CDAAAR(list_object) CDR(CAR(CAR(CAR(list_object))))
 
 #endif

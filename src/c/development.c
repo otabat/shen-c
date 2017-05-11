@@ -89,7 +89,7 @@ static inline KLObject* primitive_function_output_symbol_count
   KLObject* list_object = get_symbol_counter_name_list_object();
 
   while (!is_empty_kl_list(list_object)) {
-    KLObject* symbol_object = get_head_kl_list(list_object);
+    KLObject* symbol_object = CAR(list_object);
     KLObject* number_object = get_kl_symbol_variable_value(symbol_object);
     KLObject* pair_object = CONS(symbol_object, number_object);
     KLObject* new_list_object = CONS(pair_object, EL);
@@ -100,7 +100,7 @@ static inline KLObject* primitive_function_output_symbol_count
       set_tail_kl_list(tail_list_object, new_list_object);
 
     tail_list_object = new_list_object;
-    list_object = get_tail_kl_list(list_object);
+    list_object = CDR(list_object);
   }
   
   Vector* vector = kl_list_to_vector(head_list_object);
@@ -109,8 +109,8 @@ static inline KLObject* primitive_function_output_symbol_count
 
   for (long i = 0; i < vector_size; ++i)
     for (long j = i + 1; j < vector_size; ++j) {
-      long i_count = get_kl_number_number_l(get_tail_kl_list(objects[i]));
-      long j_count = get_kl_number_number_l(get_tail_kl_list(objects[j]));
+      long i_count = get_kl_number_number_l(CDR(objects[i]));
+      long j_count = get_kl_number_number_l(CDR(objects[j]));
         
       if (i_count < j_count) {
         KLObject* object = objects[i];
@@ -128,8 +128,8 @@ static inline KLObject* primitive_function_output_symbol_count
   
   for (long i = 0; i < vector_size; ++i) {
     KLObject* object = get_vector_element(vector, i);
-    KLObject* symbol_object = get_head_kl_list(object);
-    KLObject* number_object = get_tail_kl_list(object);
+    KLObject* symbol_object = CAR(object);
+    KLObject* number_object = CDR(object);
     char* symbol_name = get_kl_symbol_name(symbol_object);
     size_t symbol_name_length = strlen(symbol_name);
     long symbol_count = get_kl_number_number_l(number_object);

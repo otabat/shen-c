@@ -6,8 +6,8 @@ static KLObject* eval_if_expression (KLObject* list_object,
 {
   check_function_argument_size(get_kl_list_size(list_object) - 1, 3);
 
-  KLObject* cdr_object = get_tail_kl_list(list_object);
-  KLObject* test_object = get_head_kl_list(cdr_object);
+  KLObject* cdr_object = CDR(list_object);
+  KLObject* test_object = CAR(cdr_object);
   KLObject* evaluated_test_object =
     eval_kl_object(test_object, function_environment, variable_environment);
 
@@ -15,14 +15,13 @@ static KLObject* eval_if_expression (KLObject* list_object,
     throw_kl_exception("Test should be a boolean value");
 
   if (get_boolean(evaluated_test_object)) {
-    KLObject* then_object = get_head_kl_list(get_tail_kl_list(cdr_object));
+    KLObject* then_object = CADR(cdr_object);
 
     return eval_kl_object(then_object, function_environment,
                           variable_environment);
   }
 
-  KLObject* else_object =
-    get_head_kl_list(get_tail_kl_list(get_tail_kl_list(cdr_object)));
+  KLObject* else_object = CADDR(cdr_object);
 
   return eval_kl_object(else_object, function_environment, variable_environment);
 }
@@ -33,8 +32,8 @@ static KLObject* eval_and_expression (KLObject* list_object,
 {
   check_function_argument_size(get_kl_list_size(list_object) - 1 , 2);
 
-  KLObject* cdr_object = get_tail_kl_list(list_object);
-  KLObject* test_object = get_head_kl_list(cdr_object);
+  KLObject* cdr_object = CDR(list_object);
+  KLObject* test_object = CAR(cdr_object);
   KLObject* evaluated_test_object =
     eval_kl_object(test_object, function_environment, variable_environment);
 
@@ -44,7 +43,7 @@ static KLObject* eval_and_expression (KLObject* list_object,
   if (!get_boolean(evaluated_test_object))
     return get_false_boolean_object();
 
-  KLObject* else_object = get_head_kl_list(get_tail_kl_list(cdr_object));
+  KLObject* else_object = CADR(cdr_object);
   KLObject* evaluated_else_object =
     eval_kl_object(else_object, function_environment, variable_environment);
 
@@ -60,8 +59,8 @@ static KLObject* eval_or_expression (KLObject* list_object,
 {
   check_function_argument_size(get_kl_list_size(list_object) - 1, 2);
 
-  KLObject* cdr_object = get_tail_kl_list(list_object);
-  KLObject* test_object = get_head_kl_list(cdr_object);
+  KLObject* cdr_object = CDR(list_object);
+  KLObject* test_object = CAR(cdr_object);
   KLObject* evaluated_test_object =
     eval_kl_object(test_object, function_environment, variable_environment);
 
@@ -71,7 +70,7 @@ static KLObject* eval_or_expression (KLObject* list_object,
   if (get_boolean(evaluated_test_object))
     return evaluated_test_object;
 
-  KLObject* else_object = get_head_kl_list(get_tail_kl_list(cdr_object));
+  KLObject* else_object = CADR(cdr_object);
   KLObject* evaluated_else_object
     = eval_kl_object(else_object, function_environment, variable_environment);
 
@@ -90,7 +89,7 @@ static KLObject* eval_cond_tail_expression (KLObject* list_object,
   if (list_object_size == 0)
     throw_kl_exception("No true case found for cond");
 
-  KLObject* case_object = get_head_kl_list(list_object);
+  KLObject* case_object = CAR(list_object);
 
   if (!is_kl_list(case_object))
     throw_kl_exception("Cond case should be a list");
@@ -98,7 +97,7 @@ static KLObject* eval_cond_tail_expression (KLObject* list_object,
   if (get_kl_list_size(case_object) != 2)
     throw_kl_exception("Wrong number of arguments for a case");
 
-  KLObject* case_test_object = get_head_kl_list(case_object);
+  KLObject* case_test_object = CAR(case_object);
   KLObject* evaluated_case_test_object =
     eval_kl_object(case_test_object, function_environment, variable_environment);
 
@@ -106,15 +105,13 @@ static KLObject* eval_cond_tail_expression (KLObject* list_object,
     throw_kl_exception("Case test should be a boolean value");
 
   if (get_boolean(evaluated_case_test_object)) {
-    KLObject* case_then_object =
-      get_head_kl_list(get_tail_kl_list(case_object));
+    KLObject* case_then_object = CADR(case_object);
 
     return eval_kl_object(case_then_object, function_environment,
                           variable_environment);
   }
 
-  return eval_cond_tail_expression(get_tail_kl_list(list_object),
-                                   function_environment,
+  return eval_cond_tail_expression(CDR(list_object), function_environment,
                                    variable_environment); 
 }
 
@@ -127,8 +124,7 @@ static KLObject* eval_cond_expression (KLObject* list_object,
   if (list_object_size == 1)
     throw_kl_exception("Wrong number of arguments passed to cond");
   
-  return eval_cond_tail_expression(get_tail_kl_list(list_object),
-                                   function_environment,
+  return eval_cond_tail_expression(CDR(list_object), function_environment,
                                    variable_environment);
 }
 
@@ -141,7 +137,7 @@ static void analyze_tail_call_helper (KLObject* function_symbol_object,
 {
   if (list_level == 0) {
     if (is_non_empty_kl_list(head_object)) {
-      KLObject* car_object = get_head_kl_list(head_object);
+      KLObject* car_object = CAR(head_object);
       
       if (is_kl_symbol(car_object)) {
         if (car_object == function_symbol_object ||
@@ -167,8 +163,8 @@ static void analyze_tail_call_helper (KLObject* function_symbol_object,
     return;
 
   if (is_non_empty_kl_list(head_object)) {
-    KLObject* car_object = get_head_kl_list(head_object);
-    KLObject* cdr_object = get_tail_kl_list(head_object);
+    KLObject* car_object = CAR(head_object);
+    KLObject* cdr_object = CDR(head_object);
     
     if (is_kl_symbol(car_object)) {
       if (car_object == function_symbol_object) {
@@ -195,14 +191,14 @@ static void analyze_tail_call_helper (KLObject* function_symbol_object,
         KLObject* list_object = cdr_object;
 
         while (is_non_empty_kl_list(list_object)) {
-          KLObject* object = get_head_kl_list(list_object);
+          KLObject* object = CAR(list_object);
 
           if (is_non_empty_kl_list(object))
             analyze_tail_call_helper(function_symbol_object, parameter_size,
                                      object, list_level + 1, false,
                                      defun_type_ref, self_call_number_ref);
 
-          list_object = get_tail_kl_list(list_object);
+          list_object = CDR(list_object);
         }
       } else if (car_object == get_if_symbol_object()) {
         long argument_size = get_kl_list_size(cdr_object);
@@ -210,11 +206,11 @@ static void analyze_tail_call_helper (KLObject* function_symbol_object,
         if (argument_size != 3)
           throw_kl_exception("Wrong number of arguments for if expression");
 
-        KLObject* cddr_object = get_tail_kl_list(cdr_object);
-        KLObject* cdddr_object = get_tail_kl_list(cddr_object);
-        KLObject* test_object = get_head_kl_list(cdr_object);
-        KLObject* then_object = get_head_kl_list(cddr_object);
-        KLObject* else_object = get_head_kl_list(cdddr_object);
+        KLObject* cddr_object = CDR(cdr_object);
+        KLObject* cdddr_object = CDR(cddr_object);
+        KLObject* test_object = CAR(cdr_object);
+        KLObject* then_object = CAR(cddr_object);
+        KLObject* else_object = CAR(cdddr_object);
 
         if (is_non_empty_kl_list(test_object))
           analyze_tail_call_helper(function_symbol_object, parameter_size,
@@ -243,7 +239,7 @@ static void analyze_tail_call_helper (KLObject* function_symbol_object,
         KLObject* list_object = cdr_object;
 
         while (is_non_empty_kl_list(list_object)) {
-          KLObject* case_object = get_head_kl_list(list_object);
+          KLObject* case_object = CAR(list_object);
 
           if (!is_kl_list(case_object))
             throw_kl_exception("Cond case should be a list");
@@ -251,9 +247,8 @@ static void analyze_tail_call_helper (KLObject* function_symbol_object,
           if (get_kl_list_size(case_object) != 2)
             throw_kl_exception("Wrong number of arguments for a case");
 
-          KLObject* case_test_object = get_head_kl_list(case_object);
-          KLObject* case_then_object =
-            get_head_kl_list(get_tail_kl_list(case_object));
+          KLObject* case_test_object = CAR(case_object);
+          KLObject* case_then_object = CADR(case_object);
 
           if (is_non_empty_kl_list(case_test_object) &&
               *defun_type_ref == DEFUN_TYPE_POSSIBLY_TAIL_CALL)
@@ -268,7 +263,7 @@ static void analyze_tail_call_helper (KLObject* function_symbol_object,
                                      is_possibly_self_call, defun_type_ref,
                                      self_call_number_ref);
           
-          list_object = get_tail_kl_list(list_object);
+          list_object = CDR(list_object);
         }
       } else if (car_object == get_let_symbol_object()) {
         long argument_size = get_kl_list_size(cdr_object);
@@ -276,11 +271,11 @@ static void analyze_tail_call_helper (KLObject* function_symbol_object,
         if (argument_size != 3)
           throw_kl_exception("Wrong number of arguments for let expression");
 
-        KLObject* cddr_object = get_tail_kl_list(cdr_object);
-        KLObject* cdddr_object = get_tail_kl_list(cddr_object);
-        KLObject* parameter_object = get_head_kl_list(cdr_object);
-        KLObject* argument_object = get_head_kl_list(cddr_object);
-        KLObject* body_object = get_head_kl_list(cdddr_object);
+        KLObject* cddr_object = CDR(cdr_object);
+        KLObject* cdddr_object = CDR(cddr_object);
+        KLObject* parameter_object = CAR(cdr_object);
+        KLObject* argument_object = CAR(cddr_object);
+        KLObject* body_object = CAR(cdddr_object);
 
         if (!is_kl_symbol(parameter_object))
           throw_kl_exception("Let variable should be a symbol");
@@ -302,7 +297,7 @@ static void analyze_tail_call_helper (KLObject* function_symbol_object,
         KLObject* list_object = cdr_object;
 
         while (is_non_empty_kl_list(list_object)) {
-          KLObject* object = get_head_kl_list(list_object);
+          KLObject* object = CAR(list_object);
 
           if (is_kl_symbol(object)) {
             if (object == function_symbol_object) {
@@ -319,7 +314,7 @@ static void analyze_tail_call_helper (KLObject* function_symbol_object,
                                      object, list_level + 1, false,
                                      defun_type_ref, self_call_number_ref);
 
-          list_object = get_tail_kl_list(list_object);
+          list_object = CDR(list_object);
         }
       }
     }
@@ -347,18 +342,18 @@ static KLObject* tail_call_to_recur_expression (KLObject* function_symbol_object
                                                 KLObject* head_list_object,
                                                 bool* is_finished_ref)
 {
-  KLObject* car_object = get_head_kl_list(head_list_object);
-  KLObject* cdr_object = get_tail_kl_list(head_list_object);
+  KLObject* car_object = CAR(head_list_object);
+  KLObject* cdr_object = CDR(head_list_object);
 
   if (is_kl_symbol(car_object)) {
     if (car_object == function_symbol_object) {
       set_head_kl_list(head_list_object, get_recur_symbol_object());
       *is_finished_ref = true;
     } else if (car_object == get_if_symbol_object()) {
-      KLObject* cddr_object = get_tail_kl_list(cdr_object);
-      KLObject* cdddr_object = get_tail_kl_list(cddr_object);
-      KLObject* then_object = get_head_kl_list(cddr_object);
-      KLObject* else_object = get_head_kl_list(cdddr_object);
+      KLObject* cddr_object = CDR(cdr_object);
+      KLObject* cdddr_object = CDR(cddr_object);
+      KLObject* then_object = CAR(cddr_object);
+      KLObject* else_object = CAR(cdddr_object);
 
       if (is_non_empty_kl_list(then_object))
         tail_call_to_recur_expression(function_symbol_object, then_object,
@@ -371,20 +366,19 @@ static KLObject* tail_call_to_recur_expression (KLObject* function_symbol_object
       KLObject* list_object = cdr_object;
 
       while (is_non_empty_kl_list(list_object) && !*is_finished_ref) {
-        KLObject* case_object = get_head_kl_list(list_object);
-        KLObject* case_then_object =
-          get_head_kl_list(get_tail_kl_list(case_object));
+        KLObject* case_object = CAR(list_object);
+        KLObject* case_then_object = CADR(case_object);
 
         if (is_non_empty_kl_list(case_then_object))
           tail_call_to_recur_expression(function_symbol_object, case_then_object,
                                         is_finished_ref);
 
-        list_object = get_tail_kl_list(list_object);
+        list_object = CDR(list_object);
       }
     } else if (car_object == get_let_symbol_object()) {
-      KLObject* cddr_object = get_tail_kl_list(cdr_object);
-      KLObject* cdddr_object = get_tail_kl_list(cddr_object);
-      KLObject* body_object = get_head_kl_list(cdddr_object);
+      KLObject* cddr_object = CDR(cdr_object);
+      KLObject* cdddr_object = CDR(cddr_object);
+      KLObject* body_object = CAR(cdddr_object);
 
       if (is_non_empty_kl_list(body_object))
         tail_call_to_recur_expression(function_symbol_object, body_object,
@@ -435,7 +429,7 @@ static KLObject* wrap_function_with_loop_expression (Vector** parameters_ref,
       if (!is_empty_kl_list(tail_loop_binding_list_object))
         set_tail_kl_list(tail_loop_binding_list_object, list_object);
 
-      tail_loop_binding_list_object = get_tail_kl_list(list_object);
+      tail_loop_binding_list_object = CDR(list_object);
     }
 
     loop_binding_list_object = head_loop_binding_list_object;
@@ -489,7 +483,7 @@ static KLObject* optimize_multiple_function_calls_helper
     if (is_empty_kl_list(tail_list_object))
       break;
     else if (is_non_empty_kl_list(tail_list_object)) {
-      KLObject* car_object = get_head_kl_list(tail_list_object);
+      KLObject* car_object = CAR(tail_list_object);
 
       if (head_list_object == tail_list_object) {
         if (is_kl_symbol_equal(car_object, get_cons_symbol_object())) {
@@ -499,12 +493,12 @@ static KLObject* optimize_multiple_function_calls_helper
           else
             function_call_level = 1;
 
-          KLObject* cdr_object = get_tail_kl_list(tail_list_object);
+          KLObject* cdr_object = CDR(tail_list_object);
 
           if (is_non_empty_kl_list(cdr_object) &&
-              is_non_empty_kl_list(get_tail_kl_list(cdr_object)) &&
-              is_empty_kl_list(get_tail_kl_list(get_tail_kl_list(cdr_object)))) {
-            KLObject* cadr_object = get_head_kl_list(cdr_object);
+              is_non_empty_kl_list(CDR(cdr_object)) &&
+              is_empty_kl_list(CDR(CDR(cdr_object)))) {
+            KLObject* cadr_object = CAR(cdr_object);
 
             if (is_non_empty_kl_list(cadr_object)) {
               long new_function_call_count = 0;
@@ -515,8 +509,8 @@ static KLObject* optimize_multiple_function_calls_helper
                                                       &new_function_call_count);
             }
 
-            KLObject* cddr_object = get_tail_kl_list(cdr_object);
-            KLObject* caddr_object = get_head_kl_list(cddr_object);
+            KLObject* cddr_object = CDR(cdr_object);
+            KLObject* caddr_object = CAR(cddr_object);
 
             if (is_non_empty_kl_list(caddr_object)) {
               KLObject* list_object =
@@ -553,11 +547,11 @@ static KLObject* optimize_multiple_function_calls_helper
             function_call_count = 1;
           }
 
-          KLObject* cdr_object = get_tail_kl_list(tail_list_object);
+          KLObject* cdr_object = CDR(tail_list_object);
 
           if (is_non_empty_kl_list(cdr_object) &&
-              is_empty_kl_list(get_tail_kl_list(cdr_object))) {
-            KLObject* cadr_object = get_head_kl_list(cdr_object);
+              is_empty_kl_list(CDR(cdr_object))) {
+            KLObject* cadr_object = CAR(cdr_object);
 
             if (is_non_empty_kl_list(cadr_object)) {
               KLObject* list_object;
@@ -608,11 +602,11 @@ static KLObject* optimize_multiple_function_calls_helper
             function_call_count = 1;
           }
 
-          KLObject* cdr_object = get_tail_kl_list(tail_list_object);
+          KLObject* cdr_object = CDR(tail_list_object);
 
           if (is_non_empty_kl_list(cdr_object) &&
-              is_empty_kl_list(get_tail_kl_list(cdr_object))) {
-            KLObject* cadr_object = get_head_kl_list(cdr_object);
+              is_empty_kl_list(CDR(cdr_object))) {
+            KLObject* cadr_object = CAR(cdr_object);
 
             if (is_non_empty_kl_list(cadr_object)) {
               KLObject* list_object;
@@ -670,7 +664,7 @@ static KLObject* optimize_multiple_function_calls_helper
         *function_call_count_ref = 0;
       }
 
-      tail_list_object = get_tail_kl_list(tail_list_object);
+      tail_list_object = CDR(tail_list_object);
 
       continue;
     }
@@ -696,12 +690,12 @@ static KLObject* eval_defun_expression (KLObject* list_object)
   if (list_object_size != 4)
     throw_kl_exception("Wrong number of arguments for function definition");
 
-  KLObject* cdr_object = get_tail_kl_list(list_object);
-  KLObject* cddr_object = get_tail_kl_list(cdr_object);
-  KLObject* cdddr_object = get_tail_kl_list(cddr_object);
-  KLObject* function_symbol_object = get_head_kl_list(cdr_object);
-  KLObject* parameter_list_object = get_head_kl_list(cddr_object);
-  KLObject* body_object = get_head_kl_list(cdddr_object);
+  KLObject* cdr_object = CDR(list_object);
+  KLObject* cddr_object = CDR(cdr_object);
+  KLObject* cdddr_object = CDR(cddr_object);
+  KLObject* function_symbol_object = CAR(cdr_object);
+  KLObject* parameter_list_object = CAR(cddr_object);
+  KLObject* body_object = CAR(cdddr_object);
 
   if (!is_kl_symbol(function_symbol_object))
     throw_kl_exception("Function name should be a symbol");
@@ -738,7 +732,7 @@ static KLObject* eval_function_application_arguments
   KLObject* object = list_object;
 
   while (!is_empty_kl_list(object)) {
-    KLObject* evaluated_car_object =  eval_kl_object(get_head_kl_list(object),
+    KLObject* evaluated_car_object =  eval_kl_object(CAR(object),
                                                      function_environment,
                                                      variable_environment);
     KLObject* new_list_object = CONS(evaluated_car_object, EL);
@@ -749,7 +743,7 @@ static KLObject* eval_function_application_arguments
       set_tail_kl_list(tail_list_object, new_list_object);
 
     tail_list_object = new_list_object;
-    object = get_tail_kl_list(object);
+    object = CDR(object);
   }
 
   return (is_null(head_list_object)) ? EL : head_list_object;
@@ -760,8 +754,7 @@ static KLObject* eval_recur_expression (KLObject* list_object,
                                         Environment* variable_environment)
 {
   KLObject* evaluated_cdr_object =
-    eval_function_application_arguments(get_tail_kl_list(list_object),
-                                        function_environment,
+    eval_function_application_arguments(CDR(list_object), function_environment,
                                         variable_environment);
   Vector* arguments = ((is_empty_kl_list(evaluated_cdr_object)) ?
                        NULL : kl_list_to_vector(evaluated_cdr_object));
@@ -869,13 +862,13 @@ static void eval_loop_arguments_and_parameters
   KLObject* object = list_object;
 
   while (!is_empty_kl_list(object)) {
-    KLObject* parameter_object = get_head_kl_list(object);
+    KLObject* parameter_object = CAR(object);
 
     if (!is_kl_symbol(parameter_object))
       throw_kl_exception("Loop parameter should be a symbol");
 
-    KLObject* cdr_object = get_tail_kl_list(object);
-    KLObject* argument_object = get_head_kl_list(cdr_object);
+    KLObject* cdr_object = CDR(object);
+    KLObject* argument_object = CAR(cdr_object);
     KLObject* evaluated_argument_object =  eval_kl_object(argument_object,
                                                           function_environment,
                                                           variable_environment);
@@ -895,7 +888,7 @@ static void eval_loop_arguments_and_parameters
     tail_argument_list_object = new_argument_list_object;
     tail_parameter_list_object = new_parameter_list_object;
 
-    object = get_tail_kl_list(cdr_object);
+    object = CDR(cdr_object);
   }
 
   *argument_list_object_ref = head_argument_list_object;
@@ -911,9 +904,9 @@ static KLObject* eval_kl_list_loop_expression (KLObject* list_object,
   if (list_object_size != 3)
     throw_kl_exception("Wrong number of arguments for looop expression");
 
-  KLObject* cdr_object = get_tail_kl_list(list_object);
-  KLObject* cadr_object = get_head_kl_list(cdr_object);
-  KLObject* cddr_object = get_tail_kl_list(cdr_object);
+  KLObject* cdr_object = CDR(list_object);
+  KLObject* cadr_object = CAR(cdr_object);
+  KLObject* cddr_object = CDR(cdr_object);
   KLObject* argument_list_object = EL;
   KLObject* parameter_list_object = EL;
 
@@ -941,7 +934,7 @@ static KLObject* eval_kl_list_loop_expression (KLObject* list_object,
                          loop_variable_environment);
   }
 
-  KLObject* body_object = get_head_kl_list(cddr_object);
+  KLObject* body_object = CAR(cddr_object);
 
   return eval_loop_expression(parameters, body_object, loop_function_environment,
                               loop_variable_environment);
@@ -975,10 +968,10 @@ static KLObject* eval_kl_list_lambda_expression
   if (list_object_size != 3)
     throw_kl_exception("Wrong number of arguments for function definition");
 
-  KLObject* cdr_object = get_tail_kl_list(list_object);
-  KLObject* cddr_object = get_tail_kl_list(cdr_object);
-  KLObject* parameter_object = get_head_kl_list(cdr_object);
-  KLObject* body_object = get_head_kl_list(cddr_object);
+  KLObject* cdr_object = CDR(list_object);
+  KLObject* cddr_object = CDR(cdr_object);
+  KLObject* parameter_object = CAR(cdr_object);
+  KLObject* body_object = CAR(cddr_object);
 
   return eval_lambda_expression(parameter_object, body_object,
                                 function_environment, variable_environment);
@@ -993,14 +986,14 @@ static KLObject* eval_let_expression (KLObject* list_object,
   if (list_object_size != 4)
     throw_kl_exception("Wrong number of arguments for let expression");
 
-  KLObject* cdr_object = get_tail_kl_list(list_object);
-  KLObject* cddr_object = get_tail_kl_list(cdr_object);
-  KLObject* cdddr_object = get_tail_kl_list(cddr_object);
-  KLObject* argument_object = eval_kl_object(get_head_kl_list(cddr_object),
+  KLObject* cdr_object = CDR(list_object);
+  KLObject* cddr_object = CDR(cdr_object);
+  KLObject* cdddr_object = CDR(cddr_object);
+  KLObject* argument_object = eval_kl_object(CAR(cddr_object),
                                              function_environment,
                                              variable_environment);
-  KLObject* parameter_object = get_head_kl_list(cdr_object);
-  KLObject* body_object = get_head_kl_list(cdddr_object);
+  KLObject* parameter_object = CAR(cdr_object);
+  KLObject* body_object = CAR(cdddr_object);
 
   if (!is_kl_symbol(parameter_object))
     throw_kl_exception("Let variable should be a symbol");
@@ -1036,8 +1029,8 @@ static KLObject* eval_eval_kl_expression (KLObject* list_object,
   if (list_object_size != 2)
     throw_kl_exception("Wrong number of arguments for eval-kl");
 
-  KLObject* cdr_object = get_tail_kl_list(list_object);
-  KLObject* argument_object = get_head_kl_list(cdr_object);
+  KLObject* cdr_object = CDR(list_object);
+  KLObject* argument_object = CAR(cdr_object);
   KLObject* evaluated_argument_object = eval_kl_object(argument_object,
                                                        function_environment,
                                                        variable_environment);
@@ -1071,7 +1064,7 @@ static KLObject* eval_kl_list_freeze_expression (KLObject* list_object,
   if (list_object_size != 2)
     throw_kl_exception("Wrong number of arguments for freeze");
 
-  KLObject* body_object = get_head_kl_list(get_tail_kl_list(list_object));
+  KLObject* body_object = CADR(list_object);
 
   return eval_freeze_expression(body_object, function_environment,
                                 variable_environment);
@@ -1238,7 +1231,7 @@ static KLObject* eval_kl_list_primitive_function_application
 (KLObject* list_object, KLObject* function_object,
  Environment* function_environment, Environment* variable_environment)
 {
-  KLObject* cdr_object = get_tail_kl_list(list_object);
+  KLObject* cdr_object = CDR(list_object);
   PrimitiveFunction* primitive_function =
     get_kl_function_primitive_function(function_object);
   long argument_size = get_kl_list_size(cdr_object);
@@ -1249,7 +1242,7 @@ static KLObject* eval_kl_list_primitive_function_application
                          NULL : kl_list_to_vector(cdr_object));
 
     if (parameter_size > 0) {
-      KLObject* symbol_object = get_head_kl_list(list_object);
+      KLObject* symbol_object = CAR(list_object);
       KLObject* curried_list_object =
         create_curried_kl_list_primitive_function(symbol_object,
                                                   function_object,
@@ -1272,7 +1265,7 @@ static KLObject* eval_kl_list_primitive_function_application
                             function_environment, variable_environment);
     }
 
-    KLObject* function_symbol_object = get_head_kl_list(list_object);
+    KLObject* function_symbol_object = CAR(list_object);
     KLObject* function_appliation_list_object = CONS(function_symbol_object, EL);
     KLObject* partial_function_application_list_object
       = create_kl_list_partial_function_application(function_appliation_list_object,
@@ -1299,7 +1292,7 @@ static KLObject* eval_kl_list_user_function_application
 (KLObject* list_object, KLObject* function_object,
  Environment* function_environment, Environment* variable_environment)
 {
-  KLObject* cdr_object = get_tail_kl_list(list_object);
+  KLObject* cdr_object = CDR(list_object);
   UserFunction* user_function = get_kl_function_user_function(function_object);
   Vector* parameters = get_user_function_parameters(user_function);
   long argument_size = get_kl_list_size(cdr_object);
@@ -1310,7 +1303,7 @@ static KLObject* eval_kl_list_user_function_application
                          NULL : kl_list_to_vector(cdr_object));
 
     if (parameter_size > 0) {
-      KLObject* symbol_object = get_head_kl_list(list_object);
+      KLObject* symbol_object = CAR(list_object);
       KLObject* curried_list_object =
         create_curried_kl_list_user_function(symbol_object,
                                              function_object,
@@ -1333,7 +1326,7 @@ static KLObject* eval_kl_list_user_function_application
                             function_environment, variable_environment);
     }
 
-    KLObject* function_symbol_object = get_head_kl_list(list_object);
+    KLObject* function_symbol_object = CAR(list_object);
     KLObject* function_appliation_list_object = CONS(function_symbol_object, EL);
     KLObject* partial_function_application_list_object
       = create_kl_list_partial_function_application(function_appliation_list_object,
@@ -1431,7 +1424,7 @@ static KLObject* eval_kl_list_closure_function_application
 (KLObject* list_object, KLObject* function_object,
  Environment* function_environment, Environment* variable_environment)
 {
-  KLObject* cdr_object = get_tail_kl_list(list_object);
+  KLObject* cdr_object = CDR(list_object);
   Vector* arguments = ((is_empty_kl_list(cdr_object)) ?
                        NULL : kl_list_to_vector(cdr_object));
   long argument_size = (is_null(arguments)) ? 0 : get_vector_size(arguments);
@@ -1448,7 +1441,7 @@ static KLObject* eval_kl_list_closure_function_application
   } 
 
   KLObject* argument_object =
-    (is_empty_kl_list(cdr_object)) ? NULL : get_head_kl_list(cdr_object);
+    (is_empty_kl_list(cdr_object)) ? NULL : CAR(cdr_object);
   
   return eval_closure_function_application(function_object, argument_object,
                                            function_environment,
@@ -1464,11 +1457,11 @@ static KLObject* eval_trap_error_expression (KLObject* list_object,
   if (list_object_size != 3)
     throw_kl_exception("Wrong number of arguments for trap-error");
   
-  KLObject* cdr_object = get_tail_kl_list(list_object);
+  KLObject* cdr_object = CDR(list_object);
   jmp_buf jump_buffer;
   
   if (sigsetjmp(jump_buffer, 0) == 0) {
-    KLObject* body_object = get_head_kl_list(cdr_object);
+    KLObject* body_object = CAR(cdr_object);
     KLObject* exception_object = create_kl_exception();
 
     set_kl_exception_jump_buffer(exception_object, &jump_buffer);
@@ -1481,8 +1474,8 @@ static KLObject* eval_trap_error_expression (KLObject* list_object,
 
     return object;
   } else {
-    KLObject* cddr_object = get_tail_kl_list(cdr_object);
-    KLObject* handler_object = get_head_kl_list(cddr_object);
+    KLObject* cddr_object = CDR(cdr_object);
+    KLObject* handler_object = CAR(cddr_object);
     KLObject* exception_object = pop_stack(get_trapped_kl_exception_stack());
     KLObject* function_object =
       eval_kl_object(handler_object, function_environment, variable_environment);
@@ -1496,7 +1489,7 @@ static KLObject* eval_trap_error_expression (KLObject* list_object,
 
 static inline KLObject* eval_quote_expression (KLObject* list_object)
 {
-  return get_head_kl_list(get_tail_kl_list(list_object));
+  return CADR(list_object);
 }
 
 static inline KLObject* eval_mcons_expression (KLObject* list_object,
@@ -1504,15 +1497,14 @@ static inline KLObject* eval_mcons_expression (KLObject* list_object,
                                                Environment* variable_environment)
 {
   KLObject* evaluated_argument_list_object =
-    eval_function_application_arguments(get_tail_kl_list(list_object),
-                                        function_environment,
+    eval_function_application_arguments(CDR(list_object), function_environment,
                                         variable_environment);
   KLObject* head_list_object = EL;
   KLObject* tail_list_object = EL;
 
   while (!is_empty_kl_list(evaluated_argument_list_object)) {
-    KLObject* car_object = get_head_kl_list(evaluated_argument_list_object);
-    KLObject* cdr_object = get_tail_kl_list(evaluated_argument_list_object);
+    KLObject* car_object = CAR(evaluated_argument_list_object);
+    KLObject* cdr_object = CDR(evaluated_argument_list_object);
     KLObject* object = ((is_empty_kl_list(cdr_object)) ?
                         car_object: CONS(car_object, cdr_object));
 
@@ -1530,13 +1522,12 @@ static inline KLObject* eval_mcons_expression (KLObject* list_object,
 
 static inline KLObject* eval_ocons_expression (KLObject* list_object)
 {
-  KLObject* cdr_object = get_tail_kl_list(list_object);
+  KLObject* cdr_object = CDR(list_object);
 
-  if (!is_non_empty_kl_list(cdr_object) ||
-      !is_kl_list(get_head_kl_list(cdr_object)))
+  if (!is_non_empty_kl_list(cdr_object) || !is_kl_list(CAR(cdr_object)))
     throw_kl_exception("Argument to ocons should be a list");
 
-  KLObject* cadr_object = get_head_kl_list(cdr_object);
+  KLObject* cadr_object = CAR(cdr_object);
 
   optimize_multiple_function_calls(cadr_object);
 
@@ -1547,7 +1538,7 @@ static KLObject* eval_kl_list (KLObject* list_object,
                                Environment* function_environment,
                                Environment* variable_environment)
 {
-  KLObject* car_object = get_head_kl_list(list_object);
+  KLObject* car_object = CAR(list_object);
   KLObject* evaluated_car_object =
     eval_kl_object(car_object, function_environment, variable_environment);
 

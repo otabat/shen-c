@@ -297,7 +297,7 @@ static inline KLObject* primitive_function_hd (KLObject* function_object,
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
-  return get_head_kl_list(objects[0]);
+  return CAR(objects[0]);
 }
 
 static inline void register_primitive_kl_function_hd (void)
@@ -316,7 +316,7 @@ static inline KLObject* primitive_function_tl (KLObject* function_object,
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
-  return get_tail_kl_list(objects[0]);
+  return CDR(objects[0]);
 }
 
 static inline void register_primitive_kl_function_tl (void)
