@@ -394,7 +394,7 @@ static inline KLObject* primitive_function_absvector
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
-  return create_kl_vector((size_t)get_kl_number_number_l(objects[0]));
+  return create_kl_vector(get_kl_number_number_l(objects[0]));
 }
 
 static inline void register_primitive_kl_function_absvector (void)
@@ -422,9 +422,9 @@ static inline KLObject* primitive_function_set_absvector_element
 
   Vector* vector = get_vector(vector_object);
   long index = get_kl_number_number_l(index_object);
-  size_t size = get_vector_size(vector);
+  long size = get_vector_size(vector);
 
-  if (index >= (long)size || index < 0)
+  if (index >= size || index < 0)
     throw_kl_exception("Vector index is out of bound");
 
   set_vector_element(vector, index, objects[2]);
@@ -457,9 +457,9 @@ static inline KLObject* primitive_function_get_absvector_element
 
   Vector* vector = get_vector(vector_object);
   long index = get_kl_number_number_l(index_object);
-  size_t size = get_vector_size(vector);
+  long size = get_vector_size(vector);
 
-  if (index >= (long)size || index < 0)
+  if (index >= size || index < 0)
     throw_kl_exception("Vector index is out of bound");
 
   return get_vector_element(vector, index);

@@ -54,10 +54,10 @@ inline bool is_non_empty_kl_list (KLObject* object)
   return is_kl_list(object) && !is_empty_kl_list(object);
 }
 
-inline size_t get_kl_list_size (KLObject* list_object)
+inline long get_kl_list_size (KLObject* list_object)
 {
   KLObject* object = list_object;
-  size_t size = 0;
+  long size = 0;
 
   while (!is_empty_kl_list(object)) {
     ++size;

@@ -20,20 +20,20 @@ inline void set_vector_objects (Vector* vector, KLObject** objects)
   vector->objects = objects;
 }
 
-inline size_t get_vector_size (Vector* vector)
+inline long get_vector_size (Vector* vector)
 {
   return vector->size;
 }
 
-inline void set_vector_size (Vector* vector, size_t size)
+inline void set_vector_size (Vector* vector, long size)
 {
   vector->size = size;
 }
 
-inline Vector* create_vector (size_t size)
+inline Vector* create_vector (long size)
 {
   Vector* vector = malloc(sizeof(Vector));
-  KLObject** objects = malloc(sizeof(KLObject) * size);
+  KLObject** objects = malloc(sizeof(KLObject) * (size_t)size);
 
   set_vector_objects(vector, objects);
   set_vector_size(vector, size);
@@ -84,7 +84,7 @@ inline void set_vector (KLObject* vector_object, Vector* vector)
   vector_object->value.vector = vector;
 }
 
-inline KLObject* create_kl_vector (size_t size)
+inline KLObject* create_kl_vector (long size)
 {
   if (size <= 0)
     throw_kl_exception("Vector size should be greater than 0");
@@ -112,12 +112,12 @@ inline void set_kl_vector_objects (KLObject* vector_object, KLObject** objects)
   set_vector_objects(get_vector(vector_object), objects);
 }
 
-inline size_t get_kl_vector_size (KLObject* vector_object)
+inline long get_kl_vector_size (KLObject* vector_object)
 {
   return get_vector_size(get_vector(vector_object));
 }
 
-inline void set_kl_vector_size (KLObject* vector_object, size_t size)
+inline void set_kl_vector_size (KLObject* vector_object, long size)
 {
   set_vector_size(get_vector(vector_object), size);
 }

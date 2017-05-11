@@ -99,7 +99,7 @@ struct Number {
 };
 
 typedef struct PrimitiveFunction {
-  size_t parameter_size;
+  long parameter_size;
   NativeFunction* native_function;
 } PrimitiveFunction;
 
@@ -141,7 +141,7 @@ struct Pair {
 
 struct Vector {
   KLObject** objects;
-  size_t size;
+  long size;
 };
 
 struct Environment {
@@ -151,7 +151,7 @@ struct Environment {
 
 typedef struct Stack {
   KLObject* top;
-  size_t size;
+  long size;
 } Stack;
 
 typedef struct LoopFrame {
@@ -167,7 +167,7 @@ struct LoopFramePair {
 
 typedef struct LoopFrameStack {
   LoopFramePair* top;
-  size_t size;
+  long size;
 } LoopFrameStack;
 
 extern KLObject* empty_list_object;

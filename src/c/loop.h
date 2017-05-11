@@ -123,13 +123,13 @@ inline void set_loop_frame_stack_top (LoopFrameStack* frame_stack,
   frame_stack->top = frame_pair;
 }
 
-inline size_t get_loop_frame_stack_size (LoopFrameStack* frame_stack)
+inline long get_loop_frame_stack_size (LoopFrameStack* frame_stack)
 {
   return frame_stack->size;
 }
 
 inline void set_loop_frame_stack_size (LoopFrameStack* frame_stack,
-                                       size_t frame_stack_size)
+                                       long frame_stack_size)
 {
   frame_stack->size = frame_stack_size;
 }

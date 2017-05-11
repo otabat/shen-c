@@ -85,7 +85,7 @@ static KLObject* eval_cond_tail_expression (KLObject* list_object,
                                             Environment* function_environment,
                                             Environment* variable_environment)
 {
-  size_t list_object_size = get_kl_list_size(list_object);
+  long list_object_size = get_kl_list_size(list_object);
 
   if (list_object_size == 0)
     throw_kl_exception("No true case found for cond");
@@ -122,7 +122,7 @@ static KLObject* eval_cond_expression (KLObject* list_object,
                                        Environment* function_environment,
                                        Environment* variable_environment)
 {
-  size_t list_object_size = get_kl_list_size(list_object);
+  long list_object_size = get_kl_list_size(list_object);
 
   if (list_object_size == 1)
     throw_kl_exception("Wrong number of arguments passed to cond");
@@ -133,11 +133,11 @@ static KLObject* eval_cond_expression (KLObject* list_object,
 }
 
 static void analyze_tail_call_helper (KLObject* function_symbol_object,
-                                      size_t parameter_size,
+                                      long parameter_size,
                                       KLObject* head_object, long list_level,
                                       bool is_possibly_self_call,
                                       DefunType* defun_type_ref,
-                                      size_t* self_call_number_ref)
+                                      long* self_call_number_ref)
 {
   if (list_level == 0) {
     if (is_non_empty_kl_list(head_object)) {
@@ -186,7 +186,7 @@ static void analyze_tail_call_helper (KLObject* function_symbol_object,
           return;
         }
 
-        size_t argument_size = get_kl_list_size(cdr_object);
+        long argument_size = get_kl_list_size(cdr_object);
 
         if (argument_size != parameter_size)
           throw_kl_exception("Wrong number of arguments "
@@ -205,7 +205,7 @@ static void analyze_tail_call_helper (KLObject* function_symbol_object,
           list_object = get_tail_kl_list(list_object);
         }
       } else if (car_object == get_if_symbol_object()) {
-        size_t argument_size = get_kl_list_size(cdr_object);
+        long argument_size = get_kl_list_size(cdr_object);
 
         if (argument_size != 3)
           throw_kl_exception("Wrong number of arguments for if expression");
@@ -235,7 +235,7 @@ static void analyze_tail_call_helper (KLObject* function_symbol_object,
                                    is_possibly_self_call, defun_type_ref,
                                    self_call_number_ref);
     } else if (car_object == get_cond_symbol_object()) {
-        size_t argument_size = get_kl_list_size(cdr_object);
+        long argument_size = get_kl_list_size(cdr_object);
 
         if (argument_size == 0)
           throw_kl_exception("No true case found for cond");
@@ -271,7 +271,7 @@ static void analyze_tail_call_helper (KLObject* function_symbol_object,
           list_object = get_tail_kl_list(list_object);
         }
       } else if (car_object == get_let_symbol_object()) {
-        size_t argument_size = get_kl_list_size(cdr_object);
+        long argument_size = get_kl_list_size(cdr_object);
 
         if (argument_size != 3)
           throw_kl_exception("Wrong number of arguments for let expression");
@@ -327,11 +327,11 @@ static void analyze_tail_call_helper (KLObject* function_symbol_object,
 }
 
 static bool analyze_tail_call (KLObject* function_symbol_object,
-                               size_t parameter_size,
+                               long parameter_size,
                                KLObject* body_object)
 {
   DefunType defun_type = DEFUN_TYPE_POSSIBLY_TAIL_CALL;
-  size_t self_call_number = 0;
+  long self_call_number = 0;
 
   analyze_tail_call_helper(function_symbol_object, parameter_size,
                            body_object, 0, true, &defun_type, &self_call_number);
@@ -395,19 +395,19 @@ static KLObject* tail_call_to_recur_expression (KLObject* function_symbol_object
   return head_list_object;
 }
 
-static Vector* create_auto_increment_kl_symbols (size_t size)
+static Vector* create_auto_increment_kl_symbols (long size)
 {
   Vector* vector = create_vector(size);
   KLObject** objects = get_vector_objects(vector);
   
-  for (size_t i = 0; i < size; ++i)
+  for (long i = 0; i < size; ++i)
     objects[i] = create_auto_increment_kl_symbol();
 
   return vector;
 }
 
 static KLObject* wrap_function_with_loop_expression (Vector** parameters_ref,
-                                                     size_t parameter_size,
+                                                     long parameter_size,
                                                      KLObject* body_object)
 {
   KLObject* loop_binding_list_object = get_empty_kl_list();
@@ -425,7 +425,7 @@ static KLObject* wrap_function_with_loop_expression (Vector** parameters_ref,
       get_vector_objects(new_function_parameters);
     KLObject** loop_parameter_objects = get_vector_objects(loop_parameters);
 
-    for (size_t i = 0; i < parameter_size; ++i) {
+    for (long i = 0; i < parameter_size; ++i) {
       KLObject* list_object =
         create_kl_list(loop_parameter_objects[i],
                        create_kl_list(new_function_parameter_objects[i],
@@ -451,7 +451,7 @@ static KLObject* wrap_function_with_loop_expression (Vector** parameters_ref,
 
 static KLObject* remove_tail_recursion (KLObject* function_symbol_object,
                                         Vector** parameters_ref,
-                                        size_t parameter_size,
+                                        long parameter_size,
                                         KLObject* body_object)
 {
   bool is_finished = false;
@@ -466,7 +466,7 @@ static KLObject* remove_tail_recursion (KLObject* function_symbol_object,
 
 static KLObject* optimize_tail_call (KLObject* function_symbol_object,
                                      Vector** parameters_ref,
-                                     size_t parameter_size,
+                                     long parameter_size,
                                      KLObject* body_object)
 {
   bool is_tail_call = analyze_tail_call(function_symbol_object,
@@ -510,12 +510,12 @@ static KLObject* optimize_multiple_function_calls_helper
             KLObject* cadr_object = get_head_kl_list(cdr_object);
 
             if (is_non_empty_kl_list(cadr_object)) {
-              long function_call_count = 0;
+              long new_function_call_count = 0;
 
               optimize_multiple_function_calls_helper(cadr_object,
                                                       NULL,
                                                       0,
-                                                      &function_call_count);
+                                                      &new_function_call_count);
             }
 
             KLObject* cddr_object = get_tail_kl_list(cdr_object);
@@ -661,10 +661,10 @@ static KLObject* optimize_multiple_function_calls_helper
       }
 
       if (is_non_empty_kl_list(car_object)) {
-        long function_call_count = 0;
+        long new_function_call_count = 0;
 
         optimize_multiple_function_calls_helper(car_object, NULL, 0,
-                                                &function_call_count);
+                                                &new_function_call_count);
       }
 
       if (function_call_level > 0) {
@@ -694,7 +694,7 @@ static void optimize_multiple_function_calls (KLObject* body_object)
 
 static KLObject* eval_defun_expression (KLObject* list_object)
 {
-  size_t list_object_size = get_kl_list_size(list_object);
+  long list_object_size = get_kl_list_size(list_object);
 
   if (list_object_size != 4)
     throw_kl_exception("Wrong number of arguments for function definition");
@@ -714,7 +714,7 @@ static KLObject* eval_defun_expression (KLObject* list_object)
   
   Vector* parameters = ((is_empty_kl_list(parameter_list_object)) ?
                         NULL : kl_list_to_vector(parameter_list_object));
-  size_t parameter_size =
+  long parameter_size =
     (is_null(parameters)) ? 0 : get_vector_size(parameters);
 
   check_function_user_parameters(parameters);
@@ -769,14 +769,14 @@ static KLObject* eval_recur_expression (KLObject* list_object,
                                         variable_environment);
   Vector* arguments = ((is_empty_kl_list(evaluated_cdr_object)) ?
                        NULL : kl_list_to_vector(evaluated_cdr_object));
-  size_t argument_size = (is_null(arguments)) ? 0 : get_vector_size(arguments);
+  long argument_size = (is_null(arguments)) ? 0 : get_vector_size(arguments);
   LoopFrame* loop_frame = peek_loop_frame_stack();
 
   if (is_null(loop_frame))
     throw_kl_exception("Empty loop frame");
   
   Vector* parameters = get_loop_frame_parameters(loop_frame);
-  size_t parameter_size = (is_null(parameters)) ? 0 : get_vector_size(parameters);
+  long parameter_size = (is_null(parameters)) ? 0 : get_vector_size(parameters);
 
   if (argument_size != parameter_size)
     throw_kl_exception("Wrong number of arguments for recur");
@@ -826,9 +826,9 @@ static KLObject* eval_loop_expression (Vector* parameters,
         if (is_not_null(frame_arguments) && is_not_null(frame_parameters)) {
           KLObject** argument_objects = get_vector_objects(frame_arguments);
           KLObject** parameter_objects = get_vector_objects(frame_parameters);
-          size_t argument_size = get_vector_size(frame_arguments);
+          long argument_size = get_vector_size(frame_arguments);
 
-          for (size_t i = 0; i < argument_size; ++i) 
+          for (long i = 0; i < argument_size; ++i)
             extend_environment(parameter_objects[i], argument_objects[i],
                                variable_environment);
         }
@@ -860,7 +860,7 @@ static void eval_loop_arguments_and_parameters
   if (!is_kl_list(list_object))
     throw_kl_exception("Loop bindings should be a list");
 
-  size_t list_object_size = get_kl_list_size(list_object);
+  long list_object_size = get_kl_list_size(list_object);
 
   if (list_object_size % 2 != 0)
     throw_kl_exception("Odd number of loop bindings");
@@ -912,7 +912,7 @@ static KLObject* eval_kl_list_loop_expression (KLObject* list_object,
                                                Environment* function_environment,
                                                Environment* variable_environment)
 {
-  size_t list_object_size = get_kl_list_size(list_object);
+  long list_object_size = get_kl_list_size(list_object);
 
   if (list_object_size != 3)
     throw_kl_exception("Wrong number of arguments for looop expression");
@@ -940,9 +940,9 @@ static KLObject* eval_kl_list_loop_expression (KLObject* list_object,
   if (is_not_null(arguments) && is_not_null(parameters)) {
     KLObject** argument_objects = get_vector_objects(arguments);
     KLObject** parameter_objects = get_vector_objects(parameters);
-    size_t argument_size = get_vector_size(arguments);
+    long argument_size = get_vector_size(arguments);
 
-    for (size_t i = 0; i < argument_size; ++i)
+    for (long i = 0; i < argument_size; ++i)
       extend_environment(parameter_objects[i], argument_objects[i],
                          loop_variable_environment);
   }
@@ -976,7 +976,7 @@ static KLObject* eval_kl_list_lambda_expression
 (KLObject* list_object, Environment* function_environment,
  Environment* variable_environment)
 {
-  size_t list_object_size = get_kl_list_size(list_object);
+  long list_object_size = get_kl_list_size(list_object);
 
   if (list_object_size != 3)
     throw_kl_exception("Wrong number of arguments for function definition");
@@ -994,7 +994,7 @@ static KLObject* eval_let_expression (KLObject* list_object,
                                       Environment* function_environment,
                                       Environment* variable_environment)
 {
-  size_t list_object_size = get_kl_list_size(list_object);
+  long list_object_size = get_kl_list_size(list_object);
 
   if (list_object_size != 4)
     throw_kl_exception("Wrong number of arguments for let expression");
@@ -1037,7 +1037,7 @@ static KLObject* eval_eval_kl_expression (KLObject* list_object,
                                           Environment* function_environment,
                                           Environment* variable_environment)
 {
-  size_t list_object_size = get_kl_list_size(list_object);
+  long list_object_size = get_kl_list_size(list_object);
 
   if (list_object_size != 2)
     throw_kl_exception("Wrong number of arguments for eval-kl");
@@ -1072,7 +1072,7 @@ static KLObject* eval_kl_list_freeze_expression (KLObject* list_object,
                                                  Environment* function_environment,
                                                  Environment* variable_environment)
 {
-  size_t list_object_size = get_kl_list_size(list_object);
+  long list_object_size = get_kl_list_size(list_object);
 
   if (list_object_size != 2)
     throw_kl_exception("Wrong number of arguments for freeze");
@@ -1100,7 +1100,7 @@ static KLObject* eval_user_function_application (KLObject* function_object,
                                                  Vector* arguments)
 {
   UserFunction* user_function = get_kl_function_user_function(function_object);
-  size_t argument_size = (is_null(arguments)) ? 0 : get_vector_size(arguments);
+  long argument_size = (is_null(arguments)) ? 0 : get_vector_size(arguments);
   Vector* parameters = get_user_function_parameters(user_function);
   KLObject* body_object = get_user_function_body(user_function);
   Environment* user_function_function_environment = create_environment();
@@ -1115,7 +1115,7 @@ static KLObject* eval_user_function_application (KLObject* function_object,
     KLObject** argument_objects = get_vector_objects(arguments);
     KLObject** parameter_objects = get_vector_objects(parameters);
 
-    for (size_t i = 0; i < argument_size; ++i)
+    for (long i = 0; i < argument_size; ++i)
       extend_environment(parameter_objects[i], argument_objects[i],
                          user_function_variable_environment);
   }
@@ -1129,11 +1129,11 @@ static KLObject* create_kl_list_function_application (KLObject* list_object,
                                                       Vector* arguments,
                                                       long argument_index)
 {
-  size_t argument_size = get_vector_size(arguments);
+  long argument_size = get_vector_size(arguments);
   KLObject* head_list_object = list_object;
   KLObject* tail_list_object = list_object;
 
-  while (argument_index < (long)argument_size) {
+  while (argument_index < argument_size) {
     KLObject* new_list_object =
       create_kl_list(get_vector_element(arguments, argument_index),
                      get_empty_kl_list());
@@ -1162,11 +1162,11 @@ static KLObject* create_curried_kl_list_closure_function
 {
   KLObject* closure_parameter_object =
     get_vector_element(closure_parameters, closure_parameter_index);
-  size_t closure_parameter_size = get_vector_size(closure_parameters);
+  long closure_parameter_size = get_vector_size(closure_parameters);
 
   KLObject* closure_body_object;
 
-  if (closure_parameter_index >= (long)closure_parameter_size - 1)
+  if (closure_parameter_index >= closure_parameter_size - 1)
     closure_body_object = 
       create_kl_list_function_application(create_kl_list(function_symbol_object,
                                                          get_empty_kl_list()),
@@ -1193,8 +1193,7 @@ static KLObject* create_curried_kl_list_primitive_function
 {
   PrimitiveFunction* primitive_function =
     get_kl_function_primitive_function(function_object);
-  size_t parameter_size =
-    get_primitive_function_parameter_size(primitive_function);
+  long parameter_size = get_primitive_function_parameter_size(primitive_function);
   Vector* curried_primitive_function_parameters =
     create_auto_increment_kl_symbols(parameter_size);
   KLObject* curried_list_object =
@@ -1214,7 +1213,7 @@ static KLObject* create_curried_kl_list_user_function
 {
   UserFunction* user_function = get_kl_function_user_function(function_object);
   Vector* parameters = get_user_function_parameters(user_function); 
-  size_t parameter_size = get_vector_size(parameters);
+  long parameter_size = get_vector_size(parameters);
   Vector* curried_user_function_parameters =
     create_auto_increment_kl_symbols(parameter_size);
   KLObject* curried_list_object =
@@ -1231,14 +1230,14 @@ static KLObject* create_curried_kl_list_user_function
 static KLObject* create_kl_list_partial_function_application
 (KLObject* object, Vector* arguments, long argument_index)
 {
-  size_t argument_size = get_vector_size(arguments);
+  long argument_size = get_vector_size(arguments);
   KLObject* argument_object = get_vector_element(arguments, argument_index);
   KLObject* new_object =
     create_kl_list(object, create_kl_list(argument_object, get_empty_kl_list()));
 
   ++argument_index;
 
-  if ((long)argument_size == argument_index)
+  if (argument_size == argument_index)
     return new_object;
 
   return create_kl_list_partial_function_application(new_object, arguments,
@@ -1252,9 +1251,8 @@ static KLObject* eval_kl_list_primitive_function_application
   KLObject* cdr_object = get_tail_kl_list(list_object);
   PrimitiveFunction* primitive_function =
     get_kl_function_primitive_function(function_object);
-  size_t argument_size = get_kl_list_size(cdr_object);
-  size_t parameter_size =
-    get_primitive_function_parameter_size(primitive_function);
+  long argument_size = get_kl_list_size(cdr_object);
+  long parameter_size = get_primitive_function_parameter_size(primitive_function);
 
   if (argument_size != parameter_size) {
     Vector* arguments = ((is_empty_kl_list(cdr_object)) ?
@@ -1315,8 +1313,8 @@ static KLObject* eval_kl_list_user_function_application
   KLObject* cdr_object = get_tail_kl_list(list_object);
   UserFunction* user_function = get_kl_function_user_function(function_object);
   Vector* parameters = get_user_function_parameters(user_function);
-  size_t argument_size = get_kl_list_size(cdr_object);
-  size_t parameter_size = (is_null(parameters)) ? 0 : get_vector_size(parameters);
+  long argument_size = get_kl_list_size(cdr_object);
+  long parameter_size = (is_null(parameters)) ? 0 : get_vector_size(parameters);
 
   if (argument_size != parameter_size) {
     Vector* arguments = ((is_empty_kl_list(cdr_object)) ?
@@ -1418,8 +1416,8 @@ static KLObject* eval_closure_function_application
                          variable_environment);
   Closure* closure = get_kl_function_closure(function_object);
   KLObject* parameter_object = get_closure_parameter(closure);
-  size_t argument_size = (is_null(evaluated_argument_object)) ? 0 : 1;
-  size_t parameter_size = (is_null(parameter_object)) ? 0 : 1;
+  long argument_size = (is_null(evaluated_argument_object)) ? 0 : 1;
+  long parameter_size = (is_null(parameter_object)) ? 0 : 1;
 
   check_function_argument_size(argument_size, parameter_size);
 
@@ -1448,7 +1446,7 @@ static KLObject* eval_kl_list_closure_function_application
   KLObject* cdr_object = get_tail_kl_list(list_object);
   Vector* arguments = ((is_empty_kl_list(cdr_object)) ?
                        NULL : kl_list_to_vector(cdr_object));
-  size_t argument_size = (is_null(arguments)) ? 0 : get_vector_size(arguments);
+  long argument_size = (is_null(arguments)) ? 0 : get_vector_size(arguments);
 
   if (argument_size > 1) {
     KLObject* partial_function_application_list_object =
@@ -1473,7 +1471,7 @@ static KLObject* eval_trap_error_expression (KLObject* list_object,
                                              Environment* function_environment,
                                              Environment* variable_environment)
 {
-  size_t list_object_size = get_kl_list_size(list_object);
+  long list_object_size = get_kl_list_size(list_object);
 
   if (list_object_size != 3)
     throw_kl_exception("Wrong number of arguments for trap-error");

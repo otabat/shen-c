@@ -313,9 +313,9 @@ inline char* read_file (FILE* file)
   if (fseek(file, 0, SEEK_SET) != 0)
     throw_kl_exception("Failed to seek to the start position of the file");
 
-  char* string = malloc(string_size + 1);
+  char* string = malloc((size_t)string_size + 1);
 
-  fread(string, string_size, 1, file);
+  fread(string, (size_t)string_size, 1, file);
   string[string_size] = '\0';
 
   return string;

@@ -9,4 +9,4 @@ extern KLObject* get_tail_kl_list (KLObject* list_object);
 extern void set_tail_kl_list (KLObject* list_object, KLObject* cdr_object);
 extern bool is_kl_list (KLObject* object);
 extern bool is_non_empty_kl_list (KLObject* object);
-extern size_t get_kl_list_size (KLObject* list_object);
+extern long get_kl_list_size (KLObject* list_object);

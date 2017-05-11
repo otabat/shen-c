@@ -14,7 +14,7 @@ static inline KLObject* primitive_function_exit (KLObject* function_object,
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
   if (is_kl_number_l(objects[0]))
-    exit(get_kl_number_number_l(objects[0]));
+    exit((int)get_kl_number_number_l(objects[0]));
 
   throw_kl_exception("Argument of exit function should be a number");
 
@@ -273,9 +273,9 @@ static inline KLObject* primitive_function_get_absvector_element_slash_or
 
   long index = get_kl_number_number_l(number_object);
   Vector* vector = get_vector(vector_object);
-  size_t size = get_vector_size(vector);
+  long size = get_vector_size(vector);
 
-  if (index >= (long)size || index < 0)
+  if (index >= size || index < 0)
     eval_simple_closure_function_application(objects[2]);
 
   return get_vector_element(vector, index);
@@ -637,7 +637,7 @@ static inline KLObject* primitive_function_read_file_as_charlist
   KLObject* head_list_object = NULL;
   KLObject* tail_list_object = head_list_object;
 
-  for (long i = 0; i < string_length; ++i) {
+  for (size_t i = 0; i < string_length; ++i) {
     KLObject* list_object = create_kl_list(create_kl_number_l(string[i]),
                                            get_empty_kl_list());
 
@@ -665,9 +665,9 @@ static inline KLObject* primitive_function_shen_is_pvar_helper (KLObject* object
 {
   if (is_kl_vector(object)) {
     Vector* vector = get_vector(object);
-    KLObject* object = get_vector_element(vector, 0);
+    KLObject* symbol_object = get_vector_element(vector, 0);
 
-    if (object == get_shen_pvar_symbol_object())
+    if (symbol_object == get_shen_pvar_symbol_object())
       return get_true_boolean_object();
 
     return get_false_boolean_object();
@@ -1080,7 +1080,7 @@ static inline void register_primitive_kl_function_shen_mk_pvar (void)
 
 static inline KLObject* primitive_function_shen_copy_vector_helper
 (KLObject* source_vector_object, KLObject* destination_vector_object,
- size_t source_vector_limit, size_t destination_vector_limit, KLObject* fill_object)
+ long source_vector_limit, long destination_vector_limit, KLObject* fill_object)
 {
   KLObject** source_vector_objects = get_kl_vector_objects(source_vector_object);
   KLObject** destination_vector_objects =
@@ -1118,10 +1118,10 @@ static inline void register_primitive_kl_function_shen_copy_vector (void)
 }
 
 static inline KLObject* primitive_function_shen_resize_vector_helper
-(KLObject* source_vector_object, size_t destination_vector_limit,
+(KLObject* source_vector_object, long destination_vector_limit,
  KLObject* fill_object)
 {
-  size_t source_vector_limit =
+  long source_vector_limit =
     get_kl_number_number_l(get_vector_element(get_vector(source_vector_object),
                                               0));
   KLObject* destination_vector_object =
@@ -1158,12 +1158,12 @@ static inline void register_primitive_kl_function_shen_resize_vector (void)
 }
 
 static inline KLObject* primitive_function_shen_resizeprocessvector_helper
-(size_t index, size_t limit)
+(long index, long limit)
 {
   KLObject* prolog_vector_object = get_prolog_vector_object();
   Vector* prolog_vector = get_vector(prolog_vector_object);
   KLObject* source_vector_object = get_vector_element(prolog_vector, index);
-  size_t destination_vector_limit = limit + limit;
+  long destination_vector_limit = limit + limit;
   KLObject* destination_vector_object =
     primitive_function_shen_resize_vector_helper(source_vector_object,
                                                  destination_vector_limit,
@@ -1194,13 +1194,12 @@ static inline void register_primitive_kl_function_shen_resizeprocessvector (void
                          function_object);
 }
 
-static inline KLObject* primitive_function_shen_newpv_helper (size_t index)
+static inline KLObject* primitive_function_shen_newpv_helper (long index)
 {
   Vector* var_counter_vector =
     get_vector(get_kl_symbol_variable_value(get_shen_earmuff_varcounter_symbol_object()));
   KLObject* var_count_object = get_vector_element(var_counter_vector, index);
-  size_t incremented_var_count =
-    get_kl_number_number_l(var_count_object) + 1;
+  long incremented_var_count = get_kl_number_number_l(var_count_object) + 1;
   KLObject* incremented_var_count_object =
     create_kl_number_l(incremented_var_count);
 
@@ -1208,7 +1207,7 @@ static inline KLObject* primitive_function_shen_newpv_helper (size_t index)
 
   Vector* prolog_vector = get_vector(get_prolog_vector_object());
   Vector* vector = get_vector(get_vector_element(prolog_vector, index));
-  size_t vector_limit = get_kl_number_number_l(get_vector_element(vector, 0));
+  long vector_limit = get_kl_number_number_l(get_vector_element(vector, 0));
 
   if (incremented_var_count == vector_limit)
     primitive_function_shen_resizeprocessvector_helper(index, vector_limit);

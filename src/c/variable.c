@@ -54,7 +54,7 @@ KLObject* set_variable_value (KLObject* symbol_object, KLObject* object,
       snprintf(length_string, 1,
                "Failed to set value to %s, which is not a symbol",
                kl_object_to_string(symbol_object));
-    char* error_message = malloc(error_message_length + 1);
+    char* error_message = malloc((size_t)error_message_length + 1);
 
     sprintf(error_message, "Failed to set value to %s, which is not a symbol",
             kl_object_to_string(symbol_object));

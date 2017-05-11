@@ -83,12 +83,12 @@ char* kl_list_to_string (KLObject* list_object)
 
 char* vector_to_string (Vector* vector)
 {
-  size_t vector_size = get_vector_size(vector);
+  long vector_size = get_vector_size(vector);
   KLObject** objects = get_vector_objects(vector);
   size_t vector_string_allocation_size = get_vector_to_string_allocation_size();
   char* vector_string = malloc(vector_string_allocation_size);
 
-  for (size_t i = 0; i < vector_size; ++i) {
+  for (long i = 0; i < vector_size; ++i) {
     if (i == 0)
       vector_string =
         append_string(vector_string, &vector_string_allocation_size, "<<");
@@ -147,8 +147,7 @@ char* kl_function_to_string (KLObject* function_object)
   } else if (is_user_kl_function(function_object)) {
     UserFunction* user_function = get_kl_function_user_function(function_object);
     Vector* parameters = get_user_function_parameters(user_function);
-    size_t parameter_size =
-      (is_null(parameters)) ? 0 : get_vector_size(parameters);
+    long parameter_size = (is_null(parameters)) ? 0 : get_vector_size(parameters);
     KLObject* body_object = get_user_function_body(user_function);
     char* body_object_string = kl_object_to_string(body_object);
     char* parameter_object_string = "";
@@ -156,7 +155,7 @@ char* kl_function_to_string (KLObject* function_object)
     if (parameter_size > 0) {
       KLObject** objects = get_vector_objects(parameters);
 
-      for (size_t i = 0; i < parameter_size ;++i) {
+      for (long i = 0; i < parameter_size ;++i) {
         if (i != 0)
           parameter_object_string =
             concatenate_string(parameter_object_string, " ");
@@ -258,8 +257,8 @@ bool is_kl_vector_equal (KLObject* left_object, KLObject* right_object)
   if (!is_kl_vector(left_object) || !is_kl_vector(right_object))
     return false;
 
-  size_t left_object_size = get_kl_vector_size(left_object);
-  size_t right_object_size = get_kl_vector_size(right_object);
+  long left_object_size = get_kl_vector_size(left_object);
+  long right_object_size = get_kl_vector_size(right_object);
 
   if (left_object_size != right_object_size)
     return false;
@@ -267,7 +266,7 @@ bool is_kl_vector_equal (KLObject* left_object, KLObject* right_object)
   KLObject** left_object_objects = get_kl_vector_objects(left_object);
   KLObject** right_object_objects = get_kl_vector_objects(right_object);
 
-  for (size_t i = 0; i < left_object_size; ++i) {
+  for (long i = 0; i < left_object_size; ++i) {
     if (!is_kl_object_equal(left_object_objects[i], right_object_objects[i]))
       return false;
   }

@@ -30,11 +30,11 @@ bool is_kl_object_equal (KLObject* left_object, KLObject* right_object);
 
 inline Vector* kl_list_to_vector (KLObject* list_object)
 {
-  size_t size = get_kl_list_size(list_object);
+  long size = get_kl_list_size(list_object);
   Vector* vector = create_vector(size);
   KLObject* object = list_object;
 
-  for (size_t i = 0; i < size; ++i) {
+  for (long i = 0; i < size; ++i) {
     vector->objects[i] = get_head_kl_list(object);
     object = get_tail_kl_list(object);
   }

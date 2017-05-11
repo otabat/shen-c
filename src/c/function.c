@@ -1,9 +1,9 @@
 #include "function.h"
 
-extern size_t get_primitive_function_parameter_size
+extern long get_primitive_function_parameter_size
 (PrimitiveFunction* primitive_function);
 extern void set_primitive_function_parameter_size
-(PrimitiveFunction* primitive_function, size_t parameter_size);
+(PrimitiveFunction* primitive_function, long parameter_size);
 extern NativeFunction* get_primitive_function_native_function
 (PrimitiveFunction* primitive_function);
 extern void set_primitive_function_native_function
@@ -57,7 +57,7 @@ extern KLFunctionType get_kl_function_type (KLObject* function_object);
 extern void set_kl_function_type (KLObject* function_object,
                                   KLFunctionType function_type);
 
-extern KLObject* create_primitive_kl_function (size_t parameter_size,
+extern KLObject* create_primitive_kl_function (long parameter_size,
                                                NativeFunction* native_function);
 extern PrimitiveFunction* get_kl_function_primitive_function
 (KLObject* function_object);
@@ -73,7 +73,6 @@ extern KLObject* create_closure_kl_function (void);
 extern Closure* get_kl_function_closure (KLObject* function_object);
 extern void set_kl_function_closure (KLObject* function_object, Closure* closure);
 
-extern void check_function_argument_size (size_t argument_size,
-                                          size_t parameter_size);
+extern void check_function_argument_size (long argument_size, long parameter_size);
 extern bool is_kl_function_equal (KLObject* left_object, KLObject* right_object);
 extern void check_function_user_parameters (Vector* parameters);

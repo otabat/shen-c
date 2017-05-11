@@ -10,14 +10,14 @@
 #include "symbol.h"
 #include "vector.h"
 
-inline size_t get_primitive_function_parameter_size
+inline long get_primitive_function_parameter_size
 (PrimitiveFunction* primitive_function)
 {
   return primitive_function->parameter_size;
 }
 
 inline void set_primitive_function_parameter_size
-(PrimitiveFunction* primitive_function, size_t parameter_size)
+(PrimitiveFunction* primitive_function, long parameter_size)
 {
   primitive_function->parameter_size = parameter_size;
 }
@@ -248,7 +248,7 @@ inline void set_kl_function_type (KLObject* function_object,
   set_function_function_type(get_function(function_object), function_type);
 }
 
-inline KLObject* create_primitive_kl_function (size_t parameter_size,
+inline KLObject* create_primitive_kl_function (long parameter_size,
                                                NativeFunction* native_function)
 {
   KLObject* function_object = create_kl_object(KL_TYPE_FUNCTION);
@@ -318,8 +318,7 @@ inline void set_kl_function_closure (KLObject* function_object, Closure* closure
   set_function_closure(get_function(function_object), closure);
 }
 
-inline void check_function_argument_size (size_t argument_size,
-                                          size_t parameter_size)
+inline void check_function_argument_size (long argument_size, long parameter_size)
 {
   if (argument_size != parameter_size)
     throw_kl_exception("Wrong number of arguments passed to function");
@@ -334,9 +333,9 @@ inline void check_function_user_parameters (Vector* parameters)
 {
   if (is_not_null(parameters)) {
     KLObject** objects = get_vector_objects(parameters);
-    size_t parameters_size = get_vector_size(parameters);
+    long parameters_size = get_vector_size(parameters);
 
-    for (size_t i = 0; i < parameters_size; ++i) {
+    for (long i = 0; i < parameters_size; ++i) {
       if (!is_kl_symbol(objects[i]))
         throw_kl_exception("Function parameters should be symbols");
     }

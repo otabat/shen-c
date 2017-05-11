@@ -17,12 +17,12 @@ inline void set_stack_top (Stack* stack, KLObject* top_object)
   stack->top = top_object;
 }
 
-inline size_t get_stack_size (Stack* stack)
+inline long get_stack_size (Stack* stack)
 {
   return stack->size;
 }
 
-inline void set_stack_size (Stack* stack, size_t size)
+inline void set_stack_size (Stack* stack, long size)
 {
   stack->size = size;
 }

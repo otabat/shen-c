@@ -27,16 +27,16 @@ extern void set_loop_frame_stack (LoopFrameStack* frame_stack);
 extern LoopFramePair* get_loop_frame_stack_top (LoopFrameStack* frame_stack);
 extern void set_loop_frame_stack_top (LoopFrameStack* frame_stack,
                                       LoopFramePair* frame_pair);
-extern size_t get_loop_frame_stack_size (LoopFrameStack* frame_stack);
+extern long get_loop_frame_stack_size (LoopFrameStack* frame_stack);
 extern void set_loop_frame_stack_size (LoopFrameStack* frame_stack,
-                                       size_t frame_stack_size);
+                                       long frame_stack_size);
 extern void initialize_loop_frame_stack (void);
 
 void push_loop_frame_stack_with_frame_pair (LoopFramePair* frame_pair)
 {
   LoopFramePair* top_frame_pair =
     get_loop_frame_stack_top(get_loop_frame_stack());
-  size_t new_frame_stack_size =
+  long new_frame_stack_size =
     get_loop_frame_stack_size(get_loop_frame_stack()) + 1;
 
   set_loop_frame_pair_cdr(frame_pair, top_frame_pair);
@@ -54,7 +54,7 @@ LoopFrame* pop_loop_frame_stack (void)
 
   LoopFrame* car_frame = get_loop_frame_pair_car(top_frame_pair);
   LoopFramePair* cdr_frame_pair = get_loop_frame_pair_cdr(top_frame_pair);
-  size_t new_frame_stack_size =
+  long new_frame_stack_size =
     get_loop_frame_stack_size(get_loop_frame_stack()) - 1;
 
   set_loop_frame_stack_top(get_loop_frame_stack(), cdr_frame_pair);

@@ -22,9 +22,8 @@ inline KLObject** get_kl_function_arguments_with_count_check
 {
   PrimitiveFunction* primitive_function =
     get_kl_function_primitive_function(function_object);
-  size_t argument_size = (is_null(arguments)) ? 0 : get_vector_size(arguments);
-  size_t parameter_size =
-    get_primitive_function_parameter_size(primitive_function);
+  long argument_size = (is_null(arguments)) ? 0 : get_vector_size(arguments);
+  long parameter_size = get_primitive_function_parameter_size(primitive_function);
 
   check_function_argument_size(argument_size, parameter_size);
 
