@@ -556,6 +556,249 @@ static inline void register_primitive_kl_function_limit (void)
   set_kl_symbol_function(get_limit_symbol_object(), function_object);
 }
 
+static inline KLObject* primitive_function_dict
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  return create_kl_dictionary();
+}
+
+static inline void register_primitive_kl_function_dict (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(1, &primitive_function_dict);
+
+  set_kl_symbol_function(get_dict_symbol_object(), function_object);
+}
+
+static inline KLObject* primitive_function_is_dict
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+
+  if (is_kl_dictionary(objects[0]))
+    return get_true_boolean_object();
+
+  return get_false_boolean_object();
+}
+
+static inline void register_primitive_kl_function_is_dict (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(1, &primitive_function_is_dict);
+
+  set_kl_symbol_function(get_is_dict_symbol_object(), function_object);
+}
+
+static inline KLObject* primitive_function_dict_count
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* dictionary_object = objects[0];
+
+  if (!is_kl_dictionary(dictionary_object))
+    throw_kl_exception("Argument of dict-count should be a dictionary");
+
+  return get_kl_dictionary_count(dictionary_object);
+}
+
+static inline void register_primitive_kl_function_dict_count (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(1, &primitive_function_dict_count);
+
+  set_kl_symbol_function(get_dict_count_symbol_object(), function_object);
+}
+
+static inline KLObject* primitive_function_get_dict_value
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* dictionary_object = objects[0];
+
+  if (!is_kl_dictionary(dictionary_object))
+    throw_kl_exception("First argument of <-dict should be a dictionary");
+
+  KLObject* object = get_kl_dictionary_value(dictionary_object, objects[1]);
+
+  if (is_null(object))
+    throw_kl_exception("Dictionary value not found");
+
+  return object;
+}
+
+static inline void register_primitive_kl_function_get_dict_value (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(2, &primitive_function_get_dict_value);
+
+  set_kl_symbol_function(get_get_dict_value_symbol_object(), function_object);
+}
+
+static inline KLObject* primitive_function_get_dict_value_slash_or
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* dictionary_object = objects[0];
+
+  if (!is_kl_dictionary(dictionary_object))
+    throw_kl_exception("First argument of <-dict/or should be a dictionary");
+
+  KLObject* object = get_kl_dictionary_value(dictionary_object, objects[1]);
+
+  if (is_null(object))
+    return eval_simple_closure_function_application(objects[2]);
+
+  return object;
+}
+
+static inline void register_primitive_kl_function_get_dict_value_slash_or (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(3, &primitive_function_get_dict_value_slash_or);
+
+  set_kl_symbol_function(get_get_dict_value_slash_or_symbol_object(),
+                         function_object);
+}
+
+static inline KLObject* primitive_function_set_dict_value
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* dictionary_object = objects[0];
+
+  if (!is_kl_dictionary(dictionary_object))
+    throw_kl_exception("First argument of dict-> should be a dictionary");
+
+  return set_kl_dictionary_value(dictionary_object, objects[1], objects[2]);
+}
+
+static inline void register_primitive_kl_function_set_dict_value (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(3, &primitive_function_set_dict_value);
+
+  set_kl_symbol_function(get_set_dict_value_symbol_object(), function_object);
+}
+
+static inline KLObject* primitive_function_dict_rm
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* dictionary_object = objects[0];
+
+  if (!is_kl_dictionary(dictionary_object))
+    throw_kl_exception("First argument of dict-rm should be a dictionary");
+
+  return delete_kl_dictionary_key(dictionary_object, objects[1]);
+}
+
+static inline void register_primitive_kl_function_dict_rm (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(2, &primitive_function_dict_rm);
+
+  set_kl_symbol_function(get_dict_rm_symbol_object(), function_object);
+}
+
+static inline KLObject* primitive_function_dict_keys
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* dictionary_object = objects[0];
+
+  if (!is_kl_dictionary(dictionary_object))
+    throw_kl_exception("Argument of dict-keys should be a dictionary");
+
+  return get_kl_dictionary_keys(dictionary_object);
+}
+
+static inline void register_primitive_kl_function_dict_keys (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(1, &primitive_function_dict_keys);
+
+  set_kl_symbol_function(get_dict_keys_symbol_object(), function_object);
+}
+
+static inline KLObject* primitive_function_dict_values
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* dictionary_object = objects[0];
+
+  if (!is_kl_dictionary(dictionary_object))
+    throw_kl_exception("Argument of dict-values should be a dictionary");
+
+  return get_kl_dictionary_values(dictionary_object);
+}
+
+static inline void register_primitive_kl_function_dict_values (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(1, &primitive_function_dict_values);
+
+  set_kl_symbol_function(get_dict_values_symbol_object(), function_object);
+}
+
+static inline KLObject* primitive_function_dict_fold
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* dictionary_object = objects[1];
+
+  if (!is_kl_dictionary(dictionary_object))
+    throw_kl_exception("Second argument of dict-fold should be a dictionary");
+
+  KLObject* function_or_symbol_object = objects[0];
+  KLObject* acc_object = objects[2];
+  khash_t(StringPairTable)* table = get_kl_dictionary_table(dictionary_object);
+
+  for (khiter_t i = kh_begin(table); i != kh_end(table); ++i)
+    if (kh_exist(table, i)) {
+      Pair* pair = kh_value(table, i);
+      KLObject* key_object = get_pair_car(pair);
+      KLObject* value_object = get_pair_cdr(pair);
+      KLObject* function_application_list_object =
+        CONS(function_or_symbol_object,
+             CONS(key_object,
+                  CONS(value_object,
+                       CONS(acc_object, get_empty_kl_list()))));
+
+      acc_object =
+        eval_kl_object(function_application_list_object, function_environment,
+                       variable_environment);
+    }
+
+  return acc_object;
+}
+
+static inline void register_primitive_kl_function_dict_fold (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(3, &primitive_function_dict_fold);
+
+  set_kl_symbol_function(get_dict_fold_symbol_object(), function_object);
+}
+
 static inline KLObject* primitive_function_shen_hdtl
 (KLObject* function_object, Vector* arguments, Environment* function_environment,
  Environment* variable_environment)
@@ -1230,6 +1473,66 @@ static inline void register_primitive_kl_function_shen_newpv (void)
   set_kl_symbol_function(get_shen_newpv_symbol_object(), function_object);
 }
 
+static inline KLObject* primitive_function_shen_arg_to_str
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* object = objects[0];
+  KLObject* mode_object = objects[1];
+
+  if (is_kl_symbol_equal(object, get_shen_fail_exclamation_symbol_object()))
+    return create_kl_string("...");
+
+  if (is_kl_list(object)) {
+    KLObject* function_application_list_object =
+      CONS(get_shen_list_to_str_symbol_object(),
+           CONS(CONS(get_quote_symbol_object(), CONS(object, get_empty_kl_list())),
+                CONS(mode_object, get_empty_kl_list())));
+
+    return eval_kl_object(function_application_list_object, function_environment,
+                          variable_environment);
+  }
+
+  if (is_kl_string(object)) {
+    KLObject* function_application_list_object =
+      CONS(get_shen_str_to_str_symbol_object(),
+           CONS(object,
+                CONS(mode_object, get_empty_kl_list())));
+
+    return eval_kl_object(function_application_list_object, function_environment,
+                          variable_environment);
+  }
+
+  if (is_kl_vector(object)) {
+    KLObject* function_application_list_object =
+      CONS(get_shen_vector_to_str_symbol_object(),
+           CONS(object,
+                CONS(mode_object, get_empty_kl_list())));
+
+    return eval_kl_object(function_application_list_object, function_environment,
+                          variable_environment);
+  }
+
+  if (is_kl_dictionary(object))
+    return create_kl_string(kl_dictionary_to_string(object));
+
+  KLObject* function_application_list_object =
+    CONS(get_shen_atom_to_str_symbol_object(), CONS(object, get_empty_kl_list()));
+
+  return eval_kl_object(function_application_list_object, function_environment,
+                        variable_environment);
+}
+
+static inline void register_primitive_kl_function_shen_arg_to_str (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(2, &primitive_function_shen_arg_to_str);
+
+  set_kl_symbol_function(get_shen_arg_to_str_symbol_object(), function_object);
+}
+
 static inline KLObject* primitive_function_shen_compose
 (KLObject* function_object, Vector* arguments, Environment* function_environment,
  Environment* variable_environment)
@@ -1292,6 +1595,16 @@ void register_overwrite_sys_primitive_kl_functions (void)
   register_primitive_kl_function_occurrences();
   register_primitive_kl_function_nth();
   register_primitive_kl_function_limit();
+  register_primitive_kl_function_dict();
+  register_primitive_kl_function_is_dict();
+  register_primitive_kl_function_dict_count();
+  register_primitive_kl_function_get_dict_value();
+  register_primitive_kl_function_get_dict_value_slash_or();
+  register_primitive_kl_function_set_dict_value();
+  register_primitive_kl_function_dict_rm();
+  register_primitive_kl_function_dict_keys();
+  register_primitive_kl_function_dict_values();
+  register_primitive_kl_function_dict_fold();
 }
 
 void register_overwrite_yacc_primitive_kl_functions (void)
@@ -1322,6 +1635,11 @@ void register_overwrite_prolog_primitive_kl_functions (void)
   register_primitive_kl_function_shen_resize_vector();
   register_primitive_kl_function_shen_resizeprocessvector();
   register_primitive_kl_function_shen_newpv();
+}
+
+void register_overwrite_writer_primitive_kl_functions (void)
+{
+  register_primitive_kl_function_shen_arg_to_str();
 }
 
 void register_overwrite_macros_primitive_kl_functions (void)

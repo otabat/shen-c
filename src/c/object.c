@@ -4,6 +4,19 @@ static size_t kl_list_to_string_allocation_size = 10;
 static size_t vector_to_string_allocation_size = 10;
 
 extern Vector* kl_list_to_vector (KLObject* list_object);
+extern KLObject* get_dictionary_value (Dictionary* dictionary,
+                                       KLObject* key_object);
+extern void set_dictionary_value (Dictionary* dictionary, KLObject* key_object,
+                                  KLObject* value_object);
+extern KLObject* get_kl_dictionary_value (KLObject* dictionary_object,
+                                          KLObject* key_object);
+extern KLObject* set_kl_dictionary_value (KLObject* dictionary_object,
+                                          KLObject* key_object,
+                                          KLObject* value_object);
+extern void delete_dictionary_key (Dictionary* dictionary, KLObject* key_object);
+extern KLObject* delete_kl_dictionary_key (KLObject* dictionary_object,
+                                           KLObject* key_object);
+extern char* kl_dictionary_to_string (KLObject* dictionary_object);
 
 static inline size_t get_kl_list_to_string_allocation_size ()
 {
@@ -204,6 +217,8 @@ char* kl_object_to_string (KLObject* object)
     return kl_list_to_string(object);
   else if (is_kl_vector(object))
     return kl_vector_to_string(object);
+  else if (is_kl_dictionary(object))
+    return kl_dictionary_to_string(object);
 
   throw_kl_exception("Unknown type of object");
 
@@ -274,6 +289,40 @@ bool is_kl_vector_equal (KLObject* left_object, KLObject* right_object)
   return true;
 }
 
+bool is_kl_dictionary_equal (KLObject* left_object, KLObject* right_object)
+{
+  if (left_object == right_object)
+    return true;
+
+  if (!is_kl_dictionary(left_object) || !is_kl_dictionary(right_object))
+    return false;
+
+  if (get_dictionary_count(get_dictionary(left_object)) !=
+      get_dictionary_count(get_dictionary(right_object)))
+    return false;
+
+  khash_t(StringPairTable)* left_object_table =
+    get_kl_dictionary_table(left_object);
+  Dictionary* right_object_dictionary = get_dictionary(right_object);
+
+  for (khiter_t i = kh_begin(left_object_table);
+       i != kh_end(left_object_table); ++i)
+    if (kh_exist(left_object_table, i)) {
+      Pair* pair = kh_value(left_object_table, i);
+      KLObject* left_object_key_object = get_pair_car(pair);
+      KLObject* left_object_value_object = get_pair_cdr(pair);
+      KLObject* right_object_value_object =
+        get_dictionary_value(right_object_dictionary,
+                             left_object_key_object);
+
+      if (is_null(right_object_value_object) ||
+          !is_kl_object_equal(left_object_value_object, right_object_value_object))
+        return false;
+    }
+
+  return true;
+}
+
 bool is_kl_object_equal (KLObject* left_object, KLObject* right_object)
 {
   if (is_kl_symbol(left_object))
@@ -294,6 +343,8 @@ bool is_kl_object_equal (KLObject* left_object, KLObject* right_object)
     return is_kl_list_equal(left_object, right_object);
   else if (is_kl_vector(left_object))
     return is_kl_vector_equal(left_object, right_object);
+  else if (is_kl_dictionary(left_object))
+    return is_kl_dictionary_equal(left_object, right_object);
   
   return false;
 }

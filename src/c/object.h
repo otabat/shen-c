@@ -5,7 +5,10 @@
 #include <stdio.h>
 #include <inttypes.h>
 
+#include "khash.h"
+
 #include "boolean.h"
+#include "dictionary.h"
 #include "exception.h"
 #include "function.h"
 #include "kl.h"
@@ -40,6 +43,79 @@ inline Vector* kl_list_to_vector (KLObject* list_object)
   }
 
   return vector;
+}
+
+inline KLObject* get_dictionary_value (Dictionary* dictionary,
+                                       KLObject* key_object)
+{
+  khash_t(StringPairTable)* table = get_dictionary_table(dictionary);
+  khiter_t hash_iterator = kh_get(StringPairTable, table,
+                                  kl_object_to_string(key_object));
+  bool is_key_not_found = hash_iterator == kh_end(table);
+
+  if (is_key_not_found || kh_exist(table, hash_iterator) == 0)
+    return NULL;
+
+  return get_pair_cdr(kh_value(table, hash_iterator));
+}
+
+inline void set_dictionary_value (Dictionary* dictionary, KLObject* key_object,
+                                  KLObject* value_object)
+{
+  khash_t(StringPairTable)* table = get_dictionary_table(dictionary);
+  int put_result;
+  khiter_t hash_iterator = kh_put(StringPairTable, table,
+                                  kl_object_to_string(key_object), &put_result);
+
+  if (put_result == -1)
+    throw_kl_exception("Failed to set a value to a dictionary");
+  else if (put_result == 0) {
+    Pair* pair = kh_value(table, hash_iterator);
+
+    set_pair_cdr(pair, value_object);
+  } else {
+    Pair* pair = create_pair(key_object, value_object);
+
+    kh_value(table, hash_iterator) = pair;
+  }
+}
+
+inline KLObject* get_kl_dictionary_value (KLObject* dictionary_object,
+                                          KLObject* key_object)
+{
+  return get_dictionary_value(get_dictionary(dictionary_object), key_object);
+}
+
+inline KLObject* set_kl_dictionary_value (KLObject* dictionary_object,
+                                          KLObject* key_object,
+                                          KLObject* value_object)
+{
+  set_dictionary_value(get_dictionary(dictionary_object), key_object,
+                       value_object);
+
+  return value_object;
+}
+
+inline void delete_dictionary_key (Dictionary* dictionary, KLObject* key_object)
+{
+  khash_t(StringPairTable)* table = get_dictionary_table(dictionary);
+  khiter_t hash_iterator = kh_get(StringPairTable, table,
+                                  kl_object_to_string(key_object));
+
+  kh_del(StringPairTable, table, hash_iterator);
+}
+
+inline KLObject* delete_kl_dictionary_key (KLObject* dictionary_object,
+                                           KLObject* key_object)
+{
+  delete_dictionary_key(get_dictionary(dictionary_object), key_object);
+
+  return key_object;
+}
+
+inline char* kl_dictionary_to_string (KLObject* dictionary_object)
+{
+  return "(dict ...)";
 }
 
 #endif

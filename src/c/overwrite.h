@@ -4,7 +4,10 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#include "khash.h"
+
 #include "boolean.h"
+#include "dictionary.h"
 #include "exception.h"
 #include "extension.h"
 #include "hash.h"
@@ -26,6 +29,7 @@ void register_overwrite_sys_primitive_kl_functions (void);
 void register_overwrite_yacc_primitive_kl_functions (void);
 void register_overwrite_reader_primitive_kl_functions (void);
 void register_overwrite_prolog_primitive_kl_functions (void);
+void register_overwrite_writer_primitive_kl_functions (void);
 void register_overwrite_macros_primitive_kl_functions (void);
 
 extern KLObject* eval_freeze_expression (KLObject* body_object,

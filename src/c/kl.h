@@ -17,7 +17,7 @@
 typedef enum KLType {
   KL_TYPE_SYMBOL, KL_TYPE_STRING, KL_TYPE_NUMBER, KL_TYPE_BOOLEAN,
   KL_TYPE_FUNCTION, KL_TYPE_STREAM, KL_TYPE_EXCEPTION,
-  KL_TYPE_LIST, KL_TYPE_VECTOR
+  KL_TYPE_LIST, KL_TYPE_VECTOR, KL_TYPE_DICTIONARY
 } KLType;
 
 typedef enum KLNumberType {
@@ -46,6 +46,7 @@ typedef struct Stream Stream;
 typedef struct Exception Exception;
 typedef struct Pair Pair;
 typedef struct Vector Vector;
+typedef struct Dictionary Dictionary;
 typedef struct Environment Environment;
 typedef struct LoopFramePair LoopFramePair;
 
@@ -66,10 +67,12 @@ struct KLObject {
     Exception* exception;
     Pair* pair;
     Vector* vector;
+    Dictionary* dictionary;
   } value;
 };
 
 KHASH_MAP_INIT_STR(SymbolNameTable, KLObject*)
+KHASH_MAP_INIT_STR(StringPairTable, Pair*)
 
 #if UINTPTR_MAX == 0xffffffff
 // 32bit
@@ -142,6 +145,10 @@ struct Pair {
 struct Vector {
   KLObject** objects;
   long size;
+};
+
+struct Dictionary {
+  khash_t(StringPairTable)* table;
 };
 
 struct Environment {

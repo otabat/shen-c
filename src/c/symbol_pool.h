@@ -76,6 +76,17 @@ extern KLObject* assoc_symbol_object;
 extern KLObject* occurrences_symbol_object;
 extern KLObject* nth_symbol_object;
 extern KLObject* limit_symbol_object;
+extern KLObject* dict_symbol_object;
+extern KLObject* is_dict_symbol_object;
+extern KLObject* dict_count_symbol_object;
+extern KLObject* get_dict_value_symbol_object;
+extern KLObject* get_dict_value_slash_or_symbol_object;
+extern KLObject* set_dict_value_symbol_object;
+extern KLObject* dict_rm_symbol_object;
+extern KLObject* dict_keys_symbol_object;
+extern KLObject* dict_values_symbol_object;
+extern KLObject* dict_fold_symbol_object;
+extern KLObject* shen_fail_exclamation_symbol_object;
 extern KLObject* shen_hdtl_symbol_object;
 extern KLObject* shen_is_numbyte_symbol_object;
 extern KLObject* shen_byte_to_digit_symbol_object;
@@ -98,6 +109,11 @@ extern KLObject* shen_copy_vector_symbol_object;
 extern KLObject* shen_resize_vector_symbol_object;
 extern KLObject* shen_resizeprocessvector_symbol_object;
 extern KLObject* shen_newpv_symbol_object;
+extern KLObject* shen_list_to_str_symbol_object;
+extern KLObject* shen_str_to_str_symbol_object;
+extern KLObject* shen_vector_to_str_symbol_object;
+extern KLObject* shen_atom_to_str_symbol_object;
+extern KLObject* shen_arg_to_str_symbol_object;
 extern KLObject* shen_compose_symbol_object;
 
 extern KLObject* println_symbol_object;
@@ -319,6 +335,50 @@ inline KLObject* get_occurrences_symbol_object (void)
 
 inline KLObject* get_nth_symbol_object (void) { return nth_symbol_object; }
 inline KLObject* get_limit_symbol_object (void) { return limit_symbol_object; }
+inline KLObject* get_dict_symbol_object (void) { return dict_symbol_object; }
+inline KLObject* get_is_dict_symbol_object (void) { return is_dict_symbol_object; }
+
+inline KLObject* get_dict_count_symbol_object (void)
+{
+  return dict_count_symbol_object;
+}
+
+inline KLObject* get_get_dict_value_symbol_object (void)
+{
+  return get_dict_value_symbol_object;
+}
+
+inline KLObject* get_get_dict_value_slash_or_symbol_object (void)
+{
+  return get_dict_value_slash_or_symbol_object;
+}
+
+inline KLObject* get_set_dict_value_symbol_object (void)
+{
+  return set_dict_value_symbol_object;
+}
+
+inline KLObject* get_dict_rm_symbol_object (void) { return dict_rm_symbol_object; }
+
+inline KLObject* get_dict_keys_symbol_object (void)
+{
+  return dict_keys_symbol_object;
+}
+
+inline KLObject* get_dict_values_symbol_object (void)
+{
+  return dict_values_symbol_object;
+}
+
+inline KLObject* get_dict_fold_symbol_object (void)
+{
+  return dict_fold_symbol_object;
+}
+
+inline KLObject* get_shen_fail_exclamation_symbol_object (void)
+{
+  return shen_fail_exclamation_symbol_object;
+}
 
 inline KLObject* get_shen_hdtl_symbol_object (void)
 {
@@ -424,6 +484,31 @@ inline KLObject* get_shen_resizeprocessvector_symbol_object (void)
 inline KLObject* get_shen_newpv_symbol_object (void)
 {
   return shen_newpv_symbol_object;
+}
+
+inline KLObject* get_shen_list_to_str_symbol_object (void)
+{
+  return shen_list_to_str_symbol_object;
+}
+
+inline KLObject* get_shen_str_to_str_symbol_object (void)
+{
+  return shen_str_to_str_symbol_object;
+}
+
+inline KLObject* get_shen_vector_to_str_symbol_object (void)
+{
+  return shen_vector_to_str_symbol_object;
+}
+
+inline KLObject* get_shen_atom_to_str_symbol_object (void)
+{
+  return shen_atom_to_str_symbol_object;
+}
+
+inline KLObject* get_shen_arg_to_str_symbol_object (void)
+{
+  return shen_arg_to_str_symbol_object;
 }
 
 inline KLObject* get_shen_compose_symbol_object (void)

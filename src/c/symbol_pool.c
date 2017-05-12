@@ -72,6 +72,17 @@ KLObject* assoc_symbol_object;
 KLObject* occurrences_symbol_object;
 KLObject* nth_symbol_object;
 KLObject* limit_symbol_object;
+KLObject* dict_symbol_object;
+KLObject* is_dict_symbol_object;
+KLObject* dict_count_symbol_object;
+KLObject* get_dict_value_symbol_object;
+KLObject* get_dict_value_slash_or_symbol_object;
+KLObject* set_dict_value_symbol_object;
+KLObject* dict_rm_symbol_object;
+KLObject* dict_keys_symbol_object;
+KLObject* dict_values_symbol_object;
+KLObject* dict_fold_symbol_object;
+KLObject* shen_fail_exclamation_symbol_object;
 KLObject* shen_hdtl_symbol_object;
 KLObject* shen_is_numbyte_symbol_object;
 KLObject* shen_byte_to_digit_symbol_object;
@@ -94,6 +105,11 @@ KLObject* shen_copy_vector_symbol_object;
 KLObject* shen_resize_vector_symbol_object;
 KLObject* shen_resizeprocessvector_symbol_object;
 KLObject* shen_newpv_symbol_object;
+KLObject* shen_list_to_str_symbol_object;
+KLObject* shen_str_to_str_symbol_object;
+KLObject* shen_vector_to_str_symbol_object;
+KLObject* shen_atom_to_str_symbol_object;
+KLObject* shen_arg_to_str_symbol_object;
 KLObject* shen_compose_symbol_object;
 
 KLObject* println_symbol_object;
@@ -178,6 +194,17 @@ extern KLObject* get_assoc_symbol_object (void);
 extern KLObject* get_occurrences_symbol_object (void);
 extern KLObject* get_nth_symbol_object (void);
 extern KLObject* get_limit_symbol_object (void);
+extern KLObject* get_dict_symbol_object (void);
+extern KLObject* get_is_dict_symbol_object (void);
+extern KLObject* get_dict_count_symbol_object (void);
+extern KLObject* get_get_dict_value_symbol_object (void);
+extern KLObject* get_get_dict_value_slash_or_symbol_object (void);
+extern KLObject* get_set_dict_value_symbol_object (void);
+extern KLObject* get_dict_rm_symbol_object (void);
+extern KLObject* get_dict_keys_symbol_object (void);
+extern KLObject* get_dict_values_symbol_object (void);
+extern KLObject* get_dict_fold_symbol_object (void);
+extern KLObject* get_shen_fail_exclamation_symbol_object (void);
 extern KLObject* get_shen_hdtl_symbol_object (void);
 extern KLObject* get_shen_is_numbyte_symbol_object (void);
 extern KLObject* get_shen_byte_to_digit_symbol_object (void);
@@ -200,6 +227,11 @@ extern KLObject* get_shen_copy_vector_symbol_object (void);
 extern KLObject* get_shen_resize_vector_symbol_object (void);
 extern KLObject* get_shen_resizeprocessvector_symbol_object (void);
 extern KLObject* get_shen_newpv_symbol_object (void);
+extern KLObject* get_shen_list_to_str_symbol_object (void);
+extern KLObject* get_shen_str_to_str_symbol_object (void);
+extern KLObject* get_shen_vector_to_str_symbol_object (void);
+extern KLObject* get_shen_atom_to_str_symbol_object (void);
+extern KLObject* get_shen_arg_to_str_symbol_object (void);
 extern KLObject* get_shen_compose_symbol_object (void);
 
 extern KLObject* get_println_symbol_object (void);
@@ -689,6 +721,72 @@ static inline void register_limit_symbol_object (void)
   extend_symbol_name_table("limit", limit_symbol_object);
 }
 
+static inline void register_dict_symbol_object (void)
+{
+  dict_symbol_object = create_kl_symbol("dict");
+  extend_symbol_name_table("dict", dict_symbol_object);
+}
+
+static inline void register_is_dict_symbol_object (void)
+{
+  is_dict_symbol_object = create_kl_symbol("dict?");
+  extend_symbol_name_table("dict?", is_dict_symbol_object);
+}
+
+static inline void register_dict_count_symbol_object (void)
+{
+  dict_count_symbol_object = create_kl_symbol("dict-count");
+  extend_symbol_name_table("dict-count", dict_count_symbol_object);
+}
+
+static inline void register_get_dict_value_symbol_object (void)
+{
+  get_dict_value_symbol_object = create_kl_symbol("<-dict");
+  extend_symbol_name_table("<-dict", get_dict_value_symbol_object);
+}
+
+static inline void register_get_dict_value_slash_or_symbol_object (void)
+{
+  get_dict_value_slash_or_symbol_object = create_kl_symbol("<-dict/or");
+  extend_symbol_name_table("<-dict/or", get_dict_value_slash_or_symbol_object);
+}
+
+static inline void register_set_dict_value_symbol_object (void)
+{
+  set_dict_value_symbol_object = create_kl_symbol("dict->");
+  extend_symbol_name_table("dict->", set_dict_value_symbol_object);
+}
+
+static inline void register_dict_rm_symbol_object (void)
+{
+  dict_rm_symbol_object = create_kl_symbol("dict-rm");
+  extend_symbol_name_table("dict-rm", dict_rm_symbol_object);
+}
+
+static inline void register_dict_keys_symbol_object (void)
+{
+  dict_keys_symbol_object = create_kl_symbol("dict-keys");
+  extend_symbol_name_table("dict-keys", dict_keys_symbol_object);
+}
+
+static inline void register_dict_values_symbol_object (void)
+{
+  dict_values_symbol_object = create_kl_symbol("dict-values");
+  extend_symbol_name_table("dict-values", dict_values_symbol_object);
+}
+
+static inline void register_dict_fold_symbol_object (void)
+{
+  dict_fold_symbol_object = create_kl_symbol("dict-fold");
+  extend_symbol_name_table("dict-fold", dict_fold_symbol_object);
+}
+
+static inline void register_shen_fail_exclamation_symbol_object (void)
+{
+  shen_fail_exclamation_symbol_object = create_kl_symbol("shen.fail!");
+  extend_symbol_name_table("shen.fail!", shen_fail_exclamation_symbol_object);
+}
+
 static inline void register_shen_hdtl_symbol_object (void)
 {
   shen_hdtl_symbol_object = create_kl_symbol("shen.hdtl");
@@ -827,6 +925,36 @@ static inline void register_shen_newpv_symbol_object (void)
   extend_symbol_name_table("shen.newpv", shen_newpv_symbol_object);
 }
 
+static inline void register_shen_list_to_str_symbol_object (void)
+{
+  shen_list_to_str_symbol_object = create_kl_symbol("shen.list->str");
+  extend_symbol_name_table("shen.list->str", shen_list_to_str_symbol_object);
+}
+
+static inline void register_shen_str_to_str_symbol_object (void)
+{
+  shen_str_to_str_symbol_object = create_kl_symbol("shen.str->str");
+  extend_symbol_name_table("shen.str->str", shen_str_to_str_symbol_object);
+}
+
+static inline void register_shen_vector_to_str_symbol_object (void)
+{
+  shen_vector_to_str_symbol_object = create_kl_symbol("shen.vector->str");
+  extend_symbol_name_table("shen.vector->str", shen_vector_to_str_symbol_object);
+}
+
+static inline void register_shen_atom_to_str_symbol_object (void)
+{
+  shen_atom_to_str_symbol_object = create_kl_symbol("shen.atom->str");
+  extend_symbol_name_table("shen.atom->str", shen_atom_to_str_symbol_object);
+}
+
+static inline void register_shen_arg_to_str_symbol_object (void)
+{
+  shen_arg_to_str_symbol_object = create_kl_symbol("shen.arg->str");
+  extend_symbol_name_table("shen.arg->str", shen_arg_to_str_symbol_object);
+}
+
 static inline void register_shen_compose_symbol_object (void)
 {
   shen_compose_symbol_object = create_kl_symbol("shen.compose");
@@ -854,6 +982,17 @@ static inline void register_overwrite_symbol_objects (void)
   register_occurrences_symbol_object();
   register_nth_symbol_object();
   register_limit_symbol_object();
+  register_dict_symbol_object();
+  register_is_dict_symbol_object();
+  register_dict_count_symbol_object();
+  register_get_dict_value_symbol_object();
+  register_get_dict_value_slash_or_symbol_object();
+  register_set_dict_value_symbol_object();
+  register_dict_rm_symbol_object();
+  register_dict_keys_symbol_object();
+  register_dict_values_symbol_object();
+  register_dict_fold_symbol_object();
+  register_shen_fail_exclamation_symbol_object();
   register_shen_hdtl_symbol_object();
   register_shen_is_numbyte_symbol_object();
   register_read_file_as_charlist_symbol_object();
@@ -876,6 +1015,11 @@ static inline void register_overwrite_symbol_objects (void)
   register_shen_resize_vector_symbol_object();
   register_shen_resizeprocessvector_symbol_object();
   register_shen_newpv_symbol_object();
+  register_shen_list_to_str_symbol_object();
+  register_shen_str_to_str_symbol_object();
+  register_shen_vector_to_str_symbol_object();
+  register_shen_atom_to_str_symbol_object();
+  register_shen_arg_to_str_symbol_object();
   register_shen_compose_symbol_object();
 }
 
