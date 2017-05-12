@@ -507,7 +507,7 @@ static inline KLObject* primitive_function_nth
   KLObject* list_object = objects[1];
 
   if (!is_kl_number_l(number_object))
-    throw_kl_exception("First argument to nth should be an integer");
+    throw_kl_exception("First argument of nth should be an integer");
 
   long index = get_kl_number_number_l(number_object);
 
@@ -521,7 +521,7 @@ static inline KLObject* primitive_function_nth
     list_object = CDR(list_object);
   }
 
-  throw_kl_exception("First argument to nth should be greater than 0");
+  throw_kl_exception("First argument of nth should be greater than 0");
 
   return NULL;
 }
@@ -639,7 +639,7 @@ static inline KLObject* primitive_function_read_file_as_charlist
   KLObject* string_object = objects[0];
 
   if (!is_kl_string(string_object))
-    throw_kl_exception("The argument to read-file-as-charlist should be a string");
+    throw_kl_exception("The argument of read-file-as-charlist should be a string");
 
   char* file_path = get_string(string_object);
   KLObject* home_directory_string_object =
