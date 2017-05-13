@@ -779,9 +779,10 @@ static inline KLObject* primitive_function_dict_fold
       KLObject* value_object = get_pair_cdr(pair);
       KLObject* function_application_list_object =
         CONS(function_or_symbol_object,
-             CONS(key_object,
-                  CONS(value_object,
-                       CONS(acc_object, get_empty_kl_list()))));
+             CONS(CONS(get_quote_symbol_object(), CONS(key_object, get_empty_kl_list())),
+                  CONS(CONS(get_quote_symbol_object(), CONS(value_object, get_empty_kl_list())),
+                       CONS(CONS(get_quote_symbol_object(), CONS(acc_object, get_empty_kl_list())),
+                            get_empty_kl_list()))));
 
       acc_object =
         eval_kl_object(function_application_list_object, function_environment,
