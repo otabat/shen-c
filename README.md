@@ -27,7 +27,7 @@ Install [Boehm GC](http://www.hboehm.info/gc/), and change the [Makefile](https:
 
 ## Usage
 
-1. Run Shen-C REPL
+1. Run Shen-C REPL by using make command
 ```
 make repl
 ```
@@ -36,7 +36,26 @@ or if rlwrap is installed
 make rrepl
 ```
 
-2. Quit Shen-C REPL
+2. Run Shen-C REPL directly  
+Set the `SHEN_C_HOME` environment variable to the Shen-C project root  
+If you are using bash for a Unix shell  
+```
+export SHEN_C_HOME=/home/user/shen-c
+```
+and then
+```
+alias shen-c='$SHEN_C_HOME/bin/shen-c'
+```
+or if rlwrap is installed
+```
+alias shen-c='rlwrap $SHEN_C_HOME/bin/shen-c'
+```
+and finally
+```
+shen-c
+```
+
+3. Quit Shen-C REPL
 ```
 (quit)
 ```
