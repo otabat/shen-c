@@ -1,3 +1,4 @@
+export SHEN_C_HOME=${CURDIR}
 SRC_ROOT=src/c
 BIN_ROOT=bin
 OBJ_ROOT=obj

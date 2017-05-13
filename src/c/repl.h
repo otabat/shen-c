@@ -2,9 +2,11 @@
 #define SHEN_C_REPL_H
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <setjmp.h>
 
 #include "evaluator.h"
+#include "exception.h"
 #include "kl.h"
 #include "list.h"
 #include "object.h"
