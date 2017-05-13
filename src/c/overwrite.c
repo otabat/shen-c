@@ -265,17 +265,17 @@ static inline KLObject* primitive_function_get_absvector_element_slash_or
   KLObject* number_object = objects[1];
 
   if (!is_kl_vector(vector_object))
-    eval_simple_closure_function_application(objects[2]);
+    return eval_simple_closure_function_application(objects[2]);
 
   if (!is_kl_number_l(number_object))
-    eval_simple_closure_function_application(objects[2]);
+    return eval_simple_closure_function_application(objects[2]);
 
   long index = get_kl_number_number_l(number_object);
   Vector* vector = get_vector(vector_object);
   long size = get_vector_size(vector);
 
   if (index >= size || index < 0)
-    eval_simple_closure_function_application(objects[2]);
+    return eval_simple_closure_function_application(objects[2]);
 
   return get_vector_element(vector, index);
 }
