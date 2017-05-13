@@ -36,7 +36,8 @@ or if rlwrap is installed
 make rrepl
 ```
 
-2. Run Shen-C REPL directly  
+2. Run Shen-C REPL directly
+
 Set the `SHEN_C_HOME` environment variable to the Shen-C project root  
 If you are using bash for a Unix shell  
 ```
