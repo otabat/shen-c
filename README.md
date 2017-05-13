@@ -2,6 +2,15 @@
 
 Shen-C is a C port of the [Shen](http://shenlanguage.org/) programming language.  
 
+Shen is a portable functional programming language developed by [Mark Tarver](http://marktarver.com/) that offers
+* Pattern matching
+* Lambda calculus consistency
+* Macros for defining domain specific languages
+* Optional lazy evaluation
+* Optional static type checking based on [Sequent calculus](https://en.wikipedia.org/wiki/Sequent_calculus)
+* An integrated fully functional Prolog
+* An inbuilt compiler-compiler, Shen-YACC
+
 Shen-C is implemented in C99 currently as an interpreter, mainly tested on macOS using Clang. Should also work with GCC.
 
 
