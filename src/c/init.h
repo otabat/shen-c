@@ -34,11 +34,11 @@ inline void initialize (void)
   register_global_variables();
 }
 
-inline void initialize_and_run_shen_repl (void)
+inline void initialize_and_run_shen_repl (char* shen_c_home_path)
 {
   GC_init();
   initialize();
-  load_shen_kl_files();
+  load_shen_kl_files(shen_c_home_path);
   run_shen_repl();
   //load_development_kl_file();
   //run_kl_repl();

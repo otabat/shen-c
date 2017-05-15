@@ -1,4 +1,4 @@
 #include "init.h"
 
 extern void initialize (void);
-extern void initialize_and_run_shen_repl (void);
+extern void initialize_and_run_shen_repl (char* shen_c_home_path);
