@@ -40,7 +40,7 @@ inline void initialize_and_run_shen_repl (char* shen_c_home_path)
   initialize();
   load_shen_kl_files(shen_c_home_path);
   run_shen_repl();
-  //load_development_kl_file();
+  //load_development_kl_file(shen_c_home_path);
   //run_kl_repl();
 }
 
