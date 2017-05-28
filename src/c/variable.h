@@ -6,8 +6,10 @@
 #include "environment.h"
 #include "exception.h"
 #include "kl.h"
+#include "list.h"
 #include "object.h"
 #include "stream.h"
+#include "string.h"
 #include "symbol.h"
 
 extern KLObject* earmuff_language_symbol_object;
@@ -19,6 +21,7 @@ extern KLObject* earmuff_porters_symbol_object;
 extern KLObject* earmuff_stinput_symbol_object;
 extern KLObject* earmuff_stoutput_symbol_object;
 extern KLObject* earmuff_sterror_symbol_object;
+extern KLObject* earmuff_argv_symbol_object;
 
 KLObject* get_variable_value (KLObject* symbol_object,
                               Environment* variable_environment);
@@ -69,6 +72,11 @@ inline KLObject* get_earmuff_stoutput_symbol_object (void)
 inline KLObject* get_earmuff_sterror_symbol_object (void)
 {
   return earmuff_sterror_symbol_object;
+}
+
+inline KLObject* get_earmuff_argv_symbol_object (void)
+{
+  return earmuff_argv_symbol_object;
 }
 
 #endif

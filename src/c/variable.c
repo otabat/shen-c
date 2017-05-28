@@ -9,6 +9,7 @@ KLObject* earmuff_porters_symbol_object;
 KLObject* earmuff_stinput_symbol_object;
 KLObject* earmuff_stoutput_symbol_object;
 KLObject* earmuff_sterror_symbol_object;
+KLObject* earmuff_argv_symbol_object;
 
 extern KLObject* get_earmuff_language_symbol_object (void);
 extern KLObject* get_earmuff_implementation_symbol_object (void);
@@ -19,6 +20,7 @@ extern KLObject* get_earmuff_porters_symbol_object (void);
 extern KLObject* get_earmuff_stinput_symbol_object (void);
 extern KLObject* get_earmuff_stoutput_symbol_object (void);
 extern KLObject* get_earmuff_sterror_symbol_object (void);
+extern KLObject* get_earmuff_argv_symbol_object (void);
 
 KLObject* get_variable_value (KLObject* symbol_object,
                               Environment* variable_environment)
@@ -186,6 +188,19 @@ static inline void register_global_variable_earmuff_sterror (void)
   extend_symbol_name_table("*sterror*", get_earmuff_sterror_symbol_object());
 }
 
+static inline void initialize_earmuff_argv_symbol_object (void)
+{
+  earmuff_argv_symbol_object = create_kl_symbol("argv");
+  set_kl_symbol_variable_value(earmuff_argv_symbol_object,
+                               CONS(create_kl_string("shen"), EL));
+}
+
+static inline void register_global_variable_earmuff_argv (void)
+{
+  initialize_earmuff_argv_symbol_object();
+  extend_symbol_name_table("*argv*", get_earmuff_argv_symbol_object());
+}
+
 void register_global_variables (void)
 {
   register_global_variable_earmuff_language();
@@ -197,4 +212,5 @@ void register_global_variables (void)
   register_global_variable_earmuff_stinput();
   register_global_variable_earmuff_stoutput();
   register_global_variable_earmuff_sterror();
+  register_global_variable_earmuff_argv();
 }
