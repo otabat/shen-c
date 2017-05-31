@@ -82,6 +82,7 @@ KLObject* dict_rm_symbol_object;
 KLObject* dict_keys_symbol_object;
 KLObject* dict_values_symbol_object;
 KLObject* dict_fold_symbol_object;
+KLObject* length_symbol_object;
 KLObject* shen_fail_exclamation_symbol_object;
 KLObject* shen_hdtl_symbol_object;
 KLObject* shen_is_numbyte_symbol_object;
@@ -204,6 +205,7 @@ extern KLObject* get_dict_rm_symbol_object (void);
 extern KLObject* get_dict_keys_symbol_object (void);
 extern KLObject* get_dict_values_symbol_object (void);
 extern KLObject* get_dict_fold_symbol_object (void);
+extern KLObject* get_length_symbol_object (void);
 extern KLObject* get_shen_fail_exclamation_symbol_object (void);
 extern KLObject* get_shen_hdtl_symbol_object (void);
 extern KLObject* get_shen_is_numbyte_symbol_object (void);
@@ -781,6 +783,12 @@ static inline void register_dict_fold_symbol_object (void)
   extend_symbol_name_table("dict-fold", dict_fold_symbol_object);
 }
 
+static inline void register_length_symbol_object (void)
+{
+  length_symbol_object = create_kl_symbol("length");
+  extend_symbol_name_table("length", length_symbol_object);
+}
+
 static inline void register_shen_fail_exclamation_symbol_object (void)
 {
   shen_fail_exclamation_symbol_object = create_kl_symbol("shen.fail!");
@@ -992,6 +1000,7 @@ static inline void register_overwrite_symbol_objects (void)
   register_dict_keys_symbol_object();
   register_dict_values_symbol_object();
   register_dict_fold_symbol_object();
+  register_length_symbol_object();
   register_shen_fail_exclamation_symbol_object();
   register_shen_hdtl_symbol_object();
   register_shen_is_numbyte_symbol_object();

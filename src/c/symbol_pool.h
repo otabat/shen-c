@@ -86,6 +86,7 @@ extern KLObject* dict_rm_symbol_object;
 extern KLObject* dict_keys_symbol_object;
 extern KLObject* dict_values_symbol_object;
 extern KLObject* dict_fold_symbol_object;
+extern KLObject* length_symbol_object;
 extern KLObject* shen_fail_exclamation_symbol_object;
 extern KLObject* shen_hdtl_symbol_object;
 extern KLObject* shen_is_numbyte_symbol_object;
@@ -373,6 +374,11 @@ inline KLObject* get_dict_values_symbol_object (void)
 inline KLObject* get_dict_fold_symbol_object (void)
 {
   return dict_fold_symbol_object;
+}
+
+inline KLObject* get_length_symbol_object (void)
+{
+  return length_symbol_object;
 }
 
 inline KLObject* get_shen_fail_exclamation_symbol_object (void)

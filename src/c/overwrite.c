@@ -800,6 +800,34 @@ static inline void register_primitive_kl_function_dict_fold (void)
   set_kl_symbol_function(get_dict_fold_symbol_object(), function_object);
 }
 
+static inline KLObject* primitive_function_length
+(KLObject* function_object, Vector* arguments, Environment* function_environment,
+ Environment* variable_environment)
+{
+  KLObject** objects =
+    get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* list_object = objects[0];
+  long size = 0;
+
+  while (is_non_empty_kl_list(list_object)) {
+    ++size;
+    list_object = CDR(list_object);
+  }
+
+  if (!is_empty_kl_list(list_object))
+    throw_kl_exception("Non-list argument passed to length");
+
+  return create_kl_number_l(size);
+}
+
+static inline void register_primitive_kl_function_length (void)
+{
+  KLObject* function_object =
+    create_primitive_kl_function(1, &primitive_function_length);
+
+  set_kl_symbol_function(get_length_symbol_object(), function_object);
+}
+
 static inline KLObject* primitive_function_shen_hdtl
 (KLObject* function_object, Vector* arguments, Environment* function_environment,
  Environment* variable_environment)
@@ -1606,6 +1634,7 @@ void register_overwrite_sys_primitive_kl_functions (void)
   register_primitive_kl_function_dict_keys();
   register_primitive_kl_function_dict_values();
   register_primitive_kl_function_dict_fold();
+  register_primitive_kl_function_length();
 }
 
 void register_overwrite_yacc_primitive_kl_functions (void)
