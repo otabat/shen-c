@@ -122,6 +122,7 @@ KLObject* mcons_symbol_object;
 KLObject* ocons_symbol_object;
 KLObject* nth_hd_symbol_object;
 KLObject* nth_tl_symbol_object;
+KLObject* flush_symbol_object;
 
 extern KLObject* get_if_symbol_object (void);
 extern KLObject* get_and_symbol_object (void);
@@ -245,6 +246,7 @@ extern KLObject* get_mcons_symbol_object (void);
 extern KLObject* get_ocons_symbol_object (void);
 extern KLObject* get_nth_hd_symbol_object (void);
 extern KLObject* get_nth_tl_symbol_object (void);
+extern KLObject* get_flush_symbol_object (void);
 
 static inline void register_if_symbol_object (void)
 {
@@ -1086,6 +1088,12 @@ static inline void register_nth_tl_symbol_object (void)
   extend_symbol_name_table("nth-tl", nth_tl_symbol_object);
 }
 
+static inline void register_flush_symbol_object (void)
+{
+  flush_symbol_object = create_kl_symbol("flush");
+  extend_symbol_name_table("flush", flush_symbol_object);
+}
+
 static inline void register_extension_symbol_objects (void)
 {
   register_println_symbol_object();
@@ -1097,6 +1105,7 @@ static inline void register_extension_symbol_objects (void)
   register_ocons_symbol_object();
   register_nth_hd_symbol_object();
   register_nth_tl_symbol_object();
+  register_flush_symbol_object();
 }
 
 void register_symbol_objects (void)

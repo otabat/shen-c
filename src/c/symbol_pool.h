@@ -126,6 +126,7 @@ extern KLObject* mcons_symbol_object;
 extern KLObject* ocons_symbol_object;
 extern KLObject* nth_hd_symbol_object;
 extern KLObject* nth_tl_symbol_object;
+extern KLObject* flush_symbol_object;
 
 void register_symbol_objects (void);
 
@@ -531,5 +532,6 @@ inline KLObject* get_mcons_symbol_object (void) { return mcons_symbol_object; }
 inline KLObject* get_ocons_symbol_object (void) { return ocons_symbol_object; }
 inline KLObject* get_nth_hd_symbol_object (void) { return nth_hd_symbol_object; }
 inline KLObject* get_nth_tl_symbol_object (void) { return nth_tl_symbol_object; }
+inline KLObject* get_flush_symbol_object (void) { return flush_symbol_object; }
 
 #endif
