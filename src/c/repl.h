@@ -14,9 +14,9 @@
 #include "stream.h"
 #include "symbol.h"
 
-void load_kl_file (char* shen_c_home_path, char* file_path);
-void load_shen_kl_files (char* shen_c_home_path);
-void load_development_kl_file (char* shen_c_home_path);
+void load_kl_file (char* file_path);
+void load_shen_kl_files (void);
+void load_development_kl_file (void);
 void run_kl_repl (void);
 void run_shen_repl (void);
 

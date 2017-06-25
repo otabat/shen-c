@@ -921,7 +921,12 @@ static inline KLObject* primitive_function_read_file_as_charlist
   if (strcmp(home_directory_string, "") != 0)
     file_path = concatenate_string(home_directory_string, file_path);
 
+  #ifdef SHEN_C_MOBILE
+  char* string = read_file_by_file_path_from_home_path(file_path);
+  #else
   char* string = read_file_by_file_path(file_path);
+  #endif
+
   size_t string_length = strlen(string);
   KLObject* head_list_object = NULL;
   KLObject* tail_list_object = head_list_object;

@@ -10,6 +10,7 @@
 #include "object.h"
 #include "primitive.h"
 #include "repl.h"
+#include "repl_socket.h"
 #include "stream.h"
 #include "string.h"
 #include "symbol_pool.h"
@@ -30,17 +31,37 @@ inline void initialize (void)
   register_primitive_kl_functions();
   register_extension_primitive_kl_functions();
   initialize_read_buffer();
+
+  #ifdef SHEN_C_MOBILE
+  initialize_repl_socket_std_stream_objects();
+  #else
   initialize_std_stream_objects();
+  #endif
+
   register_global_variables();
 }
 
-inline void initialize_and_run_shen_repl (char* shen_c_home_path)
+inline void initialize_and_run_shen_repl (const char* home_path)
 {
   GC_init();
+
+  char* slashed_home_path = concatenate_string((char*)home_path, "/");
+
+  initialize_shen_c_home_path(slashed_home_path);
+
+  #ifdef SHEN_C_MOBILE
+  start_repl_server("127.0.0.1", "34957", 1);
+  #endif
+
   initialize();
-  load_shen_kl_files(shen_c_home_path);
+  load_shen_kl_files();
+
+  #ifdef SHEN_C_MOBILE
+  load_kl_file("/src/kl/mobile/init.kl");
+  #endif
+
   run_shen_repl();
-  //load_development_kl_file(shen_c_home_path);
+  //load_development_kl_file();
   //run_kl_repl();
 }
 

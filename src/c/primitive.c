@@ -549,12 +549,20 @@ static inline KLObject* primitive_function_open
   char* home_directory_string = get_string(home_directory_string_object);
 
   if (strcmp(home_directory_string, "") == 0)
+    #ifdef SHEN_C_MOBILE
+    return create_kl_stream_from_home_path(get_string(objects[0]), objects[1]);
+    #else
     return create_kl_stream(get_string(objects[0]), objects[1]);
+    #endif
 
   char* file_path = concatenate_string(home_directory_string,
                                        get_string(objects[0]));
 
+  #ifdef SHEN_C_MOBILE
+  return create_kl_stream_from_home_path(file_path, objects[1]);
+  #else
   return create_kl_stream(file_path, objects[1]);
+  #endif
 }
 
 static inline void register_primitive_kl_function_open (void)

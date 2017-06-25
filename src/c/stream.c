@@ -1,5 +1,7 @@
 #include "stream.h"
 
+char* shen_c_home_path;
+
 KLObject* std_input_stream_object;
 KLObject* std_output_stream_object;
 KLObject* std_error_stream_object;
@@ -7,6 +9,9 @@ KLObject* std_error_stream_object;
 size_t read_buffer_allocation_size = 100;
 char* read_buffer;
 size_t read_buffer_position = 0;
+
+extern void initialize_shen_c_home_path (char* home_path);
+extern char* get_shen_c_home_path (void);
 
 extern FILE* get_stream_file (Stream* stream);
 extern void set_stream_file (Stream* stream, FILE* file);
@@ -20,6 +25,8 @@ extern Stream* get_stream (KLObject* stream_object);
 extern void set_stream (KLObject* stream_object, Stream* stream);
 extern KLObject* create_kl_stream (char* file_path,
                                    KLObject* stream_type_symbol_object);
+extern KLObject* create_kl_stream_from_home_path
+(char* file_path, KLObject* stream_type_symbol_object);
 extern FILE* get_kl_stream_file (KLObject* stream_object);
 extern void set_kl_stream_file (KLObject* stream_object, FILE* file);
 extern KLStreamType get_kl_stream_stream_type (KLObject* stream_object);
@@ -57,6 +64,7 @@ extern KLObject* write_kl_stream_byte (KLObject* stream_object,
 
 extern char* read_file (FILE* file);
 extern char* read_file_by_file_path (char* file_path);
+extern char* read_file_by_file_path_from_home_path (char* file_path);
 
 char* kl_stream_to_string (KLObject* stream_object)
 {

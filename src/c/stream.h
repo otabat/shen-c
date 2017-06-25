@@ -9,7 +9,10 @@
 #include "exception.h"
 #include "kl.h"
 #include "number.h"
+#include "string.h"
 #include "symbol_pool.h"
+
+extern char* shen_c_home_path;
 
 extern KLObject* std_input_stream_object;
 extern KLObject* std_output_stream_object;
@@ -18,6 +21,16 @@ extern KLObject* std_error_stream_object;
 extern size_t read_buffer_allocation_size;
 extern char* read_buffer;
 extern size_t read_buffer_position ;
+
+inline void initialize_shen_c_home_path (char* home_path)
+{
+  shen_c_home_path = home_path;
+}
+
+inline char* get_shen_c_home_path (void)
+{
+  return shen_c_home_path;
+}
 
 char* kl_stream_to_string (KLObject* stream_object);
 
@@ -100,6 +113,14 @@ inline KLObject* create_kl_stream (char* file_path,
   set_stream(stream_object, stream);
 
   return stream_object;
+}
+
+inline KLObject* create_kl_stream_from_home_path
+(char* file_path, KLObject* stream_type_symbol_object)
+{
+  char* absolute_file_path = concatenate_string(get_shen_c_home_path(), file_path);
+
+  return create_kl_stream(absolute_file_path, stream_type_symbol_object);
 }
 
 inline FILE* get_kl_stream_file (KLObject* stream_object)
@@ -334,6 +355,14 @@ inline char* read_file_by_file_path (char* file_path)
     throw_kl_exception("Failed to close file");
 
   return string;
+}
+
+inline char* read_file_by_file_path_from_home_path (char* file_path)
+{
+  char* absolute_file_path = concatenate_string(get_shen_c_home_path(),
+                                                file_path);
+
+  return read_file_by_file_path(absolute_file_path);
 }
 
 #endif

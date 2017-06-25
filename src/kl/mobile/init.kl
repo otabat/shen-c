@@ -1,0 +1,16 @@
+(defun pr (V4185 V4186)
+  (trap-error (let result (shen.prh V4185 V4186 0)
+                (do (flush V4186) result))
+              (lambda E (do (flush V4186) V4185))))
+
+(defun shen.credits () (do (shen.prhush "
+Shen, copyright (C) 2010-2015 Mark Tarver
+" (stoutput)) (do (shen.prhush (cn "www.shenlanguage.org, " (shen.app (value *version*) "
+" shen.a)) (stoutput)) (do (shen.prhush (cn "running under " (shen.app (value *language*) (cn ", implementation: " (shen.app (value *implementation*) "" shen.a)) shen.a)) (stoutput)) (do (shen.prhush (cn "
+port " (shen.app (value *port*) (cn " ported by " (shen.app (value *porters*) "
+" shen.a)) shen.a)) (stoutput))
+                                                                                                                                                                                           (shen.prhush "app icon design by lulumsunny") (stoutput))))))
+
+(defun run-shen-test ()
+  (do (cd "shen/test/shen")
+      (do (load "README.shen") (load "tests.shen"))))
