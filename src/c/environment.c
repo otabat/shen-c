@@ -27,7 +27,7 @@ KLObject* lookup_environment (KLObject* symbol_object, Environment* environment)
   while (true) {
     symbol_object_table = get_environment_symbol_object_table(new_environment);
     hash_iterator = kh_get(ObjectTable, symbol_object_table,
-                           (khint64_t)symbol_object);
+                           (kl_khint_ptr_t)symbol_object);
     is_key_not_found = hash_iterator == kh_end(symbol_object_table);
 
     if (is_key_not_found || kh_exist(symbol_object_table, hash_iterator) == 0) {

@@ -62,7 +62,7 @@ inline void extend_environment (KLObject* symbol_object, KLObject* object,
     get_environment_symbol_object_table(environment);
   int put_result;
   khiter_t hash_iterator = kh_put(ObjectTable, symbol_object_table,
-                                  (khint64_t)symbol_object, &put_result);
+                                  (kl_khint_ptr_t)symbol_object, &put_result);
 
   if (put_result == -1)
     throw_kl_exception("Failed to extend environment");
