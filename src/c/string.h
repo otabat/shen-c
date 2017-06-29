@@ -1,5 +1,5 @@
-#ifndef STRING_H
-#define STRING_H
+#ifndef SHEN_C_STRING_H
+#define SHEN_C_STRING_H
 
 #include <stdbool.h>
 #include <stdio.h>
