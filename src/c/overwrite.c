@@ -162,9 +162,17 @@ static inline KLObject* primitive_function_is_integer
 {
   KLObject** objects =
     get_kl_function_arguments_with_count_check(function_object, arguments);
+  KLObject* object = objects[0];
 
-  if (is_kl_number_l(objects[0]))
-    return get_true_boolean_object();
+  if (is_kl_number(object)) {
+    if (get_kl_number_number_type(object) == KL_NUMBER_TYPE_LONG)
+      return get_true_boolean_object();
+
+    double x = get_kl_number_number_d(object);
+
+    if ((long)x == x)
+      return get_true_boolean_object();
+  }
 
   return get_false_boolean_object();
 }
