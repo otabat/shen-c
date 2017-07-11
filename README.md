@@ -78,6 +78,14 @@ or with an exit status
 ```
 
 
+## Learn Shen
+* [Official website of Shen](http://shenlanguage.org/)
+* [The Shen OS Kernel Manual](http://shenlanguage.org/learn-shen/index.html)
+* [The Official Shen Standard](http://www.shenlanguage.org/learn-shen/shendoc.htm)
+* [Shen Community Wiki](https://github.com/Shen-Language/wiki/wiki)
+* [The Book of Shen: third edition](https://www.amazon.co.uk/Book-Shen-Third-Mark-Tarver/dp/1784562130)
+
+
 ## License
 
 #### Shen
