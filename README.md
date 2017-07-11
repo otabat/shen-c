@@ -13,6 +13,9 @@ Shen is a portable functional programming language developed by [Mark Tarver](ht
 
 Shen-C is implemented in C99 currently as an interpreter, mainly tested on macOS using Clang. Should also work with GCC.
 
+The [iOS version of Shen-C](https://chatolab.wordpress.com/2017/07/10/shen-programming-language-for-ios/) is available on the App Store, which is a full featured Shen REPL with a customized keyboard for both iPhone and iPad.
+
+
 
 ## Installation for macOS
 
