@@ -15,7 +15,9 @@ Shen-C is implemented in C99 currently as an interpreter, mainly tested on macOS
 
 The [iOS version of Shen-C](https://chatolab.wordpress.com/2017/07/10/shen-programming-language-for-ios/) is available on the App Store, which is a full featured Shen REPL with a customized keyboard for both iPhone and iPad.
 
-
+Other ports of Shen by the Shen-C author includes
+* [Shen-JVM](https://github.com/otabat/shen-jvm)
+* [Shen for Android](https://chatolab.wordpress.com/2017/12/26/shen-programming-language-for-android/), which is a full featured Shen REPL with a customized keyboard for Android on Google Play
 
 ## Installation for macOS
 
