@@ -313,7 +313,7 @@ static inline KLObject* primitive_function_map
     if (!is_non_empty_kl_list(argument_list_object))
       throw_kl_exception("Wrong arguments for map function");
 
-    KLObject* quoted_argument_object = CONS(get_quote_symbol_object(),
+    KLObject* quoted_argument_object = CONS(get_c_quote_symbol_object(),
                                             CONS(CAR(argument_list_object), EL));
     KLObject* function_application_list_object = CONS(symbol_or_function_object,
                                                       CONS(quoted_argument_object,
@@ -787,9 +787,9 @@ static inline KLObject* primitive_function_dict_fold
       KLObject* value_object = get_pair_cdr(pair);
       KLObject* function_application_list_object =
         CONS(function_or_symbol_object,
-             CONS(CONS(get_quote_symbol_object(), CONS(key_object, get_empty_kl_list())),
-                  CONS(CONS(get_quote_symbol_object(), CONS(value_object, get_empty_kl_list())),
-                       CONS(CONS(get_quote_symbol_object(), CONS(acc_object, get_empty_kl_list())),
+             CONS(CONS(get_c_quote_symbol_object(), CONS(key_object, get_empty_kl_list())),
+                  CONS(CONS(get_c_quote_symbol_object(), CONS(value_object, get_empty_kl_list())),
+                       CONS(CONS(get_c_quote_symbol_object(), CONS(acc_object, get_empty_kl_list())),
                             get_empty_kl_list()))));
 
       acc_object =
@@ -1280,11 +1280,11 @@ static inline KLObject* primitive_function_shen_lzy_equal_exclamation_helper
            is_non_empty_kl_list(object)) {
     KLObject* freeze_body_object =
       CONS(get_shen_lzy_equal_exclamation_symbol_object(),
-           CONS(CONS(get_quote_symbol_object(),
+           CONS(CONS(get_c_quote_symbol_object(),
                      CONS(primitive_function_shen_lazyderef_helper(CDR(list_or_vector_object),
                                                                    number_object),
                           EL)),
-                CONS(CONS(get_quote_symbol_object(),
+                CONS(CONS(get_c_quote_symbol_object(),
                           CONS(primitive_function_shen_lazyderef_helper(CDR(object),
                                                                         number_object),
                                EL)),
@@ -1530,7 +1530,7 @@ static inline KLObject* primitive_function_shen_arg_to_str
   if (is_kl_list(object)) {
     KLObject* function_application_list_object =
       CONS(get_shen_list_to_str_symbol_object(),
-           CONS(CONS(get_quote_symbol_object(), CONS(object, get_empty_kl_list())),
+           CONS(CONS(get_c_quote_symbol_object(), CONS(object, get_empty_kl_list())),
                 CONS(mode_object, get_empty_kl_list())));
 
     return eval_kl_object(function_application_list_object, function_environment,
@@ -1589,7 +1589,7 @@ static inline KLObject* primitive_function_shen_compose
       throw_kl_exception("Wrong argument for shen.compose function");
 
     KLObject* quoted_argument_list_object =
-      CONS(CONS(get_quote_symbol_object(), CONS(object, EL)), EL);
+      CONS(CONS(get_c_quote_symbol_object(), CONS(object, EL)), EL);
     KLObject* function_application_list_object =
       CONS(CAR(list_object), quoted_argument_list_object);
 

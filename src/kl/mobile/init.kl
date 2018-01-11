@@ -1,7 +1,7 @@
 (defun pr (V4185 V4186)
   (trap-error (let result (shen.prh V4185 V4186 0)
-                (do (flush V4186) result))
-              (lambda E (do (flush V4186) V4185))))
+                (do (c.flush V4186) result))
+              (lambda E (do (c.flush V4186) V4185))))
 
 (defun shen.credits () (do (shen.prhush "
 Shen, copyright (C) 2010-2015 Mark Tarver

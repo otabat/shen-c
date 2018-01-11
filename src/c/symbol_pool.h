@@ -117,16 +117,14 @@ extern KLObject* shen_atom_to_str_symbol_object;
 extern KLObject* shen_arg_to_str_symbol_object;
 extern KLObject* shen_compose_symbol_object;
 
-extern KLObject* println_symbol_object;
-extern KLObject* quit_symbol_object;
-extern KLObject* loop_symbol_object;
-extern KLObject* recur_symbol_object;
-extern KLObject* quote_symbol_object;
-extern KLObject* mcons_symbol_object;
-extern KLObject* ocons_symbol_object;
-extern KLObject* nth_hd_symbol_object;
-extern KLObject* nth_tl_symbol_object;
-extern KLObject* flush_symbol_object;
+extern KLObject* c_loop_symbol_object;
+extern KLObject* c_recur_symbol_object;
+extern KLObject* c_quote_symbol_object;
+extern KLObject* c_mcons_symbol_object;
+extern KLObject* c_ocons_symbol_object;
+extern KLObject* c_nth_hd_symbol_object;
+extern KLObject* c_nth_tl_symbol_object;
+extern KLObject* c_flush_symbol_object;
 
 void register_symbol_objects (void);
 
@@ -523,15 +521,13 @@ inline KLObject* get_shen_compose_symbol_object (void)
   return shen_compose_symbol_object;
 }
 
-inline KLObject* get_println_symbol_object (void) { return println_symbol_object; }
-inline KLObject* get_quit_symbol_object (void) { return quit_symbol_object; }
-inline KLObject* get_loop_symbol_object (void) { return loop_symbol_object; }
-inline KLObject* get_recur_symbol_object (void) { return recur_symbol_object; }
-inline KLObject* get_quote_symbol_object (void) { return quote_symbol_object; }
-inline KLObject* get_mcons_symbol_object (void) { return mcons_symbol_object; }
-inline KLObject* get_ocons_symbol_object (void) { return ocons_symbol_object; }
-inline KLObject* get_nth_hd_symbol_object (void) { return nth_hd_symbol_object; }
-inline KLObject* get_nth_tl_symbol_object (void) { return nth_tl_symbol_object; }
-inline KLObject* get_flush_symbol_object (void) { return flush_symbol_object; }
+inline KLObject* get_c_loop_symbol_object (void) { return c_loop_symbol_object; }
+inline KLObject* get_c_recur_symbol_object (void) { return c_recur_symbol_object; }
+inline KLObject* get_c_quote_symbol_object (void) { return c_quote_symbol_object; }
+inline KLObject* get_c_mcons_symbol_object (void) { return c_mcons_symbol_object; }
+inline KLObject* get_c_ocons_symbol_object (void) { return c_ocons_symbol_object; }
+inline KLObject* get_c_nth_hd_symbol_object (void) { return c_nth_hd_symbol_object; }
+inline KLObject* get_c_nth_tl_symbol_object (void) { return c_nth_tl_symbol_object; }
+inline KLObject* get_c_flush_symbol_object (void) { return c_flush_symbol_object; }
 
 #endif

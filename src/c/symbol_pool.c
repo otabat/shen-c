@@ -113,16 +113,14 @@ KLObject* shen_atom_to_str_symbol_object;
 KLObject* shen_arg_to_str_symbol_object;
 KLObject* shen_compose_symbol_object;
 
-KLObject* println_symbol_object;
-KLObject* quit_symbol_object;
-KLObject* loop_symbol_object;
-KLObject* recur_symbol_object;
-KLObject* quote_symbol_object;
-KLObject* mcons_symbol_object;
-KLObject* ocons_symbol_object;
-KLObject* nth_hd_symbol_object;
-KLObject* nth_tl_symbol_object;
-KLObject* flush_symbol_object;
+KLObject* c_loop_symbol_object;
+KLObject* c_recur_symbol_object;
+KLObject* c_quote_symbol_object;
+KLObject* c_mcons_symbol_object;
+KLObject* c_ocons_symbol_object;
+KLObject* c_nth_hd_symbol_object;
+KLObject* c_nth_tl_symbol_object;
+KLObject* c_flush_symbol_object;
 
 extern KLObject* get_if_symbol_object (void);
 extern KLObject* get_and_symbol_object (void);
@@ -237,16 +235,14 @@ extern KLObject* get_shen_atom_to_str_symbol_object (void);
 extern KLObject* get_shen_arg_to_str_symbol_object (void);
 extern KLObject* get_shen_compose_symbol_object (void);
 
-extern KLObject* get_println_symbol_object (void);
-extern KLObject* get_quit_symbol_object (void);
-extern KLObject* get_loop_symbol_object (void);
-extern KLObject* get_recur_symbol_object (void);
-extern KLObject* get_quote_symbol_object (void);
-extern KLObject* get_mcons_symbol_object (void);
-extern KLObject* get_ocons_symbol_object (void);
-extern KLObject* get_nth_hd_symbol_object (void);
-extern KLObject* get_nth_tl_symbol_object (void);
-extern KLObject* get_flush_symbol_object (void);
+extern KLObject* get_c_loop_symbol_object (void);
+extern KLObject* get_c_recur_symbol_object (void);
+extern KLObject* get_c_quote_symbol_object (void);
+extern KLObject* get_c_mcons_symbol_object (void);
+extern KLObject* get_c_ocons_symbol_object (void);
+extern KLObject* get_c_nth_hd_symbol_object (void);
+extern KLObject* get_c_nth_tl_symbol_object (void);
+extern KLObject* get_c_flush_symbol_object (void);
 
 static inline void register_if_symbol_object (void)
 {
@@ -1034,78 +1030,64 @@ static inline void register_overwrite_symbol_objects (void)
   register_shen_compose_symbol_object();
 }
 
-static inline void register_println_symbol_object (void)
+static inline void register_c_loop_symbol_object (void)
 {
-  println_symbol_object = create_kl_symbol("println");
-  extend_symbol_name_table("println", println_symbol_object);
+  c_loop_symbol_object = create_kl_symbol("c.loop");
+  extend_symbol_name_table("c.loop", c_loop_symbol_object);
 }
 
-static inline void register_quit_symbol_object ()
+static inline void register_c_recur_symbol_object (void)
 {
-  quit_symbol_object = create_kl_symbol("quit");
-  extend_symbol_name_table("quit", quit_symbol_object);
+  c_recur_symbol_object = create_kl_symbol("c.recur");
+  extend_symbol_name_table("c_recur", c_recur_symbol_object);
 }
 
-static inline void register_loop_symbol_object (void)
+static inline void register_c_quote_symbol_object (void)
 {
-  loop_symbol_object = create_kl_symbol("loop");
-  extend_symbol_name_table("loop", loop_symbol_object);
+  c_quote_symbol_object = create_kl_symbol("c.quote");
+  extend_symbol_name_table("c.quote", c_quote_symbol_object);
 }
 
-static inline void register_recur_symbol_object (void)
+static inline void register_c_mcons_symbol_object (void)
 {
-  recur_symbol_object = create_kl_symbol("recur");
-  extend_symbol_name_table("recur", recur_symbol_object);
+  c_mcons_symbol_object = create_kl_symbol("c.mcons");
+  extend_symbol_name_table("c.mcons", c_mcons_symbol_object);
 }
 
-static inline void register_quote_symbol_object (void)
+static inline void register_c_ocons_symbol_object (void)
 {
-  quote_symbol_object = create_kl_symbol("quote");
-  extend_symbol_name_table("quote", quote_symbol_object);
+  c_ocons_symbol_object = create_kl_symbol("c.ocons");
+  extend_symbol_name_table("c.ocons", c_ocons_symbol_object);
 }
 
-static inline void register_mcons_symbol_object (void)
+static inline void register_c_nth_hd_symbol_object (void)
 {
-  mcons_symbol_object = create_kl_symbol("mcons");
-  extend_symbol_name_table("mcons", mcons_symbol_object);
+  c_nth_hd_symbol_object = create_kl_symbol("c.nth-hd");
+  extend_symbol_name_table("c.nth-hd", c_nth_hd_symbol_object);
 }
 
-static inline void register_ocons_symbol_object (void)
+static inline void register_c_nth_tl_symbol_object (void)
 {
-  ocons_symbol_object = create_kl_symbol("ocons");
-  extend_symbol_name_table("ocons", ocons_symbol_object);
+  c_nth_tl_symbol_object = create_kl_symbol("c.nth-tl");
+  extend_symbol_name_table("c.nth-tl", c_nth_tl_symbol_object);
 }
 
-static inline void register_nth_hd_symbol_object (void)
+static inline void register_c_flush_symbol_object (void)
 {
-  nth_hd_symbol_object = create_kl_symbol("nth-hd");
-  extend_symbol_name_table("nth-hd", nth_hd_symbol_object);
-}
-
-static inline void register_nth_tl_symbol_object (void)
-{
-  nth_tl_symbol_object = create_kl_symbol("nth-tl");
-  extend_symbol_name_table("nth-tl", nth_tl_symbol_object);
-}
-
-static inline void register_flush_symbol_object (void)
-{
-  flush_symbol_object = create_kl_symbol("flush");
-  extend_symbol_name_table("flush", flush_symbol_object);
+  c_flush_symbol_object = create_kl_symbol("c.flush");
+  extend_symbol_name_table("c.flush", c_flush_symbol_object);
 }
 
 static inline void register_extension_symbol_objects (void)
 {
-  register_println_symbol_object();
-  register_quit_symbol_object();
-  register_loop_symbol_object();
-  register_recur_symbol_object();
-  register_quote_symbol_object();
-  register_mcons_symbol_object();
-  register_ocons_symbol_object();
-  register_nth_hd_symbol_object();
-  register_nth_tl_symbol_object();
-  register_flush_symbol_object();
+  register_c_loop_symbol_object();
+  register_c_recur_symbol_object();
+  register_c_quote_symbol_object();
+  register_c_mcons_symbol_object();
+  register_c_ocons_symbol_object();
+  register_c_nth_hd_symbol_object();
+  register_c_nth_tl_symbol_object();
+  register_c_flush_symbol_object();
 }
 
 void register_symbol_objects (void)
