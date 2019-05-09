@@ -26,9 +26,8 @@ KLObject* get_variable_value (KLObject* symbol_object,
                               Environment* variable_environment)
 {
   if (!is_kl_symbol(symbol_object)) {
-    char length_string[1]; 
     int error_message_length =
-      snprintf(length_string, 1,
+      snprintf(NULL, 0,
                "Failed to get a value of %s, which is not a symbol",
                kl_object_to_string(symbol_object));
     char* error_message = malloc(error_message_length + 1);
@@ -51,9 +50,8 @@ KLObject* set_variable_value (KLObject* symbol_object, KLObject* object,
                               Environment* variable_environment)
 {
   if (!is_kl_symbol(symbol_object)) {
-    char length_string[1]; 
     int error_message_length =
-      snprintf(length_string, 1,
+      snprintf(NULL, 0,
                "Failed to set value to %s, which is not a symbol",
                kl_object_to_string(symbol_object));
     char* error_message = malloc((size_t)error_message_length + 1);

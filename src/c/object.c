@@ -129,7 +129,6 @@ char* kl_vector_to_string (KLObject* vector_object)
 char* kl_function_to_string (KLObject* function_object)
 {
   char* function_object_string = NULL;
-  char length_string[1];
   int function_object_string_length;
 
   if (is_closure_kl_function(function_object)) {
@@ -139,7 +138,7 @@ char* kl_function_to_string (KLObject* function_object)
     char* body_object_string = kl_object_to_string(get_closure_body(closure));
 
     function_object_string_length =
-      snprintf(length_string, 1,
+      snprintf(NULL, 0,
                "#<Closure {0x%016" PRIxPTR "} [lambda %s %s]>",
                (uintptr_t)function_object,
                parameter_object_string,
@@ -152,7 +151,7 @@ char* kl_function_to_string (KLObject* function_object)
             body_object_string);
   } else if (is_primitive_kl_function(function_object)) {
     function_object_string_length =
-      snprintf(length_string, 1, "#<PrimitiveFunction {0x%016" PRIxPTR "}>",
+      snprintf(NULL, 0, "#<PrimitiveFunction {0x%016" PRIxPTR "}>",
                (uintptr_t)function_object);
     function_object_string = malloc((size_t)function_object_string_length + 1);
     sprintf(function_object_string, "#<PrimitiveFunction {0x%016" PRIxPTR "}>",
@@ -180,7 +179,7 @@ char* kl_function_to_string (KLObject* function_object)
     }
 
     function_object_string_length =
-      snprintf(length_string, 1,
+      snprintf(NULL, 0,
                "#<Function {0x%016" PRIxPTR "} [function [%s] %s]>",
                (uintptr_t)function_object,
                parameter_object_string,

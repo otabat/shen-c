@@ -44,8 +44,7 @@ char* kl_exception_to_string (KLObject* exception_object)
 {
   Exception* exception = get_exception(exception_object);
   char* error_message = get_exception_error_message(exception);
-  char length_string[1];
-  int object_string_length = snprintf(length_string, 1,
+  int object_string_length = snprintf(NULL, 0,
                                       "#<Exception {0x%016" PRIxPTR "} %s>",
                                       (uintptr_t)exception_object,
                                       error_message);

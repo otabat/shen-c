@@ -78,9 +78,8 @@ char* kl_stream_to_string (KLObject* stream_object)
   Stream* stream = get_stream(stream_object);
   char* stream_type_string =
     stream_type_to_stream_type_string(get_stream_stream_type(stream));
-  char string[1];
   char* object_string;
-  int object_string_length = snprintf(string, 1,
+  int object_string_length = snprintf(NULL, 0,
                                       "#<Stream {0x%016" PRIxPTR "} %s>",
                                       (uintptr_t)stream_object,
                                       stream_type_string);

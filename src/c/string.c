@@ -150,8 +150,7 @@ char* append_character_to_string (char* string_destination,
 
 char* long_to_string (long x)
 {
-  char length_string[1];
-  int object_string_length = snprintf(length_string, 1, "%ld", x);
+  int object_string_length = snprintf(NULL, 0, "%ld", x);
   char* object_string = malloc((size_t)object_string_length + 1);
 
   sprintf(object_string, "%ld", x);
@@ -161,8 +160,7 @@ char* long_to_string (long x)
 
 char* double_to_string (double x)
 {
-  char length_string[1];
-  int object_string_length = snprintf(length_string, 1, "%.*g", DBL_DIG, x);
+  int object_string_length = snprintf(NULL, 0, "%.*g", DBL_DIG, x);
   char* object_string = malloc((size_t)object_string_length + 1);
 
   sprintf(object_string, "%.*g", DBL_DIG, x);  
