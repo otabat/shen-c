@@ -102,5 +102,5 @@ Copyright (c) 2010-2015, Mark Tarver
 Shen is released under the [BSD License](https://github.com/otabat/shen-c/tree/master/src/shen/license.txt).  
 
 #### Shen-C
-Copyright (c) 2017, Tatsuya Tsuda  
+Copyright (c) 2019, Tatsuya Tsuda
 Shen-C is released under the [MIT License](http://www.opensource.org/licenses/MIT).
