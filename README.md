@@ -11,13 +11,26 @@ Shen is a portable functional programming language developed by [Mark Tarver](ht
 * An integrated fully functional Prolog
 * An inbuilt compiler-compiler, Shen-YACC
 
-Shen-C is implemented in C99 currently as an interpreter, mainly tested on macOS using Clang. Should also work with GCC.
+Shen-C is implemented as an interpreter, mainly tested on Linux (Ubuntu 18.04) using Clang.
 
 The [iOS version of Shen-C](https://chatolab.wordpress.com/2017/07/10/shen-programming-language-for-ios/) is available on the App Store, which is a full featured Shen REPL with a customized keyboard for both iPhone and iPad.
 
 Other ports of Shen by the Shen-C author includes
 * [Shen-JVM](https://github.com/otabat/shen-jvm)
 * [Shen for Android](https://chatolab.wordpress.com/2017/12/26/shen-programming-language-for-android/), which is a full featured Shen REPL with a customized keyboard for Android on Google Play
+
+## Installation for Linux
+1. Install [Clang](http://releases.llvm.org/download.html)
+
+2. Install [Boehm GC](http://www.hboehm.info/gc/)
+
+3. Change directory to the project root
+
+4. Compile Shen-C
+```
+make
+```
+A binary file named `shen-c` will be created under the `project_root/bin` directory.
 
 ## Installation for macOS
 
@@ -31,12 +44,8 @@ Other ports of Shen by the Shen-C author includes
 3. Compile Shen-C
 ```
 make
-```  
-A binary file named `shen-c` will be created under the `project_root/bin` directory.  
-
-
-## Installation for other platforms
-Install [Boehm GC](http://www.hboehm.info/gc/), and change the [Makefile](https://github.com/otabat/shen-c/tree/master/Makefile) to match the platform.
+```
+A binary file named `shen-c` will be created under the `project_root/bin` directory.
 
 
 ## Usage
