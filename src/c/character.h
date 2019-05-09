@@ -89,10 +89,10 @@ inline bool is_non_alphanumeric_symbol_character (char c)
           c == '\'' || c == ';' || c == ':' || c == '{' || c == '}');
 }
 
-inline bool is_symbol_character (int c)
+inline bool is_symbol_character (char c)
 {
-  return (is_alphabet_character((char)c) || is_numeric_character((char)c) ||
-          is_non_alphanumeric_symbol_character((char)c));
+  return (is_alphabet_character(c) || is_numeric_character(c) ||
+          is_non_alphanumeric_symbol_character(c));
 }
 
 #endif

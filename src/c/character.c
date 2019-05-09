@@ -19,4 +19,4 @@ extern bool is_alphabet_character (char c);
 extern bool is_numeric_character (char c);
 extern bool is_alphanumeric_character (char c);
 extern bool is_non_alphanumeric_symbol_character (char c);
-extern bool is_symbol_character (int c);
+extern bool is_symbol_character (char c);
