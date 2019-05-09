@@ -143,9 +143,10 @@ inline char* create_auto_increment_symbol_name (void)
 {
   pre_increment_auto_increment_symbol_name_id();
 
-  size_t symbol_name_allocation_size =
-    count_unsigned_digits_length(get_auto_increment_symbol_name_id()) + 1;
-  char* symbol_name = malloc(symbol_name_allocation_size);
+  int symbol_name_length = snprintf(NULL, 0, "%s%zu",
+                                    get_auto_increment_symbol_name_prefix(),
+                                    get_auto_increment_symbol_name_id());
+  char* symbol_name = malloc((size_t)symbol_name_length + 1);
 
   sprintf(symbol_name, "%s%zu", get_auto_increment_symbol_name_prefix(),
           get_auto_increment_symbol_name_id());
