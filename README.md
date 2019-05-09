@@ -80,10 +80,8 @@ shen-c
 ```
 
 3. Quit Shen-C REPL
-```
-(quit)
-```
-or with an exit status
+
+Pass an exit status
 ```
 (exit 1)
 ```
