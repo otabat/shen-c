@@ -1044,7 +1044,7 @@ static KLObject* eval_eval_kl_expression (KLObject* list_object,
                                    Environment* function_environment,
                                    Environment* variable_environment)
 {
-  KLObject* function_object = create_user_kl_function();
+  KLObject* function_object = create_closure_kl_function();
   Closure* closure = get_kl_function_closure(function_object);
 
   set_closure_parent_function_environment(closure, function_environment);

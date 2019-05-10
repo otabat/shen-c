@@ -133,22 +133,35 @@ char* kl_function_to_string (KLObject* function_object)
 
   if (is_closure_kl_function(function_object)) {
     Closure* closure = get_kl_function_closure(function_object);
-    char* parameter_object_string =
-      kl_object_to_string(get_closure_parameter(closure));
+    KLObject* parameter = get_closure_parameter(closure);
+    char* parameter_object_string = (is_null(parameter)) ? NULL : kl_object_to_string(parameter);
     char* body_object_string = kl_object_to_string(get_closure_body(closure));
 
-    function_object_string_length =
-      snprintf(NULL, 0,
-               "#<Closure {0x%016" PRIxPTR "} [lambda %s %s]>",
-               (uintptr_t)function_object,
-               parameter_object_string,
-               body_object_string);
-    function_object_string = malloc((size_t)function_object_string_length + 1);
-    sprintf(function_object_string,
-            "#<Closure {0x%016" PRIxPTR "} [lambda %s %s]>",
-            (uintptr_t)function_object,
-            parameter_object_string,
-            body_object_string);
+    if (is_null(parameter_object_string)) {
+      function_object_string_length =
+        snprintf(NULL, 0,
+                 "#<Closure {0x%016" PRIxPTR "} [lambda %s]>",
+                 (uintptr_t)function_object,
+                 body_object_string);
+      function_object_string = malloc((size_t)function_object_string_length + 1);
+      sprintf(function_object_string,
+              "#<Closure {0x%016" PRIxPTR "} [lambda %s]>",
+              (uintptr_t)function_object,
+              body_object_string);
+    } else {
+      function_object_string_length =
+        snprintf(NULL, 0,
+                 "#<Closure {0x%016" PRIxPTR "} [lambda %s %s]>",
+                 (uintptr_t)function_object,
+                 parameter_object_string,
+                 body_object_string);
+      function_object_string = malloc((size_t)function_object_string_length + 1);
+      sprintf(function_object_string,
+              "#<Closure {0x%016" PRIxPTR "} [lambda %s %s]>",
+              (uintptr_t)function_object,
+              parameter_object_string,
+              body_object_string);
+    }
   } else if (is_primitive_kl_function(function_object)) {
     function_object_string_length =
       snprintf(NULL, 0, "#<PrimitiveFunction {0x%016" PRIxPTR "}>",
