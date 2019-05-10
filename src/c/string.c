@@ -168,9 +168,8 @@ char* double_to_string (double x)
   bool is_integer = true;
 
   for (int i = 0; i < object_string_length; ++i)
-    if (!is_numeric_character(object_string[i]) && object_string[i] != '-') {
+    if (is_dot_character(object_string[i]) || object_string[i] == 'e') {
       is_integer = false;
-
       break;
     }
 
