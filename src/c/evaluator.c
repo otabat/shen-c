@@ -185,8 +185,7 @@ static void analyze_tail_call_helper (KLObject* function_symbol_object,
         long argument_size = get_kl_list_size(cdr_object);
 
         if (argument_size != parameter_size)
-          throw_kl_exception("Wrong number of arguments "
-                             "for function application");
+          throw_kl_exception("Wrong number of arguments for function application");
 
         KLObject* list_object = cdr_object;
 
@@ -328,11 +327,10 @@ static bool analyze_tail_call (KLObject* function_symbol_object,
   DefunType defun_type = DEFUN_TYPE_POSSIBLY_TAIL_CALL;
   long self_call_number = 0;
 
-  analyze_tail_call_helper(function_symbol_object, parameter_size,
-                           body_object, 0, true, &defun_type, &self_call_number);
+  analyze_tail_call_helper(function_symbol_object, parameter_size, body_object, 0,
+                           true, &defun_type, &self_call_number);
 
-  if (defun_type == DEFUN_TYPE_POSSIBLY_TAIL_CALL &&
-      self_call_number == 1)
+  if (defun_type == DEFUN_TYPE_POSSIBLY_TAIL_CALL && self_call_number == 1)
     return true;
 
   return false;
@@ -487,8 +485,7 @@ static KLObject* optimize_multiple_function_calls_helper
 
       if (head_list_object == tail_list_object) {
         if (is_kl_symbol_equal(car_object, get_cons_symbol_object())) {
-          if (is_kl_symbol_equal(target_symbol_object,
-                                 get_cons_symbol_object()))
+          if (is_kl_symbol_equal(target_symbol_object, get_cons_symbol_object()))
             ++function_call_level;
           else
             function_call_level = 1;
