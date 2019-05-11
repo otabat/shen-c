@@ -133,8 +133,9 @@ char* kl_function_to_string (KLObject* function_object)
 
   if (is_closure_kl_function(function_object)) {
     Closure* closure = get_kl_function_closure(function_object);
-    KLObject* parameter = get_closure_parameter(closure);
-    char* parameter_object_string = (is_null(parameter)) ? NULL : kl_object_to_string(parameter);
+    KLObject* parameter_object = get_closure_parameter(closure);
+    char* parameter_object_string =
+      (is_null(parameter_object)) ? NULL : kl_object_to_string(parameter_object);
     char* body_object_string = kl_object_to_string(get_closure_body(closure));
 
     if (is_null(parameter_object_string)) {

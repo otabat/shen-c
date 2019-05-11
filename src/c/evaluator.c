@@ -1148,7 +1148,6 @@ static KLObject* create_curried_kl_list_closure_function
   KLObject* closure_parameter_object =
     get_vector_element(closure_parameters, closure_parameter_index);
   long closure_parameter_size = get_vector_size(closure_parameters);
-
   KLObject* closure_body_object;
 
   if (closure_parameter_index >= closure_parameter_size - 1)
@@ -1357,8 +1356,7 @@ static KLObject* eval_symbol_function_application
     char* function_symbol_name = get_kl_symbol_name(function_symbol_object);
     char* error_message =
       concatenate_string("Function ",
-                         concatenate_string(function_symbol_name,
-                                            " is undefined"));
+                         concatenate_string(function_symbol_name, " is undefined"));
     
     throw_kl_exception(error_message);
   }
@@ -1377,8 +1375,7 @@ static KLObject* eval_symbol_function_application
   return NULL;
 } 
 
-KLObject* eval_simple_closure_function_application
-(KLObject* function_object)
+KLObject* eval_simple_closure_function_application (KLObject* function_object)
 {
   Closure* closure = get_kl_function_closure(function_object);
 
@@ -1431,17 +1428,14 @@ static KLObject* eval_kl_list_closure_function_application
 
   if (argument_size > 1) {
     KLObject* partial_function_application_list_object =
-      create_kl_list_partial_function_application(function_object,
-                                                  arguments,
-                                                  0);
+      create_kl_list_partial_function_application(function_object, arguments, 0);
 
     return eval_kl_object(partial_function_application_list_object,
                           function_environment,
                           variable_environment);
   } 
 
-  KLObject* argument_object =
-    (is_empty_kl_list(cdr_object)) ? NULL : CAR(cdr_object);
+  KLObject* argument_object = (is_empty_kl_list(cdr_object)) ? NULL : CAR(cdr_object);
   
   return eval_closure_function_application(function_object, argument_object,
                                            function_environment,
@@ -1474,8 +1468,7 @@ static KLObject* eval_trap_error_expression (KLObject* list_object,
 
     return object;
   } else {
-    KLObject* cddr_object = CDR(cdr_object);
-    KLObject* handler_object = CAR(cddr_object);
+    KLObject* handler_object = CADR(cdr_object);
     KLObject* exception_object = pop_stack(get_trapped_kl_exception_stack());
     KLObject* function_object =
       eval_kl_object(handler_object, function_environment, variable_environment);
@@ -1518,20 +1511,6 @@ static inline KLObject* eval_c_mcons_expression (KLObject* list_object,
   }
 
   return head_list_object;
-}
-
-static inline KLObject* eval_c_ocons_expression (KLObject* list_object)
-{
-  KLObject* cdr_object = CDR(list_object);
-
-  if (!is_non_empty_kl_list(cdr_object) || !is_kl_list(CAR(cdr_object)))
-    throw_kl_exception("Argument to c.ocons should be a list");
-
-  KLObject* cadr_object = CAR(cdr_object);
-
-  optimize_multiple_function_calls(cadr_object);
-
-  return cadr_object;
 }
 
 static KLObject* eval_kl_list (KLObject* list_object,
@@ -1583,8 +1562,6 @@ static KLObject* eval_kl_list (KLObject* list_object,
                                      variable_environment);
     if (evaluated_car_object == get_c_quote_symbol_object())
       return eval_c_quote_expression(list_object);
-    //if (evaluated_car_object == get_c_ocons_symbol_object())
-    //  return eval_c_ocons_expression(list_object);
 
     return eval_symbol_function_application(list_object,
                                             evaluated_car_object,
