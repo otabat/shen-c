@@ -902,7 +902,7 @@ static KLObject* eval_kl_list_c_loop_expression (KLObject* list_object,
   long list_object_size = get_kl_list_size(list_object);
 
   if (list_object_size != 3)
-    throw_kl_exception("Wrong number of arguments for looop expression");
+    throw_kl_exception("Wrong number of arguments for loop expression");
 
   KLObject* cdr_object = CDR(list_object);
   KLObject* cadr_object = CAR(cdr_object);
