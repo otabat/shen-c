@@ -1039,7 +1039,7 @@ static inline void register_c_loop_symbol_object (void)
 static inline void register_c_recur_symbol_object (void)
 {
   c_recur_symbol_object = create_kl_symbol("c.recur");
-  extend_symbol_name_table("c_recur", c_recur_symbol_object);
+  extend_symbol_name_table("c.recur", c_recur_symbol_object);
 }
 
 static inline void register_c_quote_symbol_object (void)
