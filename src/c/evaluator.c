@@ -997,14 +997,6 @@ static KLObject* eval_let_expression (KLObject* list_object,
 
   if (!is_kl_symbol(parameter_object))
     throw_kl_exception("Let variable should be a symbol");
-  
-  KLObject* function_object = create_closure_kl_function();
-  Closure* closure = get_kl_function_closure(function_object);
-
-  set_closure_parent_function_environment(closure, function_environment);
-  set_closure_parent_variable_environment(closure, variable_environment);
-  set_closure_parameter(closure, parameter_object);
-  set_closure_body(closure, body_object);
 
   Environment* closure_function_environment = create_environment();
   Environment* closure_variable_environment = create_environment();
