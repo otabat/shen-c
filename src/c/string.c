@@ -1,14 +1,63 @@
 #include "string.h"
 
+khash_t(StringTable)* string_table;
+
+KLObject* empty_string_object;
+KLObject* true_string_object;
+KLObject* false_string_object;
+KLObject* three_dots_string_object;
+
+extern KLObject* get_empty_string_object (void);
+extern KLObject* get_true_string_object (void);
+extern KLObject* get_false_string_object (void);
+extern KLObject* get_three_dots_string_object (void);
+
 extern char* get_string (KLObject* string_object);
 extern void set_string (KLObject* string_object, char* string);
 extern KLObject* create_kl_string (char *string);
+extern khash_t(StringTable)* get_string_table (void);
+extern void initialize_string_table (void);
+extern KLObject* lookup_string_table (char* string);
+extern void extend_string_table (char* string, KLObject* object);
+extern KLObject* create_kl_string_with_intern (char* string);
 extern bool is_kl_string (KLObject* object);
 extern bool is_string_equal (char* left_string, char* right_string);
 extern bool is_kl_string_equal (KLObject* left_object, KLObject* right_object);
 extern char* get_position_string (char* string, long index);
 extern KLObject* get_position_kl_string (KLObject* string_object,
                                          KLObject* number_object);
+
+static inline void register_empty_string_object (void)
+{
+  empty_string_object = create_kl_string("");
+  extend_string_table("", empty_string_object);
+}
+
+static inline void register_true_string_object (void)
+{
+  true_string_object = create_kl_string("true");
+  extend_string_table("true", true_string_object);
+}
+
+static inline void register_false_string_object (void)
+{
+  false_string_object = create_kl_string("false");
+  extend_string_table("false", false_string_object);
+}
+
+static inline void register_three_dots_string_object (void)
+{
+  three_dots_string_object = create_kl_string("...");
+  extend_string_table("...", three_dots_string_object);
+}
+
+void register_string_objects (void)
+{
+  register_empty_string_object();
+  register_true_string_object();
+  register_false_string_object();
+  register_three_dots_string_object();
+}
 
 char* string_to_double_quoted_string (char* string)
 {
@@ -53,7 +102,7 @@ KLObject* get_tail_kl_string (KLObject* string_object)
   if (!is_kl_string(string_object))
     throw_kl_exception("Parameter should be a string");
 
-  return create_kl_string(get_tail_string(get_string(string_object)));
+  return create_kl_string_with_intern(get_tail_string(get_string(string_object)));
 }
 
 char* concatenate_string (char* left_string, char* right_string)
@@ -72,7 +121,7 @@ KLObject* concatenate_kl_string (KLObject* left_string_object,
   char* string =  concatenate_string(get_string(left_string_object),
                                      get_string(right_string_object));
 
-  return create_kl_string(string);
+  return create_kl_string_with_intern(string);
 }
 
 char* code_point_to_string (long code_point)
@@ -93,7 +142,7 @@ KLObject* kl_number_code_point_to_kl_string (KLObject* number_object)
 {
   char* string = code_point_to_string(get_kl_number_number_l(number_object));
 
-  return create_kl_string(string);
+  return create_kl_string_with_intern(string);
 }
 
 long string_to_code_point (char* string)

@@ -924,10 +924,11 @@ static inline KLObject* primitive_function_read_file_as_charlist
   char* file_path = get_string(string_object);
   KLObject* home_directory_string_object =
     get_kl_symbol_variable_value(get_earmuff_home_directory_symbol_object());
-  char* home_directory_string = get_string(home_directory_string_object);
 
-  if (strcmp(home_directory_string, "") != 0)
+  if (!is_kl_string_equal(home_directory_string_object, empty_string_object)) {
+    char* home_directory_string = get_string(home_directory_string_object);
     file_path = concatenate_string(home_directory_string, file_path);
+  }
 
   #ifdef SHEN_C_MOBILE
   char* string = read_file_by_file_path_from_home_path(file_path);
@@ -1525,7 +1526,7 @@ static inline KLObject* primitive_function_shen_arg_to_str
   KLObject* mode_object = objects[1];
 
   if (is_kl_symbol_equal(object, get_shen_fail_exclamation_symbol_object()))
-    return create_kl_string("...");
+    return get_three_dots_string_object();
 
   if (is_kl_list(object)) {
     KLObject* function_application_list_object =
@@ -1558,7 +1559,7 @@ static inline KLObject* primitive_function_shen_arg_to_str
   }
 
   if (is_kl_dictionary(object))
-    return create_kl_string(kl_dictionary_to_string(object));
+    return create_kl_string_with_intern(kl_dictionary_to_string(object));
 
   KLObject* function_application_list_object =
     CONS(get_shen_atom_to_str_symbol_object(), CONS(object, get_empty_kl_list()));

@@ -14,13 +14,12 @@ static inline KLObject* primitive_function_intern
   if (!is_kl_string(string_object))
     throw_kl_exception("Should be a string object");
 
-  char* string = get_string(string_object);
-
-  if (strcmp(string, "true") == 0)
+  if (is_kl_string_equal(string_object, true_string_object))
     return get_true_boolean_object();
-  else if (strcmp(string, "false") == 0)
+  else if (is_kl_string_equal(string_object, false_string_object))
     return get_false_boolean_object();
 
+  char* string = get_string(string_object);
   KLObject* symbol_object = lookup_symbol_name_table(string);
 
   if (is_null(symbol_object)) {
@@ -119,7 +118,7 @@ static inline KLObject* primitive_function_str (KLObject* function_object,
   else
     throw_kl_exception("Parameter is not an atom, closure, or stream");
 
-  return create_kl_string(string);
+  return create_kl_string_with_intern(string);
 }
 
 static inline void register_primitive_kl_function_str (void)
@@ -259,7 +258,9 @@ static inline KLObject* primitive_function_error_to_string
   if (!is_kl_exception(objects[0]))
     throw_kl_exception("Parameter is not an exception object");
 
-  return create_kl_string(get_exception_error_message(get_exception(objects[0])));
+  char* error_message = get_exception_error_message(get_exception(objects[0]));
+
+  return create_kl_string_with_intern(error_message);
 }
 
 static inline void register_primitive_kl_function_error_to_string (void)
@@ -548,7 +549,7 @@ static inline KLObject* primitive_function_open
     get_kl_symbol_variable_value(get_earmuff_home_directory_symbol_object());
   char* home_directory_string = get_string(home_directory_string_object);
 
-  if (strcmp(home_directory_string, "") == 0)
+  if (is_kl_string_equal(home_directory_string_object, empty_string_object))
     #ifdef SHEN_C_MOBILE
     return create_kl_stream_from_home_path(get_string(objects[0]), objects[1]);
     #else

@@ -71,6 +71,7 @@ struct KLObject {
   } value;
 };
 
+KHASH_MAP_INIT_STR(StringTable, KLObject*)
 KHASH_MAP_INIT_STR(SymbolNameTable, KLObject*)
 KHASH_MAP_INIT_STR(StringPairTable, Pair*)
 

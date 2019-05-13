@@ -26,7 +26,9 @@ inline void initialize (void)
   initialize_start_clock();
   initialize_trapped_kl_exception_stack();
   initialize_loop_frame_stack();
+  initialize_string_table();
   initialize_symbol_name_table();
+  register_string_objects();
   register_symbol_objects();
   register_primitive_kl_functions();
   register_extension_primitive_kl_functions();

@@ -48,7 +48,7 @@ static KLObject* read_string_string (FILE* file)
 
         strncpy(string, string_buffer, string_length);
         string[string_length] = '\0';
-        string_object = create_kl_string(string);
+        string_object = create_kl_string_with_intern(string);
 
         break;
       } else
