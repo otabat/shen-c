@@ -69,34 +69,35 @@ KLObject* set_variable_value (KLObject* symbol_object, KLObject* object,
 
 static inline void initialize_earmuff_language_symbol_object (void)
 {
-  earmuff_language_symbol_object = create_kl_symbol("*language*");
+  earmuff_language_symbol_object = create_kl_symbol_by_name("*language*");
   set_kl_symbol_variable_value(earmuff_language_symbol_object,
-                               create_kl_symbol("C"));
+                               create_kl_symbol_by_name("C"));
 }
 
 static inline void register_global_variable_earmuff_language (void)
 {
   initialize_earmuff_language_symbol_object();
-  extend_symbol_name_table("*language*", get_earmuff_language_symbol_object());
+  extend_symbol_table(create_kl_string_with_intern("*language*"),
+                      get_earmuff_language_symbol_object());
 }
 
 static inline void initialize_earmuff_implementation_symbol_object (void)
 {
-  earmuff_implementation_symbol_object = create_kl_symbol("*implementation*");
+  earmuff_implementation_symbol_object = create_kl_symbol_by_name("*implementation*");
   set_kl_symbol_variable_value(earmuff_implementation_symbol_object,
-                               create_kl_symbol("C"));
+                               create_kl_symbol_by_name("C"));
 }
 
 static inline void register_global_variable_earmuff_implementation (void)
 {
   initialize_earmuff_implementation_symbol_object();
-  extend_symbol_name_table("*implementation*",
-                           get_earmuff_implementation_symbol_object());
+  extend_symbol_table(create_kl_string_with_intern("*implementation*"),
+                      get_earmuff_implementation_symbol_object());
 }
 
 static inline void initialize_earmuff_home_directory_symbol_object (void)
 {
-  earmuff_home_directory_symbol_object = create_kl_symbol("*home-directory*");
+  earmuff_home_directory_symbol_object = create_kl_symbol_by_name("*home-directory*");
   set_kl_symbol_variable_value(earmuff_home_directory_symbol_object,
                                get_empty_string_object());
 }
@@ -104,13 +105,13 @@ static inline void initialize_earmuff_home_directory_symbol_object (void)
 static inline void register_global_variable_earmuff_home_directory (void)
 {
   initialize_earmuff_home_directory_symbol_object();
-  extend_symbol_name_table("*home-directory*",
-                           get_earmuff_home_directory_symbol_object());
+  extend_symbol_table(create_kl_string_with_intern("*home-directory*"),
+                      get_earmuff_home_directory_symbol_object());
 }
 
 static inline void initialize_earmuff_release_symbol_object (void)
 {
-  earmuff_release_symbol_object = create_kl_symbol("*release*");
+  earmuff_release_symbol_object = create_kl_symbol_by_name("*release*");
   set_kl_symbol_variable_value(earmuff_release_symbol_object,
                                create_kl_number_d(0.1));
 }
@@ -118,12 +119,13 @@ static inline void initialize_earmuff_release_symbol_object (void)
 static inline void register_global_variable_earmuff_release (void)
 {
   initialize_earmuff_release_symbol_object();
-  extend_symbol_name_table("*release*", get_earmuff_release_symbol_object());
+  extend_symbol_table(create_kl_string_with_intern("*release*"),
+                      get_earmuff_release_symbol_object());
 }
 
 static inline void initialize_earmuff_port_symbol_object (void)
 {
-  earmuff_port_symbol_object = create_kl_symbol("*port*");
+  earmuff_port_symbol_object = create_kl_symbol_by_name("*port*");
   set_kl_symbol_variable_value(earmuff_port_symbol_object,
                                create_kl_string_with_intern("0.2.2"));
 }
@@ -131,12 +133,13 @@ static inline void initialize_earmuff_port_symbol_object (void)
 static inline void register_global_variable_earmuff_port (void)
 {
   initialize_earmuff_port_symbol_object();
-  extend_symbol_name_table("*port*", get_earmuff_port_symbol_object());
+  extend_symbol_table(create_kl_string_with_intern("*port*"),
+                      get_earmuff_port_symbol_object());
 }
 
 static inline void initialize_earmuff_porters_symbol_object (void)
 {
-  earmuff_porters_symbol_object = create_kl_symbol("*porters*");
+  earmuff_porters_symbol_object = create_kl_symbol_by_name("*porters*");
   set_kl_symbol_variable_value(earmuff_porters_symbol_object,
                                create_kl_string_with_intern("Tatsuya Tsuda"));
 }
@@ -144,12 +147,13 @@ static inline void initialize_earmuff_porters_symbol_object (void)
 static inline void register_global_variable_earmuff_porters (void)
 {
   initialize_earmuff_porters_symbol_object();
-  extend_symbol_name_table("*porters*", get_earmuff_porters_symbol_object());
+  extend_symbol_table(create_kl_string_with_intern("*porters*"),
+                      get_earmuff_porters_symbol_object());
 }
 
 static inline void initialize_earmuff_stinput_symbol_object (void)
 {
-  earmuff_stinput_symbol_object = create_kl_symbol("*stinput*");
+  earmuff_stinput_symbol_object = create_kl_symbol_by_name("*stinput*");
   set_kl_symbol_variable_value(earmuff_stinput_symbol_object,
                                get_std_input_stream_object());
 }
@@ -157,12 +161,13 @@ static inline void initialize_earmuff_stinput_symbol_object (void)
 static inline void register_global_variable_earmuff_stinput (void)
 {
   initialize_earmuff_stinput_symbol_object();
-  extend_symbol_name_table("*stinput*", get_earmuff_stinput_symbol_object());
+  extend_symbol_table(create_kl_string_with_intern("*stinput*"),
+                      get_earmuff_stinput_symbol_object());
 }
 
 static inline void initialize_earmuff_stoutput_symbol_object (void)
 {
-  earmuff_stoutput_symbol_object = create_kl_symbol("*stoutput*");
+  earmuff_stoutput_symbol_object = create_kl_symbol_by_name("*stoutput*");
   set_kl_symbol_variable_value(earmuff_stoutput_symbol_object,
                                get_std_output_stream_object());
 }
@@ -170,12 +175,13 @@ static inline void initialize_earmuff_stoutput_symbol_object (void)
 static inline void register_global_variable_earmuff_stoutput (void)
 {
   initialize_earmuff_stoutput_symbol_object();
-  extend_symbol_name_table("*stoutput*", get_earmuff_stoutput_symbol_object());
+  extend_symbol_table(create_kl_string_with_intern("*stoutput*"),
+                      get_earmuff_stoutput_symbol_object());
 }
 
 static inline void initialize_earmuff_sterror_symbol_object (void)
 {
-  earmuff_sterror_symbol_object = create_kl_symbol("*sterror*");
+  earmuff_sterror_symbol_object = create_kl_symbol_by_name("*sterror*");
   set_kl_symbol_variable_value(earmuff_sterror_symbol_object,
                                get_std_error_stream_object());
 }
@@ -183,12 +189,13 @@ static inline void initialize_earmuff_sterror_symbol_object (void)
 static inline void register_global_variable_earmuff_sterror (void)
 {
   initialize_earmuff_sterror_symbol_object();
-  extend_symbol_name_table("*sterror*", get_earmuff_sterror_symbol_object());
+  extend_symbol_table(create_kl_string_with_intern("*sterror*"),
+                      get_earmuff_sterror_symbol_object());
 }
 
 static inline void initialize_earmuff_argv_symbol_object (void)
 {
-  earmuff_argv_symbol_object = create_kl_symbol("argv");
+  earmuff_argv_symbol_object = create_kl_symbol_by_name("argv");
   set_kl_symbol_variable_value(earmuff_argv_symbol_object,
                                CONS(create_kl_string_with_intern("shen"), EL));
 }
@@ -196,7 +203,8 @@ static inline void initialize_earmuff_argv_symbol_object (void)
 static inline void register_global_variable_earmuff_argv (void)
 {
   initialize_earmuff_argv_symbol_object();
-  extend_symbol_name_table("*argv*", get_earmuff_argv_symbol_object());
+  extend_symbol_table(create_kl_string_with_intern("*argv*"),
+                      get_earmuff_argv_symbol_object());
 }
 
 void register_global_variables (void)

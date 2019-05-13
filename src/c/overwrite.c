@@ -193,7 +193,7 @@ static inline KLObject* primitive_function_is_variable
     get_kl_function_arguments_with_count_check(function_object, arguments);
 
   if (is_kl_symbol(objects[0])) {
-    char* symbol_name = get_kl_symbol_name(objects[0]);
+    char* symbol_name = get_string(get_kl_symbol_name(objects[0]));
 
     if (is_uppercase_alphabet_character(symbol_name[0]))
       return get_true_boolean_object();

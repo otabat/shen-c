@@ -1342,7 +1342,7 @@ static KLObject* eval_symbol_function_application
   KLObject* function_object = get_kl_symbol_function(function_symbol_object);
 
   if (is_null(function_object)) {
-    char* function_symbol_name = get_kl_symbol_name(function_symbol_object);
+    char* function_symbol_name = get_string(get_kl_symbol_name(function_symbol_object));
     char* error_message =
       concatenate_string("Function ",
                          concatenate_string(function_symbol_name, " is undefined"));

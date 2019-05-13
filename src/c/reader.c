@@ -86,16 +86,18 @@ static KLObject* read_string_symbol_and_boolean (FILE* file)
       strncpy(symbol_name, symbol_name_buffer, symbol_name_length);
       symbol_name[symbol_name_length] = '\0';
 
-      if (strcmp(symbol_name, "true") == 0)
+      KLObject* string_object = create_kl_string_with_intern(symbol_name);
+
+      if (is_kl_string_equal(string_object, get_true_string_object()))
         symbol_or_boolean_object = get_true_boolean_object();
-      else if (strcmp(symbol_name, "false") == 0)
+      else if (is_kl_string_equal(string_object, get_false_string_object()))
         symbol_or_boolean_object = get_false_boolean_object();
       else {
-        KLObject* symbol_object = lookup_symbol_name_table(symbol_name);
+        KLObject* symbol_object = lookup_symbol_table(string_object);
 
         if (is_null(symbol_object)) {
-          symbol_or_boolean_object = create_kl_symbol(symbol_name);
-          extend_symbol_name_table(symbol_name, symbol_or_boolean_object);
+          symbol_or_boolean_object = create_kl_symbol(string_object);
+          extend_symbol_table(string_object, symbol_or_boolean_object);
         } else
           symbol_or_boolean_object = symbol_object;
       }

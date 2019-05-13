@@ -26,19 +26,20 @@ static inline KLObject* get_symbol_counter_names_symbol_object (void)
 
 static inline void register_symbol_counter_names_symbol_object (void)
 {
-  char* symbol_name = "symbol-counter-names";
+  KLObject* string_object = create_kl_string_with_intern("symbol-counter-names");
 
-  symbol_counter_names_symbol_object = create_kl_symbol(symbol_name);
-  extend_symbol_name_table(symbol_name, symbol_counter_names_symbol_object);
+  symbol_counter_names_symbol_object = create_kl_symbol(string_object);
+  extend_symbol_table(string_object, symbol_counter_names_symbol_object);
 }
 
 KLObject* inject_symbol_counter (KLObject* symbol_object, KLObject* object)
 {
-  char* symbol_counter_symbol_name = concatenate_string(get_kl_symbol_name(symbol_object),
-                                                        "-counter");
-  KLObject* symbol_counter_symbol_object = create_kl_symbol(symbol_counter_symbol_name);
+  char* symbol_counter_symbol_name =
+    concatenate_string(get_string(get_kl_symbol_name(symbol_object)), "-counter");
+  KLObject* symbol_counter_string_object = create_kl_string_with_intern(symbol_counter_symbol_name);
+  KLObject* symbol_counter_symbol_object = create_kl_symbol(symbol_counter_string_object);
 
-  extend_symbol_name_table(symbol_counter_symbol_name, symbol_counter_symbol_object);
+  extend_symbol_table(symbol_counter_string_object, symbol_counter_symbol_object);
   eval_kl_object(CONS(get_set_symbol_object(),
                       CONS(symbol_counter_symbol_object,
                            CONS(create_kl_number_l(0), EL))),
@@ -47,7 +48,7 @@ KLObject* inject_symbol_counter (KLObject* symbol_object, KLObject* object)
 
   KLObject* new_object =
     CONS(get_let_symbol_object(),
-         CONS(create_kl_symbol("_"),
+         CONS(create_kl_symbol_by_name("_"),
               CONS(CONS(get_set_symbol_object(),
                         CONS(symbol_counter_symbol_object,
                              CONS(CONS(get_add_symbol_object(),
@@ -74,10 +75,10 @@ static inline KLObject* get_output_symbol_count_symbol_object (void)
 
 static inline void register_output_symbol_count_symbol_object (void)
 {
-  char* symbol_name = "output-symbol-count";
+  KLObject* string_object = create_kl_string_with_intern("output-symbol-count");
   
-  output_symbol_count_symbol_object = create_kl_symbol(symbol_name);
-  extend_symbol_name_table(symbol_name, get_output_symbol_count_symbol_object());
+  output_symbol_count_symbol_object = create_kl_symbol(string_object);
+  extend_symbol_table(string_object, get_output_symbol_count_symbol_object());
 }
 
 static inline KLObject* primitive_function_output_symbol_count
@@ -130,7 +131,7 @@ static inline KLObject* primitive_function_output_symbol_count
     KLObject* object = get_vector_element(vector, i);
     KLObject* symbol_object = CAR(object);
     KLObject* number_object = CDR(object);
-    char* symbol_name = get_kl_symbol_name(symbol_object);
+    char* symbol_name = get_string(get_kl_symbol_name(symbol_object ));
     size_t symbol_name_length = strlen(symbol_name);
     long symbol_count = get_kl_number_number_l(number_object);
 

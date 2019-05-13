@@ -118,4 +118,10 @@ inline char* kl_dictionary_to_string (KLObject* dictionary_object)
   return "(dict ...)";
 }
 
+inline KLObject* kl_boolean_to_kl_string (KLObject* boolean_object)
+{
+  return (get_boolean(boolean_object)) ?
+    get_true_string_object() : get_false_string_object();
+}
+
 #endif

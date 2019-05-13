@@ -12,16 +12,16 @@
 
 extern unsigned long auto_increment_symbol_name_id;
 extern char* auto_increment_symbol_name_prefix;
-extern khash_t(SymbolNameTable)* symbol_name_table;
+extern khash_t(SymbolTable)* symbol_table;
 
-inline char* get_symbol_name (Symbol* symbol)
+inline KLObject* get_symbol_name (Symbol* symbol)
 {
   return symbol->name;
 }
 
-inline void set_symbol_name (Symbol* symbol, char* symbol_name)
+inline void set_symbol_name (Symbol* symbol, KLObject* string_object)
 {
-  symbol->name = symbol_name;
+  symbol->name = string_object;
 }
 
 inline KLObject* get_symbol_function (Symbol* symbol)
@@ -45,11 +45,11 @@ inline void set_symbol_variable_value (Symbol* symbol,
   symbol->variable_value = variable_value_object;
 }
 
-inline Symbol* create_symbol (char* symbol_name)
+inline Symbol* create_symbol (KLObject* string_object)
 {
   Symbol *symbol = malloc(sizeof(Symbol));
 
-  set_symbol_name(symbol, symbol_name);
+  set_symbol_name(symbol, string_object);
   set_symbol_function(symbol, NULL);
   set_symbol_variable_value(symbol, NULL);
 
@@ -66,24 +66,29 @@ inline void set_symbol (KLObject* symbol_object, Symbol* symbol)
   symbol_object->value.symbol = symbol;
 }
 
-inline KLObject* create_kl_symbol (char* symbol_name)
+inline KLObject* create_kl_symbol (KLObject* string_object)
 {
   KLObject* symbol_object = create_kl_object(KL_TYPE_SYMBOL);
-  Symbol* symbol = create_symbol(symbol_name);
+  Symbol* symbol = create_symbol(string_object);
 
   set_symbol(symbol_object, symbol);
 
   return symbol_object;
 }
 
-inline char* get_kl_symbol_name (KLObject* symbol_object)
+inline KLObject* create_kl_symbol_by_name (char* symbol_name)
+{
+  return create_kl_symbol(create_kl_string_with_intern(symbol_name));
+}
+
+inline KLObject* get_kl_symbol_name (KLObject* symbol_object)
 {
   return get_symbol_name(get_symbol(symbol_object));
 }
 
-inline void set_kl_symbol_name (KLObject* symbol_object, char* symbol_name)
+inline void set_kl_symbol_name (KLObject* symbol_object, KLObject* string_object)
 {
-  set_symbol_name(get_symbol(symbol_object), symbol_name);
+  set_symbol_name(get_symbol(symbol_object), string_object);
 }
 
 inline KLObject* get_kl_symbol_function (KLObject* symbol_object)
@@ -156,23 +161,23 @@ inline char* create_auto_increment_symbol_name (void)
 
 inline KLObject* create_auto_increment_kl_symbol (void)
 {
-  return create_kl_symbol(create_auto_increment_symbol_name());
+  return create_kl_symbol_by_name(create_auto_increment_symbol_name());
 }
 
-inline khash_t(SymbolNameTable)* get_symbol_name_table (void)
+inline khash_t(SymbolTable)* get_symbol_table (void)
 {
-  return symbol_name_table;
+  return symbol_table;
 }
 
-inline void initialize_symbol_name_table (void)
+inline void initialize_symbol_table (void)
 {
-  symbol_name_table = kh_init(SymbolNameTable);
+  symbol_table = kh_init(SymbolTable);
 }
 
-inline KLObject* lookup_symbol_name_table (char* symbol_name)
+inline KLObject* lookup_symbol_table (KLObject* string_object)
 {
-  khash_t(SymbolNameTable)* table = get_symbol_name_table();
-  khiter_t hash_iterator = kh_get(SymbolNameTable, table, symbol_name);
+  khash_t(SymbolTable)* table = get_symbol_table();
+  khiter_t hash_iterator = kh_get(SymbolTable, table, (kl_khint_ptr_t)string_object);
   bool is_key_not_found = hash_iterator == kh_end(table);
 
   if (is_key_not_found || kh_exist(table, hash_iterator) == 0)
@@ -181,17 +186,17 @@ inline KLObject* lookup_symbol_name_table (char* symbol_name)
   return kh_value(table, hash_iterator);
 }
 
-inline void extend_symbol_name_table (char* symbol_name, KLObject* object)
+inline void extend_symbol_table (KLObject* string_object, KLObject* symbol_object)
 {
-  khash_t(SymbolNameTable)* table = get_symbol_name_table();
+  khash_t(SymbolTable)* table = get_symbol_table();
   int put_result;
-  khiter_t hash_iterator = kh_put(SymbolNameTable, table, symbol_name,
+  khiter_t hash_iterator = kh_put(SymbolTable, table, (kl_khint_ptr_t)string_object,
                                   &put_result);
 
   if (put_result == -1)
     throw_kl_exception("Failed to extend symbol name table");
 
-  kh_value(symbol_name_table, hash_iterator) = object;
+  kh_value(table, hash_iterator) = symbol_object;
 }
 
 #endif

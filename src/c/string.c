@@ -21,7 +21,6 @@ extern KLObject* lookup_string_table (char* string);
 extern void extend_string_table (char* string, KLObject* object);
 extern KLObject* create_kl_string_with_intern (char* string);
 extern bool is_kl_string (KLObject* object);
-extern bool is_string_equal (char* left_string, char* right_string);
 extern bool is_kl_string_equal (KLObject* left_object, KLObject* right_object);
 extern char* get_position_string (char* string, long index);
 extern KLObject* get_position_kl_string (KLObject* string_object,

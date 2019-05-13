@@ -17,6 +17,7 @@ extern void delete_dictionary_key (Dictionary* dictionary, KLObject* key_object)
 extern KLObject* delete_kl_dictionary_key (KLObject* dictionary_object,
                                            KLObject* key_object);
 extern char* kl_dictionary_to_string (KLObject* dictionary_object);
+extern KLObject* kl_boolean_to_kl_string (KLObject* boolean_object);
 
 static inline size_t get_kl_list_to_string_allocation_size ()
 {
@@ -213,7 +214,7 @@ char* kl_function_to_string (KLObject* function_object)
 char* kl_object_to_string (KLObject* object)
 {
   if (is_kl_symbol(object))
-    return get_kl_symbol_name(object);
+    return get_string(get_kl_symbol_name(object));
   else if (is_kl_string(object))
     return get_double_quoted_string(object);
   else if (is_kl_number(object))

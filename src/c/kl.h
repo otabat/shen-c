@@ -72,17 +72,18 @@ struct KLObject {
 };
 
 KHASH_MAP_INIT_STR(StringTable, KLObject*)
-KHASH_MAP_INIT_STR(SymbolNameTable, KLObject*)
 KHASH_MAP_INIT_STR(StringPairTable, Pair*)
 
 #if UINTPTR_MAX == 0xffffffff
 // 32bit
 typedef khint_t kl_khint_ptr_t;
+KHASH_MAP_INIT_INT(SymbolTable, KLObject*)
 KHASH_MAP_INIT_INT(ObjectTable, KLObject*)
 
 #elif UINTPTR_MAX == 0xffffffffffffffff
 // 64bit
 typedef khint64_t kl_khint_ptr_t;
+KHASH_MAP_INIT_INT64(SymbolTable, KLObject*)
 KHASH_MAP_INIT_INT64(ObjectTable, KLObject*)
 
 #else
@@ -91,7 +92,7 @@ KHASH_MAP_INIT_INT64(ObjectTable, KLObject*)
 #endif
 
 struct Symbol {
-  char* name;
+  KLObject* name;
   KLObject* function;
   KLObject* variable_value;
 };

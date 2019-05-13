@@ -19,12 +19,11 @@ static inline KLObject* primitive_function_intern
   else if (is_kl_string_equal(string_object, false_string_object))
     return get_false_boolean_object();
 
-  char* string = get_string(string_object);
-  KLObject* symbol_object = lookup_symbol_name_table(string);
+  KLObject* symbol_object = lookup_symbol_table(string_object);
 
   if (is_null(symbol_object)) {
-    symbol_object = create_kl_symbol(string);
-    extend_symbol_name_table(string, symbol_object);
+    symbol_object = create_kl_symbol(string_object);
+    extend_symbol_table(string_object, symbol_object);
   }
 
   return symbol_object;
@@ -104,13 +103,13 @@ static inline KLObject* primitive_function_str (KLObject* function_object,
   char* string = NULL;
 
   if (is_kl_symbol(objects[0]))
-    string = get_kl_symbol_name(objects[0]);
+    return get_kl_symbol_name(objects[0]);
   else if (is_kl_string(objects[0]))
     string = get_double_quoted_string(objects[0]);
   else if (is_kl_number(objects[0]))
     string = kl_number_to_string(objects[0]);
   else if (is_kl_boolean(objects[0]))
-    string = kl_boolean_to_string(objects[0]);
+    return kl_boolean_to_kl_string(objects[0]);
   else if (is_kl_function(objects[0]))
     string = kl_function_to_string(objects[0]);
   else if (is_kl_stream(objects[0]))

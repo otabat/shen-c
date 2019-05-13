@@ -129,11 +129,6 @@ inline bool is_kl_string (KLObject* object)
   return get_kl_object_type(object) == KL_TYPE_STRING;
 }
 
-inline bool is_string_equal (char* left_string, char* right_string)
-{
-  return (strcmp(left_string, right_string) == 0);
-}
-
 inline bool is_kl_string_equal (KLObject* left_object, KLObject* right_object)
 {
   return left_object == right_object;
