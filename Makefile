@@ -19,6 +19,9 @@ CFLAGS?=-O3 -fno-optimize-sibling-calls
 LDFLAGS=-lgc
 
 SHEN_VERSION=22.3
+PORT_VERSION=0.2.2
+BUILD_VERSION?=$(shell git log --pretty=format:'%h' -n 1 || echo local)
+RELEASE_DIR=shen-c_$(PORT_VERSION)_$(SHEN_VERSION)_$(BUILD_VERSION)
 
 $(shell mkdir -p obj bin)
 
@@ -96,6 +99,16 @@ shen/src/kl: shen-dist/ShenOSKernel-$(SHEN_VERSION).tar.gz
 test:
 	(cd shen/tests; ../../${TARGET} script <(echo '(load "README.shen") (load "tests.shen")') | tee ../../test_results.txt)
 	grep "pass rate" test_results.txt
+
+release: $(RELEASE_DIR).tar.gz
+
+$(RELEASE_DIR).tar.gz: all
+	mkdir $(RELEASE_DIR)
+	cp -r bin $(RELEASE_DIR)
+	cp -r shen $(RELEASE_DIR)
+	cp README.md $(RELEASE_DIR)
+	tar -czvf $(RELEASE_DIR).tar.gz $(RELEASE_DIR)/*
+	rm -rf $(RELEASE_DIR)
 
 
 .PHONY: repl rrepl clean pprof pprof_text pprof_signal_text pprof_pdf test
