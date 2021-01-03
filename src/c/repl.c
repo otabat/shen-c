@@ -96,10 +96,21 @@ void run_kl_repl (void)
 
 void run_shen_repl (int argc, char **argv)
 {
-  KLObject * shen_string_object = create_kl_string_with_intern("shen.shen");
-  KLObject* shen_symbol_object = lookup_symbol_table(shen_string_object);
-  KLObject* list_object = CONS(shen_symbol_object, EL);
+  KLObject* func_symbol =
+      lookup_symbol_table( create_kl_string_with_intern("shen.x.launcher.main"));
 
-  eval_kl_object(list_object, get_global_function_environment(),
+  /* Create a list from argv:
+   * [cons "arg0" [cons "arg1" [cons "arg0" []]]] */
+  KLObject* args = CONS(EL,EL);
+  for (int i= argc-1; i>=0; --i) {
+      args = CONS(
+               CONS(get_cons_symbol_object(),
+                 CONS(create_kl_string_with_intern(argv[i]), args)
+               ),
+             EL);
+  }
+
+  KLObject* list_object = CONS(func_symbol, args);
+  KLObject* result = eval_kl_object(list_object, get_global_function_environment(),
                  get_global_variable_environment());
 }

@@ -77,7 +77,7 @@ shen-dist/ShenOSKernel-22.3.tar.gz:
 
 shen/src/kl/repl.kl: shen/src/kl
 	echo '(shen.initialise)(set shen.*porters* "Tatsuya Tsuda")(set shen.*language* "C")(set shen.*implementation* "shen-c")' > $@
-	echo '(defun shen.x.launcher.done () nil)(shen.x.launcher.main (cons "repl" ()))' >> $@
+	echo '(defun shen.x.launcher.done () nil)' >> $@
 
 shen/src/kl: shen-dist/ShenOSKernel-22.3.tar.gz
 	tar xzf $<
