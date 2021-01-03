@@ -30,13 +30,14 @@ void load_shen_kl_files (void)
   load_kl_file("shen/src/kl/sys.kl");
   register_overwrite_sys_primitive_kl_functions();
 
+  load_kl_file("shen/src/kl/dict.kl");
+
   load_kl_file("shen/src/kl/sequent.kl");
 
   load_kl_file("shen/src/kl/yacc.kl");
   register_overwrite_yacc_primitive_kl_functions();
 
   load_kl_file("shen/src/kl/reader.kl");
-  register_overwrite_reader_primitive_kl_functions();
 
   load_kl_file("shen/src/kl/prolog.kl");
   register_overwrite_prolog_primitive_kl_functions();
@@ -51,8 +52,12 @@ void load_shen_kl_files (void)
   register_overwrite_macros_primitive_kl_functions();
 
   load_kl_file("shen/src/kl/declarations.kl");
-  load_kl_file("shen/src/kl/types.kl");
   load_kl_file("shen/src/kl/t-star.kl");
+  load_kl_file("shen/src/kl/types.kl");
+
+  load_kl_file("shen/src/kl/init.kl");
+  load_kl_file("shen/src/kl/extension-launcher.kl");
+  load_kl_file("shen/src/kl/repl.kl");
 }
 
 void load_development_kl_file (void)

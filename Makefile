@@ -18,7 +18,7 @@ CC=clang
 
 $(shell mkdir -p obj bin)
 
-all: ${TARGET} 
+all: ${TARGET} shen/src/kl/repl.kl shen/src/kl/init.kl
 
 ${TARGET}: ${SRC_OBJS}
 #	cc -g -O0 -std=c99 -fsanitize=address -lgc -o $@ $^
@@ -68,5 +68,23 @@ pprof_pdf:
 clean:
 	rm -R obj
 	rm -R bin
+	rm -R shen
+
+shen-dist/ShenOSKernel-22.3.tar.gz:
+	mkdir -p shen-dist
+	(cd shen-dist; wget https://github.com/Shen-Language/shen-sources/releases/download/shen-22.3/ShenOSKernel-22.3.tar.gz)
+
+shen/src/kl/repl.kl:
+	mkdir -p shen/src/kl
+	echo '(shen.initialise)(set shen.*porters* "Tatsuya Tsuda")(set shen.*language* "C")(set shen.*implementation* "shen-c")' > $@
+	echo '(defun shen.x.launcher.done () nil)(shen.x.launcher.main (cons "repl" ()))' >> $@
+
+shen/src/kl/init.kl: shen-dist/ShenOSKernel-22.3.tar.gz
+	tar xzf $<
+	mkdir -p shen/src/kl
+	mkdir -p shen/src/shen
+	mv ShenOSKernel-22.3/klambda/* shen/src/kl/
+	mv ShenOSKernel-22.3/sources/* shen/src/shen/
+	rm -R ShenOSKernel-22.3
 
 .PHONY: repl rrepl clean pprof pprof_text pprof_signal_text pprof_pdf
