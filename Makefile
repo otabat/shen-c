@@ -73,13 +73,13 @@ clean:
 shen-dist/ShenOSKernel-22.3.tar.gz:
 	mkdir -p shen-dist
 	(cd shen-dist; wget https://github.com/Shen-Language/shen-sources/releases/download/shen-22.3/ShenOSKernel-22.3.tar.gz)
+	touch $@
 
-shen/src/kl/repl.kl:
-	mkdir -p shen/src/kl
+shen/src/kl/repl.kl: shen/src/kl
 	echo '(shen.initialise)(set shen.*porters* "Tatsuya Tsuda")(set shen.*language* "C")(set shen.*implementation* "shen-c")' > $@
 	echo '(defun shen.x.launcher.done () nil)(shen.x.launcher.main (cons "repl" ()))' >> $@
 
-shen/src/kl/init.kl: shen-dist/ShenOSKernel-22.3.tar.gz
+shen/src/kl: shen-dist/ShenOSKernel-22.3.tar.gz
 	tar xzf $<
 	mkdir -p shen/src/kl
 	mkdir -p shen/src/shen
