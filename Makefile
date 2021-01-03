@@ -18,6 +18,8 @@ CC=clang
 CFLAGS?=-O3 -fno-optimize-sibling-calls
 LDFLAGS=-lgc
 
+SHEN_VERSION=22.3
+
 $(shell mkdir -p obj bin)
 
 all: ${TARGET} shen/src/kl/repl.kl shen/src/kl/init.kl
@@ -68,25 +70,40 @@ pprof_pdf:
 	pprof ${TARGET} ${PROFILE} --pdf > ${PROFILE_PDF}
 
 clean:
-	rm -R obj
-	rm -R bin
-	rm -R shen
+	rm -rf obj
+	rm -rf bin
+	rm -rf shen
 
-shen-dist/ShenOSKernel-22.3.tar.gz:
+shen-dist/ShenOSKernel-$(SHEN_VERSION).tar.gz:
 	mkdir -p shen-dist
-	(cd shen-dist; wget https://github.com/Shen-Language/shen-sources/releases/download/shen-22.3/ShenOSKernel-22.3.tar.gz)
+	(cd shen-dist; wget https://github.com/Shen-Language/shen-sources/releases/download/shen-$(SHEN_VERSION)/ShenOSKernel-$(SHEN_VERSION).tar.gz)
 	touch $@
 
 shen/src/kl/repl.kl: shen/src/kl
 	echo '(shen.initialise)(set shen.*porters* "Tatsuya Tsuda")(set shen.*language* "C")(set shen.*implementation* "shen-c")' > $@
 	echo '(defun shen.x.launcher.done () nil)' >> $@
 
-shen/src/kl: shen-dist/ShenOSKernel-22.3.tar.gz
+shen/src/kl: shen-dist/ShenOSKernel-$(SHEN_VERSION).tar.gz
 	tar xzf $<
 	mkdir -p shen/src/kl
 	mkdir -p shen/src/shen
-	mv ShenOSKernel-22.3/klambda/* shen/src/kl/
-	mv ShenOSKernel-22.3/sources/* shen/src/shen/
-	rm -R ShenOSKernel-22.3
+	mkdir -p shen/tests
+	mv ShenOSKernel-$(SHEN_VERSION)/klambda/* shen/src/kl/
+	mv ShenOSKernel-$(SHEN_VERSION)/sources/* shen/src/shen/
+	mv ShenOSKernel-$(SHEN_VERSION)/tests/* shen/tests/
+	rm -R ShenOSKernel-$(SHEN_VERSION)
 
-.PHONY: repl rrepl clean pprof pprof_text pprof_signal_text pprof_pdf
+test:
+	fail_cnt=0
+	pass_cnt=0
+	for f in shen/tests/*.shen; do \
+		echo -n $$(basename "$$f") " ";  \
+	    if ./$(TARGET) script "$$f"; then \
+		  ((pass_cnt=pass_cnt+1)); \
+		  printf "\033[0;32m✔\033[0m\n"; \
+		else \
+		  ((fail_cnt=fail_cnt+1)); \
+		  printf "\033[1;31mX\033[0m\n"; \
+		  fi; done; echo "Passed $${pass_cnt}  Failed: $${fail_cnt}"
+
+.PHONY: repl rrepl clean pprof pprof_text pprof_signal_text pprof_pdf test
