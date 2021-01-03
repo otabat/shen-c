@@ -86,7 +86,7 @@ inline bool is_non_alphanumeric_symbol_character (char c)
   return (c == '=' || c == '+' || c == '-' || c == '*' || c == '/' || c == '_' ||
           c == '?' || c == '$' || c == '!' || c == '@' || c == '~' || c == '.' ||
           c == '>' || c == '<' || c == '&' || c == '%' || c == '#' || c == '`' ||
-          c == '\'' || c == ';' || c == ':' || c == '{' || c == '}');
+          c == '\'' || c == ';' || c == ':' || c == '{' || c == '}' || c == ',');
 }
 
 inline bool is_symbol_character (char c)
