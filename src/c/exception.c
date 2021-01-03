@@ -4,7 +4,7 @@ Stack* trapped_kl_exception_stack;
 
 extern char* get_exception_error_message (Exception* exception);
 extern void set_exception_error_message (Exception* exception,
-                                         char* error_message);
+                                         const char* error_message);
 extern jmp_buf* get_exception_jump_buffer (Exception* exception);
 extern void set_exception_jump_buffer (Exception* exception,
                                        jmp_buf* jump_buffer);
@@ -22,7 +22,7 @@ extern void initialize_trapped_kl_exception_stack (void);
 extern bool is_kl_exception (KLObject* object);
 extern bool is_kl_exception_equal (KLObject* left_object, KLObject* right_object);
 
-void throw_kl_exception (char* error_message)
+void throw_kl_exception (const char* error_message)
 {
   KLObject* exception_object = peek_stack(get_trapped_kl_exception_stack());
 
