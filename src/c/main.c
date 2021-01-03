@@ -2,7 +2,7 @@
 
 #include "init.h"
 
-int main (void)
+int main (int argc, char** argv)
 {
   GC_init();
 
@@ -13,7 +13,7 @@ int main (void)
                        "Set the variable to the Shen-C root directory\n"
                        "ex) export SHEN_C_HOME=/home/user/shen-c");
 
-  initialize_and_run_shen_repl(home_path);
+  initialize_and_run_shen_repl(home_path, argc, argv);
 
   return 0;
 }

@@ -94,7 +94,7 @@ void run_kl_repl (void)
   }
 }
 
-void run_shen_repl (void)
+void run_shen_repl (int argc, char **argv)
 {
   KLObject * shen_string_object = create_kl_string_with_intern("shen.shen");
   KLObject* shen_symbol_object = lookup_symbol_table(shen_string_object);
