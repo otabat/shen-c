@@ -43,7 +43,7 @@ inline void initialize (void)
   register_global_variables();
 }
 
-inline void initialize_and_run_shen_repl (const char* home_path)
+inline void initialize_and_run_shen_repl (const char* home_path, int argc, char **argv)
 {
   GC_init();
 
@@ -62,9 +62,9 @@ inline void initialize_and_run_shen_repl (const char* home_path)
   load_kl_file("/src/kl/mobile/init.kl");
   #endif
 
-  run_shen_repl();
   //load_development_kl_file();
   //run_kl_repl();
+  run_shen_repl(argc, argv);
 }
 
 #endif

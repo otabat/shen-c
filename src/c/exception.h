@@ -10,7 +10,7 @@
 
 extern Stack* trapped_kl_exception_stack;
 
-void throw_kl_exception (char* error_message);
+void throw_kl_exception (const char* error_message);
 char* kl_exception_to_string (KLObject* exception_object);
 
 inline char* get_exception_error_message (Exception* exception)
@@ -19,9 +19,10 @@ inline char* get_exception_error_message (Exception* exception)
 }
 
 inline void set_exception_error_message (Exception* exception,
-                                         char* error_message)
+                                         const char* error_message)
 {
-  exception->error_message = error_message;
+  exception->error_message = (char*)malloc(strlen(error_message));
+  strcpy(exception->error_message, error_message);
 }
 
 inline jmp_buf* get_exception_jump_buffer (Exception* exception)
