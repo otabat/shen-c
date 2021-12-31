@@ -87,7 +87,7 @@ inline void set_vector (KLObject* vector_object, Vector* vector)
 inline KLObject* create_kl_vector (long size)
 {
   if (size < 0)
-    throw_kl_exception("Vector size should be greater than 0");
+    throw_kl_exception("Vector size should be a non-negative integer");
 
   KLObject* vector_object = create_kl_object(KL_TYPE_VECTOR);
   Vector* vector = create_vector(size);
