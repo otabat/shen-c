@@ -54,7 +54,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   [read] -> [read [stinput]]
   [input+ Type] -> [input+ Type [stinput]]
   [read-byte] -> [read-byte [stinput]]
-  [read-char-code] -> [read-char-code [stinput]]
   X -> X)
 
 (define compose
@@ -69,25 +68,36 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   X -> X)
 
 (define prolog-macro
-  [prolog? | Literals]
-  -> (let F (gensym f)
-          Receive (receive-terms Literals)
-          PrologDef (eval (append [defprolog F] Receive [<--]
-                                  (pass-literals Literals) [;]))
-          Query [F | (append Receive [[start-new-prolog-process]
-                                      [freeze true]])]
-        Query)
+  [prolog? | Lits] -> [let (protect NPP) [start-new-prolog-process]
+                           (let Calls (bld-prolog-call (protect NPP) Lits)
+                                Vs (extract_vars Lits)
+                                External (externally-bound Lits)
+                                PrologVs (difference Vs External)
+                                (locally-bind-prolog-vs (protect NPP)
+                                                        PrologVs
+                                                        Calls))]
   X -> X)
 
-(define receive-terms
-  [] -> []
-  [[receive X] | Terms] -> [X | (receive-terms Terms)]
-  [_ | Terms] -> (receive-terms Terms))
+(define externally-bound
+  [receive V] -> [V]
+  [X | Y] -> (union (externally-bound X) (externally-bound Y))
+  _ -> [])
 
-(define pass-literals
-  [] -> []
-  [[receive _] | Literals] -> (pass-literals Literals)
-  [Literal | Literals] -> [Literal | (pass-literals Literals)])
+(define locally-bind-prolog-vs
+  _ [] Calls -> Calls
+  N [V | Vs] Calls -> [let V [newpv N] (locally-bind-prolog-vs N Vs Calls)]
+  _ _ _ -> (simple-error "implementation error inp locally-bind-prolog-vs"))
+
+(define bld-prolog-call
+  _ [] -> true
+  N [! | Lits] -> [cut false N [freeze (bld-prolog-call N Lits)]]
+  N [[when X] | Lits] -> [fwhen (insert-deref X N) N [freeze (bld-prolog-call N Lits)]]
+  N [[is X Y] | Lits] -> [bind X (insert-deref Y N) N [freeze (bld-prolog-call N Lits)]]
+  N [[receive X] | Lits] -> (bld-prolog-call N Lits)
+  N [[bind X Y] | Lits] -> [bind X (insert-lazyderef Y N) N [freeze (bld-prolog-call N Lits)]]
+  N [[fwhen X] | Lits] -> [fwhen (insert-lazyderef X N) N [freeze (bld-prolog-call N Lits)]]
+  N [Lit | Lits] -> (append Lit [N [freeze (bld-prolog-call N Lits)]])
+  _ _ -> (simple-error "implementation error in bld-prolog-call"))
 
 (define defprolog-macro
   [defprolog F | X] -> (compile (/. Y (<defprolog> Y))
@@ -104,7 +114,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   X -> X)
 
 (define intern-type
-  F -> (intern (cn "type#" (str F))))
+  F -> (intern (cn (str F) "#type")))
 
 (define @s-macro
   [@s W X Y | Z] -> [@s W (@s-macro [@s X Y | Z])]
@@ -167,7 +177,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (define put/get-macro
   [put X Pointer Y] -> [put X Pointer Y [value *property-vector*]]
   [get X Pointer] -> [get X Pointer [value *property-vector*]]
-  [get/or X Pointer Or] -> [get/or X Pointer Or [value *property-vector*]]
   [unput X Pointer] -> [unput X Pointer [value *property-vector*]]
   X -> X)
 

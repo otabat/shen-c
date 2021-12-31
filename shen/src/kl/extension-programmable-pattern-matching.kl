@@ -1,0 +1,28 @@
+"Copyright (c) 2019 Bruno Deferrari.  All rights reserved.
+BSD 3-Clause License: http://opensource.org/licenses/BSD-3-Clause"
+
+(defun shen.x.programmable-pattern-matching.apply-pattern-handlers (V6236 V6237 V6238 V6239 V6240) (cond ((= () V6236) (fail)) (true (let Freeze (freeze (cond ((cons? V6236) (shen.x.programmable-pattern-matching.apply-pattern-handlers (tl V6236) V6237 V6238 V6239 V6240)) (true (shen.f_error shen.x.programmable-pattern-matching.apply-pattern-handlers)))) (if (cons? V6236) (let Result ((hd V6236) V6237 V6238 V6239 V6240) (if (= Result (fail)) (thaw Freeze) Result)) (thaw Freeze))))))
+
+(defun shen.x.programmable-pattern-matching.make-stack () (address-> (absvector 1) 0 ()))
+
+(defun shen.x.programmable-pattern-matching.push (V6243 V6244) (address-> V6243 0 (cons V6244 (<-address V6243 0))))
+
+(defun shen.x.programmable-pattern-matching.pop-all (V6246) (let Res (<-address V6246 0) (let _ (address-> V6246 0 ()) Res)))
+
+(defun shen.x.programmable-pattern-matching.compile-pattern (V6250 V6251 V6252) (let VarsStack (shen.x.programmable-pattern-matching.make-stack) (let Self Self$$7907$$ (let AddTest (lambda _ shen.x.programmable-pattern-matching.ignored) (let Bind (lambda Var (lambda _ (shen.x.programmable-pattern-matching.push VarsStack Var))) (let Result (shen.x.programmable-pattern-matching.apply-pattern-handlers V6251 Self AddTest Bind V6250) (if (= Result (fail)) (thaw V6252) (shen.x.programmable-pattern-matching.compile-pattern-h V6250 (reverse (shen.x.programmable-pattern-matching.pop-all VarsStack))))))))))
+
+(defun shen.x.programmable-pattern-matching.compile-pattern-h (V6255 V6256) (cond ((cons? V6255) (let Compile (lambda X (shen.<pattern> X)) (let Handler (lambda E (simple-error (cn "failed to compile " (shen.app E "" shen.a)))) (let NewArgs (map (lambda Arg (if (element? Arg V6256) (compile Compile (cons Arg ()) Handler) Arg)) (tl V6255)) (cons (hd V6255) NewArgs))))) (true (shen.f_error shen.x.programmable-pattern-matching.compile-pattern-h))))
+
+(defun shen.x.programmable-pattern-matching.reduce (V6259 V6260) (cond ((and (cons? V6259) (and (cons? (hd V6259)) (and (= /. (hd (hd V6259))) (and (cons? (tl (hd V6259))) (and (cons? (hd (tl (hd V6259)))) (and (cons? (tl (tl (hd V6259)))) (and (= () (tl (tl (tl (hd V6259))))) (and (cons? (tl V6259)) (= () (tl (tl V6259))))))))))) (let SelectorStack (shen.x.programmable-pattern-matching.make-stack) (let AddTest (lambda Expr (shen.add_test Expr)) (let Bind (lambda Var (lambda Expr (shen.x.programmable-pattern-matching.push SelectorStack (@p Var Expr)))) (let Result (shen.x.programmable-pattern-matching.apply-pattern-handlers V6260 (hd (tl V6259)) AddTest Bind (hd (tl (hd V6259)))) (let Vars+Sels (reverse (shen.x.programmable-pattern-matching.pop-all SelectorStack)) (let Vars (map (lambda V6213 (fst V6213)) Vars+Sels) (let Selectors (map (lambda V6214 (snd V6214)) Vars+Sels) (let Abstraction (shen.abstraction_build Vars (shen.ebr (hd (tl V6259)) (hd (tl (hd V6259))) (hd (tl (tl (hd V6259)))))) (let Application (shen.application_build Selectors Abstraction) (shen.reduce_help Application))))))))))) (true (shen.f_error shen.x.programmable-pattern-matching.reduce))))
+
+(defun shen.x.programmable-pattern-matching.initialise () (do (set shen.*custom-pattern-compiler* (lambda Arg (lambda OnFail (shen.x.programmable-pattern-matching.compile-pattern Arg (value shen.x.programmable-pattern-matching.*pattern-handlers*) OnFail)))) (do (set shen.*custom-pattern-reducer* (lambda Arg (shen.x.programmable-pattern-matching.reduce Arg (value shen.x.programmable-pattern-matching.*pattern-handlers*)))) (do (set shen.x.programmable-pattern-matching.*pattern-handlers* ()) (do (set shen.x.programmable-pattern-matching.*pattern-handlers-reg* ()) shen.x.programmable-pattern-matching.done)))))
+
+(defun shen.x.programmable-pattern-matching.register-handler (V6262) (cond ((element? V6262 (value shen.x.programmable-pattern-matching.*pattern-handlers-reg*)) V6262) (true (do (set shen.x.programmable-pattern-matching.*pattern-handlers-reg* (cons V6262 (value shen.x.programmable-pattern-matching.*pattern-handlers-reg*))) (do (set shen.x.programmable-pattern-matching.*pattern-handlers* (cons (function V6262) (value shen.x.programmable-pattern-matching.*pattern-handlers*))) V6262)))))
+
+(defun shen.x.programmable-pattern-matching.findpos (V6265 V6266) (trap-error (shen.findpos V6265 V6266) (lambda _ (simple-error (shen.app V6265 " is not a pattern handler
+" shen.a)))))
+
+(defun shen.x.programmable-pattern-matching.unregister-handler (V6268) (let Reg (value shen.x.programmable-pattern-matching.*pattern-handlers-reg*) (let Pos (shen.x.programmable-pattern-matching.findpos V6268 Reg) (let RemoveReg (set shen.x.programmable-pattern-matching.*pattern-handlers-reg* (remove V6268 Reg)) (let RemoveFun (set shen.x.programmable-pattern-matching.*pattern-handlers* (shen.remove-nth Pos (value shen.x.programmable-pattern-matching.*pattern-handlers*))) V6268)))))
+
+
+

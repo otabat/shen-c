@@ -1,0 +1,65 @@
+"Copyright (c) 2010-2015, Mark Tarver
+
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors
+may be used to endorse or promote products derived from this software without
+specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS'' AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+"
+
+(defun shen.dict (V3478) (cond ((< V3478 1) (simple-error (cn "invalid initial dict size: " (shen.app V3478 "" shen.s)))) (true (let D (absvector (+ 3 V3478)) (let Tag (address-> D 0 shen.dictionary) (let Capacity (address-> D 1 V3478) (let Count (address-> D 2 0) (let Fill (shen.fillvector D 3 (+ 2 V3478) ()) D))))))))
+
+(defun shen.dict? (V3480) (and (absvector? V3480) (= (trap-error (<-address V3480 0) (lambda E shen.not-dictionary)) shen.dictionary)))
+
+(defun shen.dict-capacity (V3482) (<-address V3482 1))
+
+(defun shen.dict-count (V3484) (<-address V3484 2))
+
+(defun shen.dict-count-> (V3487 V3488) (address-> V3487 2 V3488))
+
+(defun shen.<-dict-bucket (V3491 V3492) (<-address V3491 (+ 3 V3492)))
+
+(defun shen.dict-bucket-> (V3496 V3497 V3498) (address-> V3496 (+ 3 V3497) V3498))
+
+(defun shen.dict-update-count (V3502 V3503 V3504) (let Diff (- (length V3504) (length V3503)) (shen.dict-count-> V3502 (+ Diff (shen.dict-count V3502)))))
+
+(defun shen.dict-> (V3508 V3509 V3510) (let N (hash V3509 (shen.dict-capacity V3508)) (let Bucket (shen.<-dict-bucket V3508 N) (let NewBucket (shen.assoc-set V3509 V3510 Bucket) (let Change (shen.dict-bucket-> V3508 N NewBucket) (let Count (shen.dict-update-count V3508 Bucket NewBucket) V3510))))))
+
+(defun shen.<-dict (V3513 V3514) (let N (hash V3514 (shen.dict-capacity V3513)) (let Bucket (shen.<-dict-bucket V3513 N) (let Result (assoc V3514 Bucket) (if (empty? Result) (simple-error (cn "value " (shen.app V3514 " not found in dict
+" shen.a))) (tl Result))))))
+
+(defun shen.dict-rm (V3517 V3518) (let N (hash V3518 (shen.dict-capacity V3517)) (let Bucket (shen.<-dict-bucket V3517 N) (let NewBucket (shen.assoc-rm V3518 Bucket) (let Change (shen.dict-bucket-> V3517 N NewBucket) (let Count (shen.dict-update-count V3517 Bucket NewBucket) V3518))))))
+
+(defun shen.dict-fold (V3522 V3523 V3524) (let Limit (shen.dict-capacity V3523) (shen.dict-fold-h V3522 V3523 V3524 0 Limit)))
+
+(defun shen.dict-fold-h (V3531 V3532 V3533 V3534 V3535) (cond ((= V3535 V3534) V3533) (true (let B (shen.<-dict-bucket V3532 V3534) (let Acc (shen.bucket-fold V3531 B V3533) (shen.dict-fold-h V3531 V3532 Acc (+ 1 V3534) V3535))))))
+
+(defun shen.bucket-fold (V3539 V3540 V3541) (cond ((= () V3540) V3541) ((and (cons? V3540) (cons? (hd V3540))) (V3539 (hd (hd V3540)) (tl (hd V3540)) (shen.bucket-fold V3539 (tl V3540) V3541))) (true (shen.f_error shen.bucket-fold))))
+
+(defun shen.dict-keys (V3543) (shen.dict-fold (lambda K (lambda _ (lambda Acc (cons K Acc)))) V3543 ()))
+
+(defun shen.dict-values (V3545) (shen.dict-fold (lambda _ (lambda V (lambda Acc (cons V Acc)))) V3545 ()))
+
+
+

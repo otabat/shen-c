@@ -1,0 +1,59 @@
+"Copyright (c) 2019 Bruno Deferrari.
+BSD 3-Clause License: http://opensource.org/licenses/BSD-3-Clause"
+
+(defun shen.x.launcher.quiet-load (V6027) (let Contents (read-file V6027) (map (lambda X (shen.eval-without-macros X)) Contents)))
+
+(defun shen.x.launcher.version-string () (shen.app (version) (cn " " (shen.app (cons port (cons (cons (language) (cons (port) ())) (cons implementation (cons (cons (implementation) (cons (release) ())) ())))) "
+" shen.r)) shen.a))
+
+(defun shen.x.launcher.help-text (V6029) (cn "Usage: " (shen.app V6029 " [--version] [--help] <COMMAND> [<ARGS>]
+
+commands:
+    repl
+        Launches the interactive REPL.
+        Default action if no command is supplied.
+
+    script <FILE> [<ARGS>]
+        Runs the script in FILE. *argv* is set to [FILE | ARGS].
+
+    eval <ARGS>
+        Evaluates expressions and files. ARGS are evaluated from
+        left to right and can be a combination of:
+            -e, --eval <EXPR>
+                Evaluates EXPR and prints result.
+            -l, --load <FILE>
+                Reads and evaluates FILE.
+            -q, --quiet
+                Silences interactive output.
+            -s, --set <KEY> <VALUE>
+                Evaluates KEY, VALUE and sets as global.
+            -r, --repl
+                Launches the interactive REPL after evaluating
+                all the previous expresions." shen.a)))
+
+(defun shen.x.launcher.execute-all (V6031) (cond ((= () V6031) (cons success ())) ((cons? V6031) (do (thaw (hd V6031)) (shen.x.launcher.execute-all (tl V6031)))) (true (shen.f_error shen.x.launcher.execute-all))))
+
+(defun shen.x.launcher.eval-string (V6033) (eval (head (read-from-string V6033))))
+
+(defun shen.x.launcher.eval-flag-map (V6039) (cond ((= "-e" V6039) "--eval") ((= "-l" V6039) "--load") ((= "-q" V6039) "--quiet") ((= "-s" V6039) "--set") ((= "-r" V6039) "--repl") (true false)))
+
+(defun shen.x.launcher.eval-command-h (V6050 V6051) (cond ((= () V6050) (shen.x.launcher.execute-all (reverse V6051))) ((and (cons? V6050) (and (= "--eval" (hd V6050)) (cons? (tl V6050)))) (shen.x.launcher.eval-command-h (tl (tl V6050)) (cons (freeze (shen.prhush (shen.app (shen.x.launcher.eval-string (hd (tl V6050))) "
+" shen.a) (stoutput))) V6051))) ((and (cons? V6050) (and (= "--load" (hd V6050)) (cons? (tl V6050)))) (shen.x.launcher.eval-command-h (tl (tl V6050)) (cons (freeze (load (hd (tl V6050)))) V6051))) ((and (cons? V6050) (= "--quiet" (hd V6050))) (shen.x.launcher.eval-command-h (tl V6050) (cons (freeze (set *hush* true)) V6051))) ((and (cons? V6050) (and (= "--set" (hd V6050)) (and (cons? (tl V6050)) (cons? (tl (tl V6050)))))) (shen.x.launcher.eval-command-h (tl (tl (tl V6050))) (cons (freeze (set (shen.x.launcher.eval-string (hd (tl V6050))) (shen.x.launcher.eval-string (hd (tl (tl V6050)))))) V6051))) ((and (cons? V6050) (= "--repl" (hd V6050))) (do (shen.x.launcher.eval-command-h () V6051) (cons launch-repl (tl V6050)))) (true (let Freeze (freeze (cond ((cons? V6050) (cons error (cons (cn "Invalid eval argument: " (shen.app (hd V6050) "" shen.a)) ()))) (true (shen.f_error shen.x.launcher.eval-command-h)))) (if (cons? V6050) (let Result (let Long (shen.x.launcher.eval-flag-map (hd V6050)) (if (= false Long) (fail) (shen.x.launcher.eval-command-h (cons Long (tl V6050)) V6051))) (if (= Result (fail)) (thaw Freeze) Result)) (thaw Freeze))))))
+
+(defun shen.x.launcher.eval-command (V6053) (shen.x.launcher.eval-command-h V6053 ()))
+
+(defun shen.x.launcher.script-command (V6056 V6057) (do (set *argv* (cons V6056 V6057)) (do (shen.x.launcher.quiet-load V6056) (cons success ()))))
+
+(defun shen.x.launcher.launch-shen (V6059) (cond ((and (cons? V6059) (= () (tl V6059))) (cons launch-repl ())) ((and (cons? V6059) (and (cons? (tl V6059)) (= "--help" (hd (tl V6059))))) (cons show-help (cons (shen.x.launcher.help-text (hd V6059)) ()))) ((and (cons? V6059) (and (cons? (tl V6059)) (= "--version" (hd (tl V6059))))) (cons success (cons (shen.x.launcher.version-string) ()))) ((and (cons? V6059) (and (cons? (tl V6059)) (= "repl" (hd (tl V6059))))) (cons launch-repl (tl (tl V6059)))) ((and (cons? V6059) (and (cons? (tl V6059)) (and (= "script" (hd (tl V6059))) (cons? (tl (tl V6059)))))) (shen.x.launcher.script-command (hd (tl (tl V6059))) (tl (tl (tl V6059))))) ((and (cons? V6059) (and (cons? (tl V6059)) (= "eval" (hd (tl V6059))))) (shen.x.launcher.eval-command (tl (tl V6059)))) ((and (cons? V6059) (cons? (tl V6059))) (cons unknown-arguments V6059)) (true (shen.f_error shen.x.launcher.launch-shen))))
+
+(defun shen.x.launcher.default-handle-result (V6063) (cond ((and (cons? V6063) (and (= success (hd V6063)) (= () (tl V6063)))) shen.x.launcher.done) ((and (cons? V6063) (and (= success (hd V6063)) (and (cons? (tl V6063)) (= () (tl (tl V6063)))))) (shen.prhush (shen.app (hd (tl V6063)) "
+" shen.a) (stoutput))) ((and (cons? V6063) (and (= error (hd V6063)) (and (cons? (tl V6063)) (= () (tl (tl V6063)))))) (shen.prhush (cn "ERROR: " (shen.app (hd (tl V6063)) "
+" shen.a)) (stoutput))) ((and (cons? V6063) (= launch-repl (hd V6063))) (shen.repl)) ((and (cons? V6063) (and (= show-help (hd V6063)) (and (cons? (tl V6063)) (= () (tl (tl V6063)))))) (shen.prhush (shen.app (hd (tl V6063)) "
+" shen.a) (stoutput))) ((and (cons? V6063) (and (= unknown-arguments (hd V6063)) (and (cons? (tl V6063)) (cons? (tl (tl V6063)))))) (shen.prhush (cn "ERROR: Invalid argument: " (shen.app (hd (tl (tl V6063))) (cn "
+Try `" (shen.app (hd (tl V6063)) " --help' for more information.
+" shen.a)) shen.a)) (stoutput))) (true (shen.f_error shen.x.launcher.default-handle-result))))
+
+(defun shen.x.launcher.main (V6065) (shen.x.launcher.default-handle-result (shen.x.launcher.launch-shen V6065)))
+
+
+

@@ -52,9 +52,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   { <signature-help> } := (demodulate (curry-type <signature-help>));)
 
 (define curry-type
-  [A --> B --> | C] -> (curry-type [A --> [B --> | C]])
-  [A * B * | C] -> (curry-type [A * [B * | C]])
-  [X | Y] -> (map (/. Z (curry-type Z)) [X | Y])
+  A -> (active-cons (curry-type-h A)))
+
+(define active-cons
+  [X Bar Y] -> [(active-cons X) | (active-cons Y)]
+      where (= Bar bar!)
+  [X | Y] -> [(active-cons X) | (active-cons Y)]
+  X -> X)
+
+(define curry-type-h
+  [A --> B --> | C] -> (curry-type-h [A --> [B --> | C]])
+  [A * B * | C] -> (curry-type-h [A * [B * | C]])
+  [X | Y] -> (map (/. Z (curry-type-h Z)) [X | Y])
   X -> X)
 
 (defcc <signature-help>
@@ -79,6 +88,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   X -> false  where (= X (fail))
   _ -> true)
 
+(define custom-pattern-compiler
+  Arg OnFail -> ((value *custom-pattern-compiler*) Arg OnFail))
+
+(define custom-pattern-reducer
+  Arg -> ((value *custom-pattern-reducer*) Arg))
+
 (defcc <patterns>
   <pattern> <patterns> := [<pattern> | <patterns>];
   <e> := [];)
@@ -89,7 +104,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   [@v <pattern1> <pattern2>] := [@v <pattern1> <pattern2>];
   [@s <pattern1> <pattern2>] := [@s <pattern1> <pattern2>];
   [vector 0] := [vector 0];
-  X := (constructor-error X) 	where (cons? X);
+  X := (custom-pattern-compiler X (freeze (constructor-error X)))
+      where (cons? X);
   <simple_pattern> := <simple_pattern>;)
 
 (define constructor-error
@@ -324,6 +340,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
          (let Abstraction [/. X [/. Y (ebr A [@s X Y] Z)]]
               Application [[Abstraction [pos A 0]] [tlstr A]]
            (reduce_help Application)))
+  [[/. [vector 0] Body] A]
+  -> (do (add_test [vector? A])
+         (add_test [= 0 [limit A]])
+         (reduce_help (ebr A [vector 0] Body)))
+  [[/. [Constructor | Args] Body] A]
+  -> (custom-pattern-reducer [[/. [Constructor | Args] Body] A])
   [[/. X Z] A]
   -> (do (add_test [= X A])
          (reduce_help Z))  where (not (variable? X))
@@ -342,11 +364,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (define ebr
   A B B -> A
-  A B [/. C D] -> [/. C D]	   where (> (occurrences B C) 0)
-  A B [lambda C D] -> [lambda C D] where (> (occurrences B C) 0)
-  A B [let B C D] -> [let B (ebr A B C) D]
+  A B [lambda C D] -> [lambda C D] where (clash? C B)
+  A B [let V C D] -> [let V (ebr A B C) D]	where (clash? V B)
   A B [C | D] -> [(ebr A B C) | (ebr A B D)]
   _ _ C -> C)
+
+(define clash?
+  V V -> true
+  V [X | Y] -> (or (clash? V X) (clash? V Y))
+  _ _ -> false)
 
 (define add_test
   Test -> (set *teststack* [Test | (value *teststack*)]))
