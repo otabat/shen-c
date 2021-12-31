@@ -30,6 +30,7 @@ void load_shen_kl_files (void)
   load_kl_file("shen/src/kl/sys.kl");
   register_overwrite_sys_primitive_kl_functions();
 
+  load_kl_file("shen/src/kl/dict.kl");
   load_kl_file("shen/src/kl/sequent.kl");
 
   load_kl_file("shen/src/kl/yacc.kl");
@@ -53,11 +54,26 @@ void load_shen_kl_files (void)
   load_kl_file("shen/src/kl/declarations.kl");
   load_kl_file("shen/src/kl/types.kl");
   load_kl_file("shen/src/kl/t-star.kl");
+
+  load_kl_file("shen/src/kl/init.kl");
+  load_kl_file("shen/src/kl/extension-features.kl");
+  // load_kl_file("shen/src/kl/extension-launcher.kl");
+  load_kl_file("shen/src/kl/extension-factorise-defun.kl");
 }
 
 void load_development_kl_file (void)
 {
   load_kl_file("src/kl/development.kl");
+}
+
+void call_shen_initialise (void)
+{
+  KLObject* shen_string_object = create_kl_string_with_intern("shen.initialise");
+  KLObject* shen_symbol_object = lookup_symbol_table(shen_string_object);
+  KLObject* list_object = CONS(shen_symbol_object, EL);
+
+  eval_kl_object(list_object, get_global_function_environment(),
+                 get_global_variable_environment());
 }
 
 void run_kl_repl (void)
@@ -91,7 +107,7 @@ void run_kl_repl (void)
 
 void run_shen_repl (void)
 {
-  KLObject * shen_string_object = create_kl_string_with_intern("shen.shen");
+  KLObject * shen_string_object = create_kl_string_with_intern("shen.repl");
   KLObject* shen_symbol_object = lookup_symbol_table(shen_string_object);
   KLObject* list_object = CONS(shen_symbol_object, EL);
 

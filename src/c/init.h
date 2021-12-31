@@ -57,6 +57,7 @@ inline void initialize_and_run_shen_repl (const char* home_path)
 
   initialize();
   load_shen_kl_files();
+  call_shen_initialise();
 
   #ifdef SHEN_C_MOBILE
   load_kl_file("/src/kl/mobile/init.kl");
