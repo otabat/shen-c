@@ -19,7 +19,7 @@ CC=clang
 $(shell mkdir -p obj bin)
 
 all: ${TARGET} 
-CFLAGS=-O3 -fno-optimize-sibling-calls
+CFLAGS=-O3 -fno-optimize-sibling-calls -fsigned-char
 LDFLAGS=-lgc
 
 ${TARGET}: ${SRC_OBJS}
