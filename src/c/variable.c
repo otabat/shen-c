@@ -127,7 +127,7 @@ static inline void initialize_earmuff_port_symbol_object (void)
 {
   earmuff_port_symbol_object = create_kl_symbol_by_name("*port*");
   set_kl_symbol_variable_value(earmuff_port_symbol_object,
-                               create_kl_string_with_intern("0.2.2"));
+                               create_kl_string_with_intern("0.2.3"));
 }
 
 static inline void register_global_variable_earmuff_port (void)
