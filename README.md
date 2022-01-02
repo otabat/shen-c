@@ -80,7 +80,7 @@ To build a non-release build
 ```
 make
 ```
-A binary file named shen-c will be created under the `bin` directory.
+A binary file named `shen-c` will be created under the `bin` directory.
 
 To build a release build
 ```
