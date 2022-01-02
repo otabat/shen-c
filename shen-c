@@ -1,0 +1,9 @@
+#!/bin/sh
+
+SHEN_C_HOME=$(dirname "$0")
+
+if command -v rlwrap &> /dev/null; then
+    rlwrap ${SHEN_C_HOME}/bin/shen-c
+else
+    ${SHEN_C_HOME}/bin/shen-c
+fi
