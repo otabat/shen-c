@@ -2,6 +2,7 @@
 /obj/
 /tmp/
 /prof/
+/.vscode
 .#*
 .DS_Store
 *.swp
