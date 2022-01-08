@@ -3,8 +3,7 @@
                 (do (c.flush V4186) result))
               (lambda E (do (c.flush V4186) V4185))))
 
-(defun shen.credits () (do (shen.prhush "
-Shen, copyright (C) 2010-2015 Mark Tarver
+(defun shen.credits () (do (shen.prhush "Shen, copyright (C) 2010-2015 Mark Tarver
 " (stoutput)) (do (shen.prhush (cn "www.shenlanguage.org, " (shen.app (value *version*) "
 " shen.a)) (stoutput)) (do (shen.prhush (cn "running under " (shen.app (value *language*) (cn ", implementation: " (shen.app (value *implementation*) "" shen.a)) shen.a)) (stoutput)) (do (shen.prhush (cn "
 port " (shen.app (value *port*) (cn " ported by " (shen.app (value *porters*) "
